@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "34604d028f93249ed2b7a1ee2685c655d3767f81adfe1a1142c1e470e68aa96b"
+            "sha256": "eaba1046712718a4ad9741da18ff64a96f7f7118de260d2f9f8f39beda84f9b4"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -29,6 +29,20 @@
         ]
     },
     "default": {
+        "boto3": {
+            "hashes": [
+                "sha256:1e91fa790d1ca819879490ba61d83cc150ed65c7adf3e12149ac9a8f11f7820d",
+                "sha256:329a34da02fa48162cb8d64d1a34d996107cebb7cf6987cef34ed7987907c51c"
+            ],
+            "version": "==1.5.19"
+        },
+        "botocore": {
+            "hashes": [
+                "sha256:7c1341590a05b8c7146def11e76d71b1b0d2ef6fa1f05a177494113f41bd17e9",
+                "sha256:fa29ea54f26b1193682332d3b4cdde7aa79b4eaccb23f70e88672509c24546f4"
+            ],
+            "version": "==1.8.33"
+        },
         "dj-config-url": {
             "hashes": [
                 "sha256:8c411dca3ead2b64786c9ae735ef3085518ff92a79e98e441953b26c47063e3f",
@@ -42,6 +56,21 @@
                 "sha256:d96b804be412a5125a594023ec524a2010a6ffa4d408e5482ab6ff3cb97ec12f"
             ],
             "version": "==2.0.1"
+        },
+        "django-storages": {
+            "hashes": [
+                "sha256:ab6be1538cf29511400bce83d0e5ca74d2e935cad82086063bcf5e7edacc1661",
+                "sha256:bc8e4c1f483608c5dd1212072fd41042f3ef2d2a2896ec4fb12dbc62c82996a0"
+            ],
+            "version": "==1.6.5"
+        },
+        "docutils": {
+            "hashes": [
+                "sha256:7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6",
+                "sha256:02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6",
+                "sha256:51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274"
+            ],
+            "version": "==0.14"
         },
         "enum34": {
             "hashes": [
@@ -92,6 +121,13 @@
             ],
             "version": "==19.7.1"
         },
+        "jmespath": {
+            "hashes": [
+                "sha256:f11b4461f425740a1d908e9a3f7365c3d2e569f6ca68a2ff8bc5bcd9676edd63",
+                "sha256:6a81d4c9aa62caf061cb517b4d9ad1dd300374cd4706997aff9cd6aedd61fc64"
+            ],
+            "version": "==0.9.3"
+        },
         "psycopg2": {
             "hashes": [
                 "sha256:594aa9a095de16614f703d759e10c018bdffeafce2921b8e80a0e8a0ebbc12e5",
@@ -128,6 +164,13 @@
             ],
             "version": "==2.7.3.2"
         },
+        "python-dateutil": {
+            "hashes": [
+                "sha256:95511bae634d69bc7329ba55e646499a842bc4ec342ad54a8cdb65645a0aad3c",
+                "sha256:891c38b2a02f5bb1be3e4793866c8df49c7d19baabf9c1bad62547e0b4866aca"
+            ],
+            "version": "==2.6.1"
+        },
         "pytz": {
             "hashes": [
                 "sha256:80af0f3008046b9975242012a985f04c5df1f01eed4ec1633d56cc47a75a6a48",
@@ -141,6 +184,20 @@
                 "sha256:fae4cffc040921b8a2d60c6cf0b5d662c1190fe54d718271db4eb17d44a185b7"
             ],
             "version": "==2017.3"
+        },
+        "s3transfer": {
+            "hashes": [
+                "sha256:23c156ca4d64b022476c92c44bf938bef71af9ce0dcd8fd6585e7bce52f66e47",
+                "sha256:10891b246296e0049071d56c32953af05cea614dca425a601e4c0be35990121e"
+            ],
+            "version": "==0.1.12"
+        },
+        "six": {
+            "hashes": [
+                "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb",
+                "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
+            ],
+            "version": "==1.11.0"
         },
         "whitenoise": {
             "hashes": [

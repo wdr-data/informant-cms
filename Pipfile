@@ -13,6 +13,8 @@ dj-config-url = "*"
 whitenoise = "*"
 gunicorn = "*"
 eventlet = "*"
+django-storages = "*"
+"boto3" = "*"
 
 
 [dev-packages]

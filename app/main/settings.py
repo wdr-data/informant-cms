@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import dj_database_url
+from urllib.parse import urlparse, unquote
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL[1:])
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+aws_url = os.environ.get('S3_MEDIA_URL')
+if aws_url is not None:
+    aws_creds = urlparse(aws_url)
+    DEFAULT_FILE_STORAGE = 'main.custom_storages.S3BotoRandomNameStorage'
+    AWS_ACCESS_KEY_ID = unquote(aws_creds.username)
+    AWS_SECRET_ACCESS_KEY = unquote(aws_creds.password)
+    AWS_STORAGE_BUCKET_NAME = aws_creds.hostname
+    AWS_AUTO_CREATE_BUCKET = False
+    AWS_QUERYSTRING_AUTH = False
