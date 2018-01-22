@@ -7,7 +7,12 @@ name = "pypi"
 
 [packages]
 
-django = "*"
+Django = "*"
+dj-config-url = "*"
+"psycopg2" = "*"
+whitenoise = "*"
+gunicorn = "*"
+eventlet = "*"
 
 
 [dev-packages]

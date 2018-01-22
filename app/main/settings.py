@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,14 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+q=28spl&0qh*e_h$x8t4yp1t*avz8rgc9z_8s*ho0eag18$pn'
+DEBUG = False
+if os.environ.get("DEBUG") == "True":
+    DEBUG = True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if SECRET_KEY is None:
+    if DEBUG:
+        SECRET_KEY = '+q=28spl&0qh*e_h$x8t4yp1t*avz8rgc9z_8s*ho0eag18$pn'
+    else:
+        raise EnvironmentError("Please specify a SECRET_KEY in your environment")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
 
 # Application definition
 
@@ -40,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,6 +89,10 @@ DATABASES = {
     }
 }
 
+if os.environ.get('DATABASE_URL') is not None:
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -118,3 +131,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL[1:])
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

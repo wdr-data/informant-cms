@@ -1,2 +1,8 @@
 __pycache__
 db.sqlite3
+
+# local config
+.env
+
+# Collected static files
+/app/static
