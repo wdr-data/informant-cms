@@ -8,6 +8,7 @@ name = "pypi"
 [packages]
 
 Django = "*"
+django-tags-input = "*"
 dj-config-url = "*"
 "psycopg2" = "*"
 whitenoise = "*"

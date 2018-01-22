@@ -1,18 +1,18 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "eaba1046712718a4ad9741da18ff64a96f7f7118de260d2f9f8f39beda84f9b4"
+            "sha256": "86daaaf32c192077b173aad42ff3a6980637362729d82bfbd183e17a7dcda5c5"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.6.3",
+            "implementation_version": "3.6.1",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
             "platform_release": "17.3.0",
             "platform_system": "Darwin",
             "platform_version": "Darwin Kernel Version 17.3.0: Thu Nov  9 18:09:22 PST 2017; root:xnu-4570.31.3~1/RELEASE_X86_64",
-            "python_full_version": "3.6.3",
+            "python_full_version": "3.6.1",
             "python_version": "3.6",
             "sys_platform": "darwin"
         },
@@ -63,6 +63,13 @@
                 "sha256:bc8e4c1f483608c5dd1212072fd41042f3ef2d2a2896ec4fb12dbc62c82996a0"
             ],
             "version": "==1.6.5"
+        },
+        "django-tags-input": {
+            "hashes": [
+                "sha256:5a7ae7fa950b9dfa5e41b53b0613a92fc075ae0ba6eee08de6dc6d4a3c46e2d3",
+                "sha256:2d1abfef55920a1847b3e9e09a7b4c9b4d98fee9b9edce0877f9311c740538ef"
+            ],
+            "version": "==4.0.0"
         },
         "docutils": {
             "hashes": [
