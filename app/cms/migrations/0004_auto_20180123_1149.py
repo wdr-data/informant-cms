@@ -4,6 +4,13 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def delete_topic(apps, schema_editor):
+    Report = apps.get_model('cms', 'Report')
+    for report in Report.objects.all():
+        report.topic = None
+        report.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -22,6 +29,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Themen',
             },
         ),
+        migrations.RunPython(delete_topic),
         migrations.AlterField(
             model_name='report',
             name='topic',
