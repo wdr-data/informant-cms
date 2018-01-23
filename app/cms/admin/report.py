@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from tags_input import admin as tags_input_admin
 
 from ..models.report import Report, ReportFragment
 
@@ -37,7 +38,7 @@ class ReportModelForm(forms.ModelForm):
         fields = '__all__'
 
 
-class ReportAdmin(admin.ModelAdmin):
+class ReportAdmin(tags_input_admin.TagsInputAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
     list_filter = ['published']
@@ -48,3 +49,4 @@ class ReportAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Report, ReportAdmin)
+

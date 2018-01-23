@@ -48,8 +48,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'cms.apps.CmsConfig',
+<<<<<<< HEAD
     'sortedm2m',
     'sortedm2m_filter_horizontal_widget',
+=======
+    'tags_input',
+>>>>>>> aec4c21afa40172fbda4ac29a1ca77e7a9c56e27
 ]
 
 MIDDLEWARE = [
@@ -149,3 +153,12 @@ if aws_url is not None:
     AWS_STORAGE_BUCKET_NAME = aws_creds.hostname
     AWS_AUTO_CREATE_BUCKET = False
     AWS_QUERYSTRING_AUTH = False
+
+
+TAGS_INPUT_MAPPINGS = {
+    'cms.ReportTag': {
+        'field': 'name',
+        'create_missing': True,
+    },
+}
+
