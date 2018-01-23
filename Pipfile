@@ -8,7 +8,7 @@ name = "pypi"
 [packages]
 
 django = "*"
-django-tags-input = {git = "https://github.com/wdr-data/django-tags-input.git", ref = "v3.2.3"}
+django-tags-input = {git = "https://github.com/wdr-data/django-tags-input.git", ref = "v3.2.4"}
 dj-config-url = "*"
 "psycopg2" = "*"
 whitenoise = "*"
