@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'cms.apps.CmsConfig',
+    'sortedm2m',
+    'sortedm2m_filter_horizontal_widget',
 ]
 
 MIDDLEWARE = [
