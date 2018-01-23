@@ -20,20 +20,29 @@ class Push(models.Model):
         verbose_name = 'Push'
         verbose_name_plural = 'Pushes'
 
-    headline = models.CharField('Titel', max_length=200, null=False)
-    intro = models.CharField('Intro-Text', max_length=640, null=False, blank=True)
-    outro = models.CharField('Outro-Text', max_length=640, null=False, blank=True)
-
-    reports = SortedManyToManyField('Report', related_name='pushes', verbose_name='Meldungen')
-
     pub_date = models.DateTimeField(
-        'Versenden am',
+        'Push Zeitpunkt',
         default=default_pub_date)
 
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
         help_text='Solange dieser Haken nicht gesetzt ist, wird dieser Push nicht versendet, '
                   'auch wenn der konfigurierte Zeitpunkt erreicht wird.')
+
+    breaking = models.BooleanField(
+        'Breaking', null=False, default=False,
+        help_text='Wird dieser Haken gesetzt UND ist der Push freigegeben,'
+                  ' so wird der Push mit dem sichern SOFORT als Breaking-Push gesendet!')
+
+    headline = models.CharField('Arbeitstitel', max_length=200, null=False,
+                                help_text='Dieser Titel wird nicht ausgespielt')
+
+    intro = models.CharField('Intro-Text', max_length=640, null=False, blank=True)
+    outro = models.CharField('Outro-Text', max_length=640, null=False, blank=True)
+
+    reports = SortedManyToManyField('Report', related_name='pushes', verbose_name='Meldungen')
+
+
 
     delivered = models.BooleanField('Versendet', null=False, default=False)
 

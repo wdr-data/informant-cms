@@ -25,7 +25,9 @@ class PushAdmin(admin.ModelAdmin):
     date_hierarchy = 'pub_date'
     list_filter = ['published']
     search_fields = ['headline']
-    list_display = ('headline', 'pub_date', 'published', 'delivered')
+    list_display = ('published', 'pub_date', 'headline', 'breaking', 'delivered')
+    list_display_links = ('pub_date', )
+    ordering = ('-pub_date',)
 
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):
         if db_field.name in ('reports', ):
