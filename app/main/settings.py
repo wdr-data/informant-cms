@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'cms.apps.CmsConfig',
+    'tags_input',
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,12 @@ if aws_url is not None:
     AWS_STORAGE_BUCKET_NAME = aws_creds.hostname
     AWS_AUTO_CREATE_BUCKET = False
     AWS_QUERYSTRING_AUTH = False
+
+
+TAGS_INPUT_MAPPINGS = {
+    'cms.ReportTag': {
+        'field': 'name',
+        'create_missing': True,
+    },
+}
+

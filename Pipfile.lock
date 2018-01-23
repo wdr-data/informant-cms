@@ -1,20 +1,20 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "86daaaf32c192077b173aad42ff3a6980637362729d82bfbd183e17a7dcda5c5"
+            "sha256": "e2d5680f3bdf83d7a1d5240ea9eabaeb533965c28002a02d938ad94af0c4e6cc"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.6.1",
+            "implementation_version": "3.6.3",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "17.3.0",
-            "platform_system": "Darwin",
-            "platform_version": "Darwin Kernel Version 17.3.0: Thu Nov  9 18:09:22 PST 2017; root:xnu-4570.31.3~1/RELEASE_X86_64",
-            "python_full_version": "3.6.1",
+            "platform_release": "4.14.13-200.fc26.x86_64",
+            "platform_system": "Linux",
+            "platform_version": "#1 SMP Thu Jan 11 05:43:34 UTC 2018",
+            "python_full_version": "3.6.3",
             "python_version": "3.6",
-            "sys_platform": "darwin"
+            "sys_platform": "linux"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -31,17 +31,17 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:1e91fa790d1ca819879490ba61d83cc150ed65c7adf3e12149ac9a8f11f7820d",
-                "sha256:329a34da02fa48162cb8d64d1a34d996107cebb7cf6987cef34ed7987907c51c"
+                "sha256:24f8f919126b8a55ef3be6729243f71ffe4b927408e4a1be4e64671cdb011409",
+                "sha256:06614d6111c0bcc7e76ef699e4caec0de87217180486e43ec2c353d6f01a409d"
             ],
-            "version": "==1.5.19"
+            "version": "==1.5.20"
         },
         "botocore": {
             "hashes": [
-                "sha256:7c1341590a05b8c7146def11e76d71b1b0d2ef6fa1f05a177494113f41bd17e9",
-                "sha256:fa29ea54f26b1193682332d3b4cdde7aa79b4eaccb23f70e88672509c24546f4"
+                "sha256:628994a88d09a1fe7d96e0c4b786302463bdfaff9f829d4a72ebe8d02e8160ba",
+                "sha256:b7c33d79fe4c6b8d15f4191aa6e60e3ac0f290b3ce3a8b4d831f79eddbca7115"
             ],
-            "version": "==1.8.33"
+            "version": "==1.8.34"
         },
         "dj-config-url": {
             "hashes": [
@@ -65,11 +65,7 @@
             "version": "==1.6.5"
         },
         "django-tags-input": {
-            "hashes": [
-                "sha256:5a7ae7fa950b9dfa5e41b53b0613a92fc075ae0ba6eee08de6dc6d4a3c46e2d3",
-                "sha256:2d1abfef55920a1847b3e9e09a7b4c9b4d98fee9b9edce0877f9311c740538ef"
-            ],
-            "version": "==4.0.0"
+            "git": "https://github.com/wdr-data/django-tags-input.git"
         },
         "docutils": {
             "hashes": [

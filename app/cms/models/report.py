@@ -3,6 +3,10 @@ from django.utils import timezone
 from django.db import models
 
 
+class ReportTag(models.Model):
+    name = models.CharField('Name', max_length=50)
+
+
 class Report(models.Model):
     """
     Meldungen sind themenbezogene, in sich abgeschlossene Nachrichten.</p><p>
@@ -18,7 +22,7 @@ class Report(models.Model):
     headline = models.CharField('Überschrift', max_length=200, null=False)
     genre = models.CharField('Genre', max_length=200, null=True, blank=True)
     topic = models.CharField('Thema', max_length=200, null=True, blank=True)
-    tags = models.CharField('Tags', max_length=50, null=True, blank=True)
+    tags = models.ManyToManyField(ReportTag, related_name='items')
     text = models.CharField('Intro-Text', max_length=640, null=False)
     media = models.FileField('Medien-Anhang Intro', null=True, blank=True)
     media_note = models.CharField('Credit', max_length=100, null=True, blank=True)
