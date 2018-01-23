@@ -3,13 +3,14 @@ from django.db import models
 
 from .genre import Genre
 from .topic import Topic
+from .attachement import Attachement
 
 
 class ReportTag(models.Model):
     name = models.CharField('Name', max_length=50)
 
 
-class Report(models.Model):
+class Report(Attachement):
     """
     Meldungen sind themenbezogene, in sich abgeschlossene Nachrichten.</p><p>
     Sie können aus mehreren Fragmenten bestehen. Um von einem Fragment zum nächsten zu gelangen,
@@ -27,8 +28,6 @@ class Report(models.Model):
                               related_name='reports', verbose_name='Thema')
     tags = models.ManyToManyField(ReportTag, related_name='items')
     text = models.CharField('Intro-Text', max_length=640, null=False)
-    media = models.FileField('Medien-Anhang Intro', null=True, blank=True)
-    media_note = models.CharField('Credit', max_length=100, null=True, blank=True)
 
     created = models.DateTimeField(
         'Erstellt',
@@ -64,7 +63,7 @@ class Report(models.Model):
         return reports[offset:count]
 
 
-class ReportFragment(models.Model):
+class ReportFragment(Attachement):
 
     class Meta:
         verbose_name = 'Meldungs-Fragment'
@@ -75,8 +74,6 @@ class ReportFragment(models.Model):
 
     question = models.CharField('Frage', max_length=20, null=True, blank=True)
     text = models.CharField('Text', max_length=640, null=False, blank=False)
-    media = models.FileField('Medien-Anhang', null=True, blank=True)
-    media_note = models.CharField('Credit', max_length=100, null=True, blank=True)
   
     def __str__(self):
         return '%s - %s' % (self.report.headline, self.question)

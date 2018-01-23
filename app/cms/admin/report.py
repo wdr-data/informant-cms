@@ -11,7 +11,7 @@ class ReportFragmentModelForm(forms.ModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = '__all__'
+        fields = ['question', 'text', 'media', 'media_note']
 
 
 class ReportFragmentAdmin(admin.ModelAdmin):
@@ -35,7 +35,8 @@ class ReportModelForm(forms.ModelForm):
 
     class Meta:
         model = Report
-        fields = '__all__'
+        fields = ['headline', 'genre', 'topic', 'tags', 'text', 'media',
+                  'media_note', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(tags_input_admin.TagsInputAdmin):
