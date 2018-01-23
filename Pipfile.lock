@@ -1,20 +1,20 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0929f34458500ab49b56d61d92302202d2aed7de8c7dc30c8f48a4aa83ec1d44"
+            "sha256": "beeb6d503bd0a03da0818042e89269b56685d5a616f5ca0247b53c6646f8be30"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.6.1",
+            "implementation_version": "3.6.3",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "17.3.0",
-            "platform_system": "Darwin",
-            "platform_version": "Darwin Kernel Version 17.3.0: Thu Nov  9 18:09:22 PST 2017; root:xnu-4570.31.3~1/RELEASE_X86_64",
-            "python_full_version": "3.6.1",
+            "platform_release": "4.14.13-200.fc26.x86_64",
+            "platform_system": "Linux",
+            "platform_version": "#1 SMP Thu Jan 11 05:43:34 UTC 2018",
+            "python_full_version": "3.6.3",
             "python_version": "3.6",
-            "sys_platform": "darwin"
+            "sys_platform": "linux"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -77,7 +77,8 @@
             "version": "==1.6.5"
         },
         "django-tags-input": {
-            "git": "https://github.com/wdr-data/django-tags-input.git"
+            "git": "https://github.com/wdr-data/django-tags-input.git",
+            "ref": "v3.2.3"
         },
         "docutils": {
             "hashes": [
