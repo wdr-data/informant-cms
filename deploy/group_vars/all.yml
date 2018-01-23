@@ -1,0 +1,8 @@
+default_region: eu-central-1
+prefix: wdr-tim-cms
+short_prefix: tim-cms
+stages:
+  - staging
+  - prod
+
+aws_profile: "{{ ansible_env.AWS_PROFILE | default('default') }}"

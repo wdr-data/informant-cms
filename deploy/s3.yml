@@ -1,0 +1,79 @@
+---
+
+- hosts: localhost
+  tasks:
+    - name: Create media access user
+      iam:
+        iam_type: user
+        name: "{{ prefix }}-{{ item }}-media"
+        state: present
+        access_key_state: create
+      items: "{{ stages }}"
+      register: user_creation
+    - name: Gather Heroku credential
+      command: heroku auth:token
+      register: heroku_token
+    - name: Store Access Credentials
+      heroku_env:
+        app: "{{ short_prefix }}-{{ item.item }}"
+        key: S3_MEDIA_URL
+        value: "s3://\
+          {{ item.user_meta.access_keys[0].access_key_id | urlencode_comp }}:\
+          {{ item.user_meta.access_keys[0].secret_access_key | urlencode_comp }}@\
+          {{ prefix }}-{{ item.item }}-media/"
+        api_key: "{{ heroku_token.stdout }}"
+      items: "{{ user_creation.results }}"
+      when: item.changed
+      loop_control:
+        label: "{{ item.item }}"
+    - name: Create S3 bucket for Django assets
+      s3_bucket:
+        name: "{{ prefix }}-{{ item }}-media"
+        versioning: yes
+        state: present
+        region: "{{ default_region }}"
+        profile: "{{ aws_profile }}"
+        policy: |
+          {
+            "Id": "Policy1515361869506",
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "AllowPublicRead",
+                "Action": [
+                  "s3:GetObject"
+                ],
+                "Effect": "Allow",
+                "Resource": "arn:aws:s3:::{{ prefix }}-{{ item }}-media/*",
+                "Principal": "*"
+              }
+            ]
+          }
+      items: "{{ stages }}"
+      register: bucket_creation
+    - name: Create bucket access policy
+      iam_policy:
+        iam_name: "{{ item.invocation.module_args.name }}"
+        iam_type: user
+        policy_name: "{{ item.invocation.module_args.name }}-bucket"
+        policy_json: |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "AllowFullBucketAccess",
+                      "Effect": "Allow",
+                      "Action": "s3:*",
+                      "Resource": [
+                          "arn:aws:s3:::sportsfreund-staging-media",
+                          "arn:aws:s3:::sportsfreund-staging-media/*"
+                      ]
+                  }
+              ]
+          }
+        state: present
+        region: "{{ default_region }}"
+        profile: "{{ aws_profile }}"
+      items: "{{ user_creation.results }}"
+      loop_control:
+        label: "{{ item.item }}"

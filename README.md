@@ -20,3 +20,13 @@ Then run:
 ```bash
 pipenv run heroku local
 ```
+
+### Preparing Heroku
+
+There is a Ansible Playbook for managing stuff, not available via Heroku Addons.
+It will prepare these components:
+- Media S3 Buckets
+
+```bash
+pipenv run ansible-playbook deploy/site.yml
+```

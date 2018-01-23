@@ -22,6 +22,9 @@ django-storages = "*"
 
 [dev-packages]
 
+ansible = "*"
+"heroku3" = "*"
+boto = "*"
 
 
 [requires]
