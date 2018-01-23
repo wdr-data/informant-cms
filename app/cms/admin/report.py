@@ -45,6 +45,7 @@ class ReportAdmin(tags_input_admin.TagsInputAdmin):
     search_fields = ['headline']
     list_display = ('headline', 'created', 'published')
     inlines = (ReportFragmentAdminInline, )
+    tag_fields = ['tags']
 
 
 # Register your models here.

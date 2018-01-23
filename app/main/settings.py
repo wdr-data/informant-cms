@@ -157,5 +157,9 @@ TAGS_INPUT_MAPPINGS = {
         'field': 'name',
         'create_missing': True,
     },
+    'cms.Genre': {
+        'field': 'name',
+        'create_missing': False,
+    },
 }
 

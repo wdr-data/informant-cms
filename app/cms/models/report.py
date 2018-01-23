@@ -1,6 +1,9 @@
 from django.utils import timezone
 from django.db import models
 
+from .genre import Genre
+from .topic import Topic
+
 
 class ReportTag(models.Model):
     name = models.CharField('Name', max_length=50)
@@ -19,8 +22,9 @@ class Report(models.Model):
         verbose_name_plural = 'Meldungen'
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
-    genre = models.CharField('Genre', max_length=200, null=True, blank=True)
-    topic = models.CharField('Thema', max_length=200, null=True, blank=True)
+    genre = models.ManyToManyField(Genre, related_name='reports', verbose_name='Genre')
+    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True,
+                              related_name='reports', verbose_name='Thema')
     tags = models.ManyToManyField(ReportTag, related_name='items')
     text = models.CharField('Intro-Text', max_length=640, null=False)
     media = models.FileField('Medien-Anhang Intro', null=True, blank=True)
