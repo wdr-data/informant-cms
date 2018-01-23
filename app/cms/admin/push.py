@@ -11,6 +11,10 @@ class PushModelForm(forms.ModelForm):
     outro = forms.CharField(
         required=True, label="Outro-Text", widget=forms.Textarea, max_length=640)
 
+    delivered = forms.BooleanField(
+        label='Versendet', help_text="Wurde dieser Push bereits versendet?", disabled=True,
+        required=False)
+
     class Meta:
         model = Push
         fields = '__all__'

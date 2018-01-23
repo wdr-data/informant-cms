@@ -30,10 +30,6 @@ class Push(models.Model):
         'Versenden am',
         default=default_pub_date)
 
-    follow_up_date = models.DateTimeField(
-        'Wiedervorlage am',
-        default=default_pub_date)
-
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
         help_text='Solange dieser Haken nicht gesetzt ist, wird dieser Push nicht versendet, '
