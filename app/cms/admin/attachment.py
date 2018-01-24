@@ -1,10 +1,53 @@
-from django.contrib import admin, messages
 import logging
+
+from django.contrib import admin, messages
+from django.contrib.admin.widgets import AdminFileWidget
+from django.utils.safestring import mark_safe
 
 IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
 
 
-class AttachmentAdmin(admin.ModelAdmin):
+class AdminDisplayImageWidget(AdminFileWidget):
+    def render(self, name, value, attrs=None, renderer=None):
+        output = []
+        if value and getattr(value, "url", None):
+            image_url = value.url
+            file_name = str(value)
+            output.append(
+                f'<a href="{image_url}" target="_blank">'
+                f'<img style="max-height: 200px; max-width: 350px;" '
+                f'src="{image_url}" alt="{file_name}" /></a>')
+
+        # Don't add super() widget which would display the file upload field
+
+        return mark_safe(''.join(output))
+
+
+class DisplayImageWidgetMixin(object):
+    image_display_fields = []
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name in self.image_display_fields:
+            request = kwargs.pop("request", None)
+            kwargs['widget'] = AdminDisplayImageWidget
+            return db_field.formfield(**kwargs)
+        return super().formfield_for_dbfield(db_field, **kwargs)
+
+
+class DisplayImageWidgetAdmin(DisplayImageWidgetMixin, admin.ModelAdmin):
+    pass
+
+
+class DisplayImageWidgetStackedInline(DisplayImageWidgetMixin, admin.StackedInline):
+    pass
+
+
+class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInline):
+    pass
+
+
+class AttachmentAdmin(DisplayImageWidgetAdmin):
+    image_display_fields = ['media']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

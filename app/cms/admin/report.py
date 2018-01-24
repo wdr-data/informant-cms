@@ -3,7 +3,7 @@ from django import forms
 from tags_input import admin as tags_input_admin
 
 from ..models.report import Report, ReportFragment
-from .attachment import AttachmentAdmin
+from .attachment import AttachmentAdmin, DisplayImageWidgetTabularInline, DisplayImageWidgetStackedInline
 
 
 class ReportFragmentModelForm(forms.ModelForm):
@@ -12,14 +12,15 @@ class ReportFragmentModelForm(forms.ModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = ['question', 'text', 'media_original', 'media_note']
+        fields = ['question', 'text', 'media', 'media_original', 'media_note']
 
 
 class ReportFragmentAdmin(admin.ModelAdmin):
     form = ReportFragmentModelForm
 
 
-class ReportFragmentAdminInline(admin.TabularInline):
+class ReportFragmentAdminInline(DisplayImageWidgetTabularInline):
+    image_display_fields = ['media']
     model = ReportFragment
     form = ReportFragmentModelForm
 
@@ -36,7 +37,7 @@ class ReportModelForm(forms.ModelForm):
 
     class Meta:
         model = Report
-        fields = ['headline', 'genre', 'topic', 'tags', 'text', 'media_original',
+        fields = ['headline', 'genre', 'topic', 'tags', 'text', 'media', 'media_original',
                   'media_note', 'created', 'published', 'delivered']
 
 
