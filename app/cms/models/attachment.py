@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 import requests
 from requests.exceptions import MissingSchema
-from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageChops
+from PIL import Image, ImageFont, ImageDraw, ImageFilter
 
 ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / 'assets'
 
@@ -57,8 +57,11 @@ class Attachment(models.Model):
         the_text = 'FOTO: ' + self.media_note.upper()
         fontsize = max(img.size[1] / 40, 13)
         shadow_radius = fontsize / 3
-        shadow_mult = 3
-        pos = (shadow_radius + 10, shadow_radius + 5)
+        shadow_mult = 2.5
+        text_alpha = 0.7
+        padding = (30, 20)
+
+        position = tuple(int(shadow_radius + p) for p in padding)
 
         fnt = ImageFont.truetype(
             str(ASSETS_DIR / 'Open_Sans' / 'OpenSans-SemiBold.ttf'), int(fontsize))
@@ -69,18 +72,18 @@ class Attachment(models.Model):
         # Create new, smaller image to draw the text on
         txt = Image.new(
             'RGBA',
-            (text_size[0] + int(shadow_radius) + 20, text_size[1] + int(shadow_radius) + 20),
+            tuple(ts + pad + pos for ts, pad, pos in zip(text_size, padding, position)),
             (0, 0, 0, 0))
 
         # Do the drawing
         draw = ImageDraw.Draw(txt)
-        draw.text(pos, the_text, font=fnt, fill=(0, 0, 0, 255))
+        draw.text(position, the_text, font=fnt, fill=(0, 0, 0, 255))
 
         shadow = txt.filter(ImageFilter.GaussianBlur(radius=shadow_radius))
-        txt = shadow.point(lambda px: min(px * shadow_mult, 255))
+        txt = shadow.point(lambda px: min(int(px * shadow_mult), 255))
 
         draw = ImageDraw.Draw(txt)
-        draw.text(pos, the_text, font=fnt, fill=(255, 255, 255, 180))
+        draw.text(position, the_text, font=fnt, fill=(255, 255, 255, int(255 * text_alpha)))
 
         # Rotate and paste onto original image
         txt = txt.rotate(90, expand=1)
