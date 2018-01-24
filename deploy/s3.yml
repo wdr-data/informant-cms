@@ -65,8 +65,8 @@
                       "Effect": "Allow",
                       "Action": "s3:*",
                       "Resource": [
-                          "arn:aws:s3:::sportsfreund-staging-media",
-                          "arn:aws:s3:::sportsfreund-staging-media/*"
+                          "arn:aws:s3:::{{ prefix }}-{{ item.item }}-media",
+                          "arn:aws:s3:::{{ prefix }}-{{ item.item }}-media/*"
                       ]
                   }
               ]
