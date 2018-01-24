@@ -11,7 +11,7 @@ class ReportFragmentModelForm(forms.ModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = ['question', 'text', 'media', 'media_note']
+        fields = ['question', 'text', 'media_original', 'media_note']
 
 
 class ReportFragmentAdmin(admin.ModelAdmin):
@@ -35,7 +35,7 @@ class ReportModelForm(forms.ModelForm):
 
     class Meta:
         model = Report
-        fields = ['headline', 'genre', 'topic', 'tags', 'text', 'media',
+        fields = ['headline', 'genre', 'topic', 'tags', 'text', 'media_original',
                   'media_note', 'created', 'published', 'delivered']
 
 

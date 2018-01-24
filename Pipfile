@@ -18,6 +18,8 @@ django-storages = "*"
 "boto3" = "*"
 "django-sortedm2m" = "*"
 "django-sortedm2m-filter-horizontal-widget" = "*"
+pillow = "*"
+requests = "*"
 
 
 [dev-packages]

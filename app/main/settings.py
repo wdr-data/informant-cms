@@ -150,7 +150,9 @@ if aws_url is not None:
     AWS_STORAGE_BUCKET_NAME = aws_creds.hostname
     AWS_AUTO_CREATE_BUCKET = False
     AWS_QUERYSTRING_AUTH = False
-
+else:
+    MEDIA_URL = '/static/media/'
+    MEDIA_ROOT = os.path.join(STATIC_ROOT, MEDIA_URL[1:])
 
 TAGS_INPUT_MAPPINGS = {
     'cms.ReportTag': {

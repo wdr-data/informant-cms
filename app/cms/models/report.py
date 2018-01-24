@@ -3,14 +3,14 @@ from django.db import models
 
 from .genre import Genre
 from .topic import Topic
-from .attachement import Attachement
+from .attachment import Attachment
 
 
 class ReportTag(models.Model):
     name = models.CharField('Name', max_length=50)
 
 
-class Report(Attachement):
+class Report(Attachment):
     """
     Meldungen sind themenbezogene, in sich abgeschlossene Nachrichten.</p><p>
     Sie können aus mehreren Fragmenten bestehen. Um von einem Fragment zum nächsten zu gelangen,
@@ -64,7 +64,7 @@ class Report(Attachement):
         return reports[offset:count]
 
 
-class ReportFragment(Attachement):
+class ReportFragment(Attachment):
 
     class Meta:
         verbose_name = 'Meldungs-Fragment'
