@@ -5,10 +5,13 @@ from pathlib import Path
 from django.db import models
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.conf import settings
 import requests
-from PIL import Image, ImageFont, ImageDraw
+from requests.exceptions import MissingSchema
+from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageChops
 
 ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / 'assets'
+
 
 class Attachment(models.Model):
     """
@@ -32,25 +35,66 @@ class Attachment(models.Model):
             self.media = self.media_original
             return
 
-        response = requests.get(self.media_original.url)
         try:
-            img = Image.open(BytesIO(response.content)).convert('RGBA')
+            file_content = requests.get(self.media_original.url).content
+        except MissingSchema:
+            with open(Path(settings.MEDIA_ROOT) / str(self.media_original), 'rb') as f:
+                file_content = f.read()
+
+        try:
+            img = Image.open(BytesIO(file_content))
         except:
             self.media = self.media_original
             raise
 
-        draw = ImageDraw.Draw(img)
+        # Create initial image objects
+        orig_mode = img.mode
+        img = img.convert('RGBA')
+        alpha = Image.new('RGBA', img.size, (0, 0, 0, 0))
+        draw = ImageDraw.Draw(alpha)
 
-        fnt = ImageFont.truetype(ASSETS_DIR / 'Open_Sans' / 'OpenSans-Regular.ttf', 15)
+        # Configuration
+        the_text = 'FOTO: ' + self.media_note.upper()
+        fontsize = max(img.size[1] / 40, 13)
+        shadow_radius = fontsize / 3
+        shadow_mult = 3
+        pos = (shadow_radius + 10, shadow_radius + 5)
 
-        draw.text((10, 10), self.media_note, font=fnt, fill=(255, 255, 255, 255))
+        fnt = ImageFont.truetype(
+            str(ASSETS_DIR / 'Open_Sans' / 'OpenSans-SemiBold.ttf'), int(fontsize))
 
+        # Calculate size of text
+        text_size = draw.textsize(the_text, font=fnt)
+
+        # Create new, smaller image to draw the text on
+        txt = Image.new(
+            'RGBA',
+            (text_size[0] + int(shadow_radius) + 20, text_size[1] + int(shadow_radius) + 20),
+            (0, 0, 0, 0))
+
+        # Do the drawing
+        draw = ImageDraw.Draw(txt)
+        draw.text(pos, the_text, font=fnt, fill=(0, 0, 0, 255))
+
+        shadow = txt.filter(ImageFilter.GaussianBlur(radius=shadow_radius))
+        txt = shadow.point(lambda px: min(px * shadow_mult, 255))
+
+        draw = ImageDraw.Draw(txt)
+        draw.text(pos, the_text, font=fnt, fill=(255, 255, 255, 180))
+
+        # Rotate and paste onto original image
+        txt = txt.rotate(90, expand=1)
+        alpha.paste(txt, box=tuple(a - b for a, b in zip(alpha.size, txt.size)))
+        img = Image.alpha_composite(img, alpha)
+
+        # Save result
         bio = BytesIO()
-
-        img.save(bio, 'JPEG')
-
+        bio.name = str(self.media_original)
+        out = img.convert(orig_mode)
+        out.save(bio)
         bio.seek(0)
 
-        path = default_storage.save('', ContentFile(bio, name=self.media_original))
+        path = default_storage.save(
+            str(self.media_original), ContentFile(bio.read(), name=str(self.media_original)))
         self.media = path
 

@@ -1,8 +1,10 @@
 from django.contrib import admin, messages
+import logging
+
+IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
 
 
 class AttachmentAdmin(admin.ModelAdmin):
-
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -14,7 +16,8 @@ class AttachmentAdmin(admin.ModelAdmin):
                 super().save_model(request, obj, form, change)
 
             except:
-                messages.error(request, f'UPDATE_FAILED: {obj.media}')
+                logging.exception('%s', obj.media_original)
+                messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.media_original}')
 
     def save_formset(self, request, form, formset, change):
         super().save_formset(request, form, formset, change)
@@ -27,4 +30,6 @@ class AttachmentAdmin(admin.ModelAdmin):
                     super().save_formset(request, form, formset, change)
 
                 except:
-                    messages.error(request, f'UPDATE_FAILED: {obj.media}')
+                    logging.exception('%s', form_.instance.media_original)
+                    messages.error(request, f'{IMAGE_PROCESSING_FAILED}: '
+                                            f'{form_.instance.media_original}')

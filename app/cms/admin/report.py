@@ -3,6 +3,7 @@ from django import forms
 from tags_input import admin as tags_input_admin
 
 from ..models.report import Report, ReportFragment
+from .attachment import AttachmentAdmin
 
 
 class ReportFragmentModelForm(forms.ModelForm):
@@ -39,7 +40,7 @@ class ReportModelForm(forms.ModelForm):
                   'media_note', 'created', 'published', 'delivered']
 
 
-class ReportAdmin(tags_input_admin.TagsInputAdmin):
+class ReportAdmin(tags_input_admin.TagsInputAdmin, AttachmentAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
     list_filter = ['published']
