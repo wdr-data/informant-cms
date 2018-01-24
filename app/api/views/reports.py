@@ -1,12 +1,20 @@
 from cms.models.report import Report
+from .tags import TagSerializer
+from .genres import GenreSerializer
+from .topics import TopicSerializer
+
 from rest_framework import serializers, viewsets, routers
 from django.conf.urls import url, include
 
 
-class ReportSerializer(serializers.HyperlinkedModelSerializer):
+class ReportSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True, read_only=True)
+    genres = GenreSerializer(many=True, read_only=True, source='genre')
+    topic = TopicSerializer(read_only=True)
+
     class Meta:
         model = Report
-        fields = ('id', 'created', 'genre', 'topic', 'tags', 
+        fields = ('id', 'created', 'genres', 'topic', 'tags',
             'headline', 'text', 'published', 'delivered')
 
 class ReportViewSet(viewsets.ModelViewSet):
