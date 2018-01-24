@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'sortedm2m',
     'sortedm2m_filter_horizontal_widget',
     'tags_input',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -182,3 +183,11 @@ TAGS_INPUT_MAPPINGS = {
     },
 }
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'api.apps.StandardPagination',
+}

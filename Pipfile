@@ -20,6 +20,9 @@ django-storages = "*"
 "django-sortedm2m-filter-horizontal-widget" = "*"
 pillow = "*"
 requests = "*"
+djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
 
 
 [dev-packages]
