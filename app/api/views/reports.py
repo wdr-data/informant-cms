@@ -15,7 +15,7 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ('id', 'created', 'genres', 'topic', 'tags',
-            'headline', 'text', 'published', 'delivered')
+            'headline', 'text', 'media', 'media_original', 'media_note', 'published', 'delivered')
 
 class ReportViewSet(viewsets.ModelViewSet):
     """
