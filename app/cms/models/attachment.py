@@ -97,7 +97,7 @@ class Attachment(models.Model):
         out.save(bio)
         bio.seek(0)
 
-        path = default_storage.save(
-            str(self.media_original), ContentFile(bio.read(), name=str(self.media_original)))
+        new_filename = default_storage.generate_filename(str(self.media_original))
+        path = default_storage.save(new_filename, ContentFile(bio.read(), name=new_filename))
         self.media = path
 

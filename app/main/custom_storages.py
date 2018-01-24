@@ -7,5 +7,5 @@ class S3BotoRandomNameStorage(S3Boto3Storage):
     def generate_filename(self, filename):
         filename = super().generate_filename(filename)
         extension = os.path.splitext(filename)[1]
-        path = os.path.split(filename)[0]
+        path = os.path.dirname(filename)
         return os.path.join(path, "%s%s") % (uuid.uuid4(), extension)
