@@ -13,6 +13,7 @@
     - name: Gather Heroku credential
       command: heroku auth:token
       register: heroku_token
+      when: user_creation.changed
     - name: Store Access Credentials
       heroku_env:
         app: "{{ short_prefix }}-{{ item.item }}"
