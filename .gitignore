@@ -7,3 +7,5 @@ db.sqlite3
 
 # Collected static files
 /app/static
+/app/media
+
