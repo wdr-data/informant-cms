@@ -3,8 +3,7 @@ from .tags import TagSerializer
 from .genres import GenreSerializer
 from .topics import TopicSerializer
 
-from rest_framework import serializers, viewsets, routers
-from django.conf.urls import url, include
+from rest_framework import serializers, viewsets
 
 
 class ReportSerializer(serializers.ModelSerializer):
@@ -24,12 +23,3 @@ class ReportViewSet(viewsets.ModelViewSet):
     """
     queryset = Report.objects.all().order_by('-created')
     serializer_class = ReportSerializer
-
-
-router = routers.DefaultRouter()
-router.register(r'reports', ReportViewSet)
-
-urlpatterns = [
-    url(r'^', include(router.urls)),
-    # path('report/')
-]
