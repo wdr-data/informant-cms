@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0014_auto_20180125_1420'),
+        ('cms', '0013_wiki_wikifragment'),
     ]
 
     operations = [
