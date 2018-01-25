@@ -4,10 +4,6 @@ from django.conf.urls import url, include
 
 router = routers.DefaultRouter()
 router.register(r'reports', reports.ReportViewSet)
-
-urlpatterns = []
-urlpatterns += [url(r'^', include(router.urls))]
-urlpatterns += genres.urlpatterns
-urlpatterns += topics.urlpatterns
-urlpatterns += tags.urlpatterns
-urlpatterns += faqs.urlpatterns
+router.register(r'genres', genres.GenreViewSet)
+router.register(r'tags', tags.TagViewSet)
+router.register(r'topics', topics.TopicViewSet)

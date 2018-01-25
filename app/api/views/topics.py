@@ -1,6 +1,5 @@
 from cms.models.topic import Topic
-from rest_framework import serializers, generics, urlpatterns
-from django.conf.urls import url
+from rest_framework import serializers, viewsets
 
 
 class TopicSerializer(serializers.ModelSerializer):
@@ -9,11 +8,6 @@ class TopicSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class TopicView(generics.RetrieveAPIView):
+class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
-
-
-urlpatterns = urlpatterns.format_suffix_patterns([
-    url(r'topic/(?P<pk>[0-9]+)', TopicView.as_view()),
-])

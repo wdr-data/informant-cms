@@ -18,13 +18,13 @@ from django.conf.urls import url
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from api.urls import urlpatterns
+from api.urls import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^tags_input/', include(('tags_input.urls', 'tags_input'), namespace='tags_input')),
     url(r'^api-docs/', include('rest_framework.urls')),
-    url(r'^api/v1/', include(urlpatterns)),
+    url(r'^api/v1/', include(router.urls)),
 ]
 
 if settings.MEDIA_URL and settings.MEDIA_ROOT:
