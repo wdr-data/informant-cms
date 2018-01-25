@@ -4,6 +4,7 @@ from django.db import models
 from .genre import Genre
 from .topic import Topic
 from .attachment import Attachment
+from .fragment import Fragment
 
 
 class ReportTag(models.Model):
@@ -66,7 +67,7 @@ class Report(Attachment):
         return reports[offset:count]
 
 
-class ReportFragment(Attachment):
+class ReportFragment(Fragment):
 
     class Meta:
         verbose_name = 'Meldungs-Fragment'
@@ -75,8 +76,5 @@ class ReportFragment(Attachment):
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='fragments',
                                related_query_name='fragment')
 
-    question = models.CharField('Frage', max_length=20, null=True, blank=True)
-    text = models.CharField('Text', max_length=640, null=False, blank=False)
-  
     def __str__(self):
-        return '%s - %s' % (self.report.headline, self.question)
+        return f'{self.report.headline} - {self.question}'

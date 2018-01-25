@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from .attachment import Attachment
+from .fragment import Fragment
 
 
 class FAQ(Attachment):
@@ -35,7 +36,7 @@ class FAQ(Attachment):
         super().save(*args, **kwargs)
 
 
-class FAQFragment(Attachment):
+class FAQFragment(Fragment):
 
     class Meta:
         verbose_name = 'FAQ-Fragment'
@@ -43,9 +44,6 @@ class FAQFragment(Attachment):
 
     faq = models.ForeignKey('FAQ', on_delete=models.CASCADE, related_name='fragments',
                             related_query_name='fragment')
-
-    question = models.CharField('Frage', max_length=20, null=True, blank=True)
-    text = models.CharField('Text', max_length=640, null=False, blank=False)
     link_faq = models.ForeignKey('FAQ', on_delete=models.SET_NULL,
                                  related_name='+', related_query_name='+', null=True, blank=True)
 
