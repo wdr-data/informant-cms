@@ -1,10 +1,11 @@
 from distutils.util import strtobool
 
 from cms.models.report import Report, ReportFragment
+
+from ..utils import augment_fragments
 from .tags import TagSerializer
 from .genres import GenreSerializer
 from .topics import TopicSerializer
-from .fragments import ReportFragmentSerializer
 
 from rest_framework import serializers, viewsets
 
@@ -26,19 +27,8 @@ class ReportSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         rep = super().to_representation(obj)
 
-        if not self.with_fragments:
-            return rep
-
-        serializer = ReportFragmentSerializer(many=True, read_only=True)
-        fragments = ReportFragment.objects.filter(report=obj)
-        next_fragments = []
-
-        for fragment in fragments:
-            next_fragments.append(fragment)
-            if fragment.question:
-                break
-
-        rep['fragments'] = serializer.to_representation(next_fragments)
+        if self.with_fragments:
+            rep['fragments'] = augment_fragments(obj.pk)
         return rep
 
 
