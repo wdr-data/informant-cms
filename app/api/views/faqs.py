@@ -17,6 +17,7 @@ class FAQViewSet(viewsets.ModelViewSet):
     """
     queryset = FAQ.objects.all().order_by('id')
     serializer_class = FAQSerializer
+    filter_fields = ('id', 'slug')
 
 
 router = routers.DefaultRouter()

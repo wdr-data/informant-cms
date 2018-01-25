@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'sortedm2m_filter_horizontal_widget',
     'tags_input',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -190,4 +191,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ],
     'DEFAULT_PAGINATION_CLASS': 'api.apps.StandardPagination',
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
 }
