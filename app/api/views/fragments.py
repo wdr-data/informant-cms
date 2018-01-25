@@ -1,3 +1,4 @@
+from cms.models import FAQFragment
 from cms.models import ReportFragment
 
 from distutils.util import strtobool
@@ -49,3 +50,17 @@ class ReportFragmentViewSet(BaseFragmentViewSet):
     serializer_class = ReportFragmentSerializer
     filter_fields = ('report',)
     fragment_group_field = 'report'
+
+
+class FAQFragmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQFragment
+        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_note',
+                  'link_faq', 'faq')
+
+
+class FAQFragmentViewSet(BaseFragmentViewSet):
+    queryset = FAQFragment.objects.all().order_by('id')
+    serializer_class = FAQFragmentSerializer
+    filter_fields = ('faq',)
+    fragment_group_field = 'faq'
