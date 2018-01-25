@@ -34,10 +34,6 @@ class PushAdmin(admin.ModelAdmin):
             kwargs['widget'] = SortedFilteredSelectMultiple()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
-    class Media:
-        js = (
-            'cms/js/script.js',
-        )
 
 # Register your models here.
 admin.site.register(Push, PushAdmin)

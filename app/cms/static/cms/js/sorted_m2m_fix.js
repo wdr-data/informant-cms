@@ -1,6 +1,3 @@
-if (!$) {
-    $ = django.jQuery;
-}
 
 function addEvent(to, type, fn){
     if(document.addEventListener){
