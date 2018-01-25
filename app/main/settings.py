@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'tags_input',
     'rest_framework',
     'django_filters',
+    'tz_detect',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'tz_detect.middleware.TimezoneMiddleware',
 ]
 
 ROOT_URLCONF = 'main.urls'
@@ -193,3 +195,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.apps.StandardPagination',
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
 }
+
+TZ_DETECT_COUNTRIES = ('DE', 'FR', 'GB', 'US', 'CN', 'IN', 'JP', 'BR', 'RU')

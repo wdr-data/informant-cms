@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^tags_input/', include(('tags_input.urls', 'tags_input'), namespace='tags_input')),
     url(r'^api-docs/', include('rest_framework.urls')),
     url(r'^api/v1/', include(router.urls)),
+    url(r'^tz_detect/', include('tz_detect.urls')),
 ]
 
 if settings.MEDIA_URL and settings.MEDIA_ROOT:

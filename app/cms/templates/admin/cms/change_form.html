@@ -22,4 +22,8 @@ django.jQuery(document).ready(function () {
     window.onbeforeunload = unloadPage;
 });
 </script>
+
+{% load tz_detect %}
+{% tz_detect %}
+
 {% endblock %}
