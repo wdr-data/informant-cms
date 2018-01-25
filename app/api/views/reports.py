@@ -23,3 +23,4 @@ class ReportViewSet(viewsets.ModelViewSet):
     """
     queryset = Report.objects.all().order_by('-created')
     serializer_class = ReportSerializer
+    filter_fields = ('genres', 'topic', 'tags')
