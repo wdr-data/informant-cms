@@ -28,7 +28,7 @@ class ReportSerializer(serializers.ModelSerializer):
         rep = super().to_representation(obj)
 
         if self.with_fragments:
-            rep['fragments'] = augment_fragments(obj.pk)
+            rep['next_fragments'] = augment_fragments(obj.pk)
         return rep
 
 
