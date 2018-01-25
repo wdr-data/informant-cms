@@ -1,8 +1,9 @@
-from .views import reports, genres, topics, tags, faqs, pushes, wikis
+from .views import reports, genres, topics, tags, faqs, pushes, fragments, wikis
 from rest_framework import routers
 from django.conf.urls import url, include
 
 router = routers.DefaultRouter()
+router.register(r'reports/fragments', fragments.ReportFragmentViewSet)
 router.register(r'reports', reports.ReportViewSet)
 router.register(r'genres', genres.GenreViewSet)
 router.register(r'tags', tags.TagViewSet)
