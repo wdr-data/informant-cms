@@ -76,5 +76,8 @@ class ReportFragment(Fragment):
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='fragments',
                                related_query_name='fragment')
 
+    link_wiki = models.ForeignKey('Wiki', models.SET_NULL, verbose_name='Einzelheit',
+                                  related_name='+', related_query_name='+', null=True, blank=True)
+
     def __str__(self):
         return f'{self.report.headline} - {self.question}'

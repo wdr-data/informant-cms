@@ -12,10 +12,10 @@ class ReportFragmentModelForm(forms.ModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = ['question', 'text', 'media', 'media_original', 'media_note']
+        fields = ['question', 'text', 'media', 'media_original', 'media_note', 'link_wiki']
 
 
-class ReportFragmentAdminInline(DisplayImageWidgetTabularInline):
+class ReportFragmentAdminInline(DisplayImageWidgetStackedInline):
     image_display_fields = ['media']
     model = ReportFragment
     form = ReportFragmentModelForm
