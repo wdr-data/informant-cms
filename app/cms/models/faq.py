@@ -48,4 +48,4 @@ class FAQFragment(Fragment):
                                  related_name='+', related_query_name='+', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.faq.headline} - {self.question}'
+        return f'{self.faq.name} - {self.question}'
