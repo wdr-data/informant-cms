@@ -15,10 +15,6 @@ class ReportFragmentModelForm(forms.ModelForm):
         fields = ['question', 'text', 'media', 'media_original', 'media_note']
 
 
-class ReportFragmentAdmin(admin.ModelAdmin):
-    form = ReportFragmentModelForm
-
-
 class ReportFragmentAdminInline(DisplayImageWidgetTabularInline):
     image_display_fields = ['media']
     model = ReportFragment
