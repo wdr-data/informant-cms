@@ -1,5 +1,4 @@
-from rest_framework import serializers, viewsets, routers
-from django.conf.urls import url, include
+from rest_framework import serializers, viewsets
 
 from cms.models.faq import FAQ
 
@@ -18,11 +17,3 @@ class FAQViewSet(viewsets.ModelViewSet):
     queryset = FAQ.objects.all().order_by('id')
     serializer_class = FAQSerializer
     filter_fields = ('id', 'slug')
-
-
-router = routers.DefaultRouter()
-router.register(r'faqs', FAQViewSet)
-
-urlpatterns = [
-    url(r'^', include(router.urls)),
-]
