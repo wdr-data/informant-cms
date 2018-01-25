@@ -1,0 +1,49 @@
+from django.contrib import admin
+from django import forms
+
+from ..models.faq import FAQ, FAQFragment
+from .attachment import AttachmentAdmin, DisplayImageWidgetTabularInline, DisplayImageWidgetStackedInline
+
+
+class FAQFragmentModelForm(forms.ModelForm):
+    text = forms.CharField(
+        required=True, label="Text", widget=forms.Textarea, max_length=640)
+
+    class Meta:
+        model = FAQFragment
+        fields = ['question', 'text', 'media', 'media_original',
+                  'media_note', 'link_faq']
+
+
+class FAQFragmentAdminInline(DisplayImageWidgetStackedInline):
+    image_display_fields = ['media']
+    model = FAQFragment
+    form = FAQFragmentModelForm
+
+    fk_name = 'faq'
+    extra = 1
+
+
+class FAQModelForm(forms.ModelForm):
+    text = forms.CharField(
+        required=True, label="Intro-Text", widget=forms.Textarea, max_length=640)
+
+    slug = forms.CharField(
+        label='Slug', help_text="Wird automatisch ausgefüllt", disabled=True,
+        required=False)
+
+    class Meta:
+        model = FAQ
+        fields = ['name', 'slug', 'text', 'media', 'media_original',
+                  'media_note']
+
+
+class FAQAdmin(AttachmentAdmin):
+    form = FAQModelForm
+    search_fields = ['name', 'slug']
+    list_display = ('name', 'slug')
+    inlines = (FAQFragmentAdminInline, )
+
+
+# Register your models here.
+admin.site.register(FAQ, FAQAdmin)

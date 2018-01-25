@@ -3,3 +3,4 @@ from .push import *
 from .genre import *
 from .topic import *
 from .attachment import *
+from .faq import *
