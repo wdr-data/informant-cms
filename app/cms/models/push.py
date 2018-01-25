@@ -10,6 +10,7 @@ def default_pub_date():
     default = datetime(now.year, now.month, now.day, hour=18, minute=00)
     return default
 
+
 class Push(models.Model):
     """
     Pushes fassen Meldungen zusammen. Diese Meldungen werden zum jeweils festgelegten Zeitpunkt

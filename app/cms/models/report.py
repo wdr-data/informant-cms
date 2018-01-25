@@ -24,7 +24,7 @@ class Report(Attachment):
         ordering = ['-created']
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
-    genre = models.ManyToManyField(Genre, related_name='reports', verbose_name='Genre')
+    genres = models.ManyToManyField(Genre, related_name='reports', verbose_name='Genre')
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True,
                               related_name='reports', verbose_name='Thema')
     tags = models.ManyToManyField(ReportTag, related_name='items')

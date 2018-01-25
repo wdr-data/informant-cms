@@ -39,7 +39,7 @@ class ReportModelForm(forms.ModelForm):
 
     class Meta:
         model = Report
-        fields = ['headline', 'genre', 'topic', 'tags', 'text', 'media', 'media_original',
+        fields = ['headline', "genres", 'topic', 'tags', 'text', 'media', 'media_original',
                   'media_note', 'created', 'published', 'delivered']
 
 

@@ -9,13 +9,13 @@ from django.conf.urls import url, include
 
 class ReportSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
-    genres = GenreSerializer(many=True, read_only=True, source='genre')
+    genres = GenreSerializer(many=True, read_only=True)
     topic = TopicSerializer(read_only=True)
 
     class Meta:
         model = Report
-        fields = ('id', 'created', 'genres', 'topic', 'tags',
-            'headline', 'text', 'media', 'media_original', 'media_note', 'published', 'delivered')
+        fields = ('id', 'created', 'genres', 'topic', 'tags', 'headline', 'text', 'media',
+                  'media_original', 'media_note', 'published', 'delivered')
 
 
 class ReportViewSet(viewsets.ModelViewSet):
