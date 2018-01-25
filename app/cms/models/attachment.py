@@ -55,12 +55,11 @@ class Attachment(models.Model):
 
         # Configuration
         the_text = 'FOTO: ' + self.media_note.upper()
-        fontsize = max(img.size[1] / 40, 13)
+        fontsize = max((img.size[0] + img.size[1]) / 2 / 50, 10)
         shadow_radius = fontsize / 3
-        shadow_mult = 2.5
+        shadow_mult = 0.75
         text_alpha = 0.7
-        padding = (30, 20)
-
+        padding = tuple((int(shadow_radius * 2.5), int(shadow_radius * 3)))
         position = tuple(int(shadow_radius + p) for p in padding)
 
         fnt = ImageFont.truetype(
@@ -86,7 +85,7 @@ class Attachment(models.Model):
         draw.text(position, the_text, font=fnt, fill=(255, 255, 255, int(255 * text_alpha)))
 
         # Rotate and paste onto original image
-        txt = txt.rotate(90, expand=1)
+        txt = txt.rotate(90, expand=1, resample=Image.LANCZOS)
         alpha.paste(txt, box=tuple(a - b for a, b in zip(alpha.size, txt.size)))
         img = Image.alpha_composite(img, alpha)
 
