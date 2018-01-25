@@ -23,6 +23,7 @@ requests = "*"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
+django-tz-detect = "*"
 
 
 [dev-packages]

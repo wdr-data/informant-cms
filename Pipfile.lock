@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7929c36cb20d665b50064e0e77f87d2c46b5155a6088f590fcb38a42d24d4898"
+            "sha256": "7e57895ba35c7613b3e91a1fe510c5b550c3b3b9e7773e89ff2d91bff4263665"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -100,6 +100,13 @@
         "django-tags-input": {
             "git": "https://github.com/wdr-data/django-tags-input.git",
             "ref": "v3.2.8"
+        },
+        "django-tz-detect": {
+            "hashes": [
+                "sha256:b49b016bebf0504f4b17a04d723a5aa81bbb0208823807a5d29732ee9d1ea426",
+                "sha256:1e69c76fcf811c967caafde64e2030137990dbac86af7bb84559c7bcc9d81764"
+            ],
+            "version": "==0.2.9"
         },
         "djangorestframework": {
             "hashes": [
