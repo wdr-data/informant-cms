@@ -1,19 +1,11 @@
 from django.utils import timezone
 from django.db import models
 
-from .genre import Genre
-from .topic import Topic
-from .attachment import Attachment
+from .newsbase import NewsBaseModel
 from .fragment import Fragment
 
 
-class ReportTag(models.Model):
-    name = models.CharField('Name', max_length=50)
-
-    def __str__(self):
-        return self.name
-
-class Report(Attachment):
+class Report(NewsBaseModel):
     """
     Meldungen sind themenbezogene, in sich abgeschlossene Nachrichten.</p><p>
     Sie können aus mehreren Fragmenten bestehen. Um von einem Fragment zum nächsten zu gelangen,
@@ -27,11 +19,6 @@ class Report(Attachment):
         ordering = ['-created']
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
-    genres = models.ManyToManyField(Genre, related_name='reports', verbose_name='Genre')
-    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True,
-                              related_name='reports', verbose_name='Thema')
-    tags = models.ManyToManyField(ReportTag, verbose_name='Tags', related_name='items', blank=True)
-    text = models.CharField('Intro-Text', max_length=640, null=False)
 
     created = models.DateTimeField(
         'Erstellt',

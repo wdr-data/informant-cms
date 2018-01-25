@@ -3,10 +3,7 @@ from datetime import timedelta
 from django.db import models
 from django.utils import timezone
 
-from .attachment import Attachment
-from .genre import Genre
-from .topic import Topic
-from .report import ReportTag
+from .newsbase import NewsBaseModel
 from .fragment import Fragment
 
 
@@ -14,7 +11,7 @@ def default_follow_up_at():
     return timezone.now() + timedelta(weeks=4)
 
 
-class Wiki(Attachment):
+class Wiki(NewsBaseModel):
     """
     Wikis sind Nachschlagewerke für weiterführende Erklärungen.
     """
@@ -27,12 +24,6 @@ class Wiki(Attachment):
 
     follow_up_at = models.DateTimeField('Wiedervorlage',
                                         default=default_follow_up_at)
-
-    genres = models.ManyToManyField(Genre, related_name='wikis', verbose_name='Genre')
-    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True,
-                              related_name='wikis', verbose_name='Thema')
-    tags = models.ManyToManyField(ReportTag, verbose_name='Tags', related_name='wikis', blank=True)
-    text = models.CharField('Intro-Text', max_length=640, null=False)
 
     def __str__(self):
         return f'{self.name}'

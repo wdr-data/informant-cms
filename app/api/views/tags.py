@@ -1,4 +1,4 @@
-from cms.models.report import ReportTag
+from cms.models.tag import ReportTag
 from rest_framework import serializers, viewsets
 
 
