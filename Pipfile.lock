@@ -1,18 +1,18 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a48699c7e89df3e8f73212d07e7f8cdc0e5a23439ee8fed6b7a7f4cce226d45e"
+            "sha256": "e3227a21378b404d448364dad14318920e8e76531c77794c968882ddfda7158d"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.6.3",
+            "implementation_version": "3.6.4",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
-            "platform_release": "4.4.0-43-Microsoft",
+            "platform_release": "4.14.14-200.fc26.x86_64",
             "platform_system": "Linux",
-            "platform_version": "#1-Microsoft Wed Dec 31 14:42:53 PST 2014",
-            "python_full_version": "3.6.3",
+            "platform_version": "#1 SMP Fri Jan 19 13:27:06 UTC 2018",
+            "python_full_version": "3.6.4",
             "python_version": "3.6",
             "sys_platform": "linux"
         },
@@ -99,7 +99,7 @@
         },
         "django-tags-input": {
             "git": "https://github.com/wdr-data/django-tags-input.git",
-            "ref": "v3.2.4"
+            "ref": "v3.2.6"
         },
         "djangorestframework": {
             "hashes": [
@@ -417,7 +417,6 @@
                 "sha256:87f837459c3c78d75cb4f5aadf08a7104db15e8c7618a5c732e60f252279c7a6",
                 "sha256:df9083a992b17a28cd4251a3f5c879e0198bb26c9e808c4647e0a18739f1d11d"
             ],
-            "markers": "platform_python_implementation != 'PyPy'",
             "version": "==1.11.4"
         },
         "chardet": {
