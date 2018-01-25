@@ -24,6 +24,8 @@ class ReportFragmentAdminInline(DisplayImageWidgetTabularInline):
     model = ReportFragment
     form = ReportFragmentModelForm
 
+    extra = 1
+
 
 class ReportModelForm(forms.ModelForm):
     text = forms.CharField(
