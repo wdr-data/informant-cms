@@ -46,7 +46,7 @@ class WikiFragment(Fragment):
 
     wiki = models.ForeignKey('Wiki', on_delete=models.CASCADE, related_name='fragments',
                              related_query_name='fragment')
-    link_wiki = models.ForeignKey('Wiki', on_delete=models.SET_NULL,
+    link_wiki = models.ForeignKey('Wiki', models.SET_NULL, verbose_name='Link Einzelheit',
                                   related_name='+', related_query_name='+', null=True, blank=True)
 
     def __str__(self):

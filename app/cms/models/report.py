@@ -30,7 +30,7 @@ class Report(Attachment):
     genres = models.ManyToManyField(Genre, related_name='reports', verbose_name='Genre')
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True,
                               related_name='reports', verbose_name='Thema')
-    tags = models.ManyToManyField(ReportTag, related_name='items')
+    tags = models.ManyToManyField(ReportTag, verbose_name='Tags', related_name='items')
     text = models.CharField('Intro-Text', max_length=640, null=False)
 
     created = models.DateTimeField(
