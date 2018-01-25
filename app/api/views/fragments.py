@@ -1,5 +1,6 @@
 from cms.models import FAQFragment
 from cms.models import ReportFragment
+from cms.models import WikiFragment
 
 from distutils.util import strtobool
 from rest_framework import serializers, viewsets
@@ -64,3 +65,17 @@ class FAQFragmentViewSet(BaseFragmentViewSet):
     serializer_class = FAQFragmentSerializer
     filter_fields = ('faq',)
     fragment_group_field = 'faq'
+
+
+class WikiFragmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WikiFragment
+        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_note',
+                  'link_wiki', 'wiki')
+
+
+class WikiFragmentViewSet(BaseFragmentViewSet):
+    queryset = WikiFragment.objects.all().order_by('id')
+    serializer_class = WikiFragmentSerializer
+    filter_fields = ('wiki',)
+    fragment_group_field = 'wiki'
