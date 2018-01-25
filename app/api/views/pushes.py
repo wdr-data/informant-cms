@@ -6,7 +6,7 @@ class PushSerializer(serializers.ModelSerializer):
   reports = ReportSerializer(many=True, read_only=True)
   class Meta:
     model = Push
-    fields = ('id', 'pub_date', 'pusblished', 'delivered',
+    fields = ('id', 'pub_date', 'published', 'delivered',
               'breaking', 'headline', 'intro', 'reports', 'outro'
              )
 
