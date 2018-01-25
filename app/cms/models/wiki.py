@@ -43,6 +43,7 @@ class WikiFragment(Fragment):
     class Meta:
         verbose_name = 'Einzelheiten-Fragment'
         verbose_name_plural = 'Einzelheiten-Fragmente'
+        ordering = ('id', )
 
     wiki = models.ForeignKey('Wiki', on_delete=models.CASCADE, related_name='fragments',
                              related_query_name='fragment')

@@ -41,6 +41,7 @@ class FAQFragment(Fragment):
     class Meta:
         verbose_name = 'FAQ-Fragment'
         verbose_name_plural = 'FAQ-Fragmente'
+        ordering = ('id', )
 
     faq = models.ForeignKey('FAQ', on_delete=models.CASCADE, related_name='fragments',
                             related_query_name='fragment')

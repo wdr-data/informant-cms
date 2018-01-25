@@ -72,6 +72,7 @@ class ReportFragment(Fragment):
     class Meta:
         verbose_name = 'Meldungs-Fragment'
         verbose_name_plural = 'Meldungs-Fragmente'
+        ordering = ('id', )
 
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='fragments',
                                related_query_name='fragment')
