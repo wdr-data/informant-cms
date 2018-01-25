@@ -17,12 +17,14 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = ('id', 'created', 'genres', 'topic', 'tags',
             'headline', 'text', 'media', 'media_original', 'media_note', 'published', 'delivered')
 
+
 class ReportViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
     queryset = Report.objects.all().order_by('-created')
     serializer_class = ReportSerializer
+
 
 router = routers.DefaultRouter()
 router.register(r'reports', ReportViewSet)

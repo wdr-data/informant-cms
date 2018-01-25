@@ -8,9 +8,11 @@ class TagSerializer(serializers.ModelSerializer):
         model = ReportTag
         fields = ('id', 'name')
 
+
 class TagView(generics.RetrieveAPIView):
     queryset = ReportTag.objects.all()
     serializer_class = TagSerializer
+
 
 urlpatterns = urlpatterns.format_suffix_patterns([
     url(r'tag/(?P<pk>[0-9]+)', TagView.as_view()),
