@@ -4,3 +4,4 @@ from .topic import *
 from .push import *
 from .attachment import *
 from .faq import *
+from .wiki import *
