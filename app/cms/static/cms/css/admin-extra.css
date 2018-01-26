@@ -1,6 +1,19 @@
 
-@media screen {
+div.maxlength {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+@media (min-width: 767px) {
     div.maxlength {
+        padding-top: 8px;
         margin-left: 170px;
+    }
+}
+
+@media (min-width: 1025px) {
+    div.maxlength {
+        padding-left: 8px;
+        padding-top: 6px;
     }
 }
