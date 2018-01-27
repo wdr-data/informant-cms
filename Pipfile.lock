@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7e57895ba35c7613b3e91a1fe510c5b550c3b3b9e7773e89ff2d91bff4263665"
+            "sha256": "3e24e8e139ff302f0be6fe79b10da1ac8bc3c366d8db9b8110c5102b2bac8242"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -31,17 +31,17 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:24f8f919126b8a55ef3be6729243f71ffe4b927408e4a1be4e64671cdb011409",
-                "sha256:06614d6111c0bcc7e76ef699e4caec0de87217180486e43ec2c353d6f01a409d"
+                "sha256:49bda3ac6e69c2d0a34c37fc4ec47efd73e5f5cf86e34524b1918857aa74d797",
+                "sha256:5430b5cd532fe56ccc9eaf1ed433ac74805811b931ae1e44eb896af98a1297f0"
             ],
-            "version": "==1.5.20"
+            "version": "==1.5.22"
         },
         "botocore": {
             "hashes": [
-                "sha256:628994a88d09a1fe7d96e0c4b786302463bdfaff9f829d4a72ebe8d02e8160ba",
-                "sha256:b7c33d79fe4c6b8d15f4191aa6e60e3ac0f290b3ce3a8b4d831f79eddbca7115"
+                "sha256:a91430f0bfbf7c13edc474c3f0d46449108aaebcd6d8e82a5bf9aebe17b42258",
+                "sha256:b2c9e0fd6d14910f759a33c19f8315dddedbb3c5569472b7be7ceed4f001a675"
             ],
-            "version": "==1.8.34"
+            "version": "==1.8.36"
         },
         "certifi": {
             "hashes": [
@@ -98,8 +98,9 @@
             "version": "==1.6.5"
         },
         "django-tags-input": {
+            "editable": true,
             "git": "https://github.com/wdr-data/django-tags-input.git",
-            "ref": "v3.2.8"
+            "ref": "453ae779286f82247f9fecb97ca8ebabd7b8aa71"
         },
         "django-tz-detect": {
             "hashes": [
