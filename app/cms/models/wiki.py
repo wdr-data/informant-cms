@@ -16,14 +16,14 @@ def default_follow_up_at():
 
 class Wiki(Attachment):
     """
-    Einzelheiten erklären Sachverhalte einer Meldung im Detail.
+    Wikis sind Nachschlagewerke für weiterführende Erklärungen.
     """
 
     class Meta:
-        verbose_name = 'Einzelheit'
-        verbose_name_plural = 'Einzelheiten'
+        verbose_name = 'Wiki'
+        verbose_name_plural = 'Wikis'
 
-    name = models.CharField('Einzelheit', max_length=200, null=False)
+    name = models.CharField('Titel', max_length=200, null=False)
 
     follow_up_at = models.DateTimeField('Wiedervorlage',
                                         default=default_follow_up_at)
@@ -41,8 +41,8 @@ class Wiki(Attachment):
 class WikiFragment(Fragment):
 
     class Meta:
-        verbose_name = 'Einzelheiten-Fragment'
-        verbose_name_plural = 'Einzelheiten-Fragmente'
+        verbose_name = 'Wiki-Fragment'
+        verbose_name_plural = 'Wiki-Fragmente'
         ordering = ('id', )
 
     wiki = models.ForeignKey('Wiki', on_delete=models.CASCADE, related_name='fragments',
