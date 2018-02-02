@@ -9,6 +9,11 @@ div.maxlength {
         padding-top: 8px;
         margin-left: 170px;
     }
+
+    /* TabularInline */
+    tr > td > div.maxlength {
+        margin-left: 0;
+    }
 }
 
 @media (min-width: 1025px) {
