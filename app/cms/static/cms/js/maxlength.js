@@ -4,9 +4,11 @@ const gen_maxlength = function () {
     $("textarea").maxlength();
 };
 
-gen_maxlength();
 
-$(".add-row > a").click(function() {
-    $(".maxlength").remove();
+$("document").ready(function () {
     gen_maxlength();
+    $(".add-row > a").click(function () {
+        $(".maxlength").remove();
+        gen_maxlength();
+    });
 });
