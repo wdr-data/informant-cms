@@ -1,4 +1,4 @@
-from .views import reports, genres, topics, tags, faqs, pushes, fragments, wikis
+from .views import reports, genres, topics, tags, faqs, pushes, fragments, wikis, subscriptions
 from rest_framework import routers
 from django.conf.urls import url, include
 
@@ -13,3 +13,4 @@ router.register(r'faqs', faqs.FAQViewSet)
 router.register(r'pushes', pushes.PushViewSet)
 router.register(r'wikis/fragments', fragments.WikiFragmentViewSet)
 router.register(r'wikis', wikis.WikiViewSet)
+router.register(r'subscriptions', subscriptions.SubscriptionViewSet)
