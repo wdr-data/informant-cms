@@ -1,16 +1,17 @@
-from rest_framework import serializers, viewsets
-
 from cms.models.faq import FAQ
+from .fragments import ModelSerializerWithFragments, FAQFragmentSerializer, \
+    ModelViewSetWithFragments
 
 
-class FAQSerializer(serializers.ModelSerializer):
+class FAQSerializer(ModelSerializerWithFragments):
+    fragment_serializer_class = FAQFragmentSerializer
 
     class Meta:
         model = FAQ
         fields = ('id', 'name', 'slug', 'text', 'media', 'media_original', 'media_note')
 
 
-class FAQViewSet(viewsets.ModelViewSet):
+class FAQViewSet(ModelViewSetWithFragments):
     """
     API endpoint that allows users to be viewed or edited.
     """
