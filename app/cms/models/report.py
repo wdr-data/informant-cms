@@ -47,7 +47,8 @@ class Report(Attachment):
         'Versendet', null=False, default=False)
 
     def __str__(self):
-        return '%s - %s' % (self.created.strftime('%d.%m.%Y'), self.headline)
+        return f'{self.created.strftime("%d.%m.%Y")}- {"✅" if self.published else "🚫"}-' \
+               f' {self.headline}'
 
     @classmethod
     def last(cls, *, count=1, offset=0, only_published=True, delivered=False, by_date=True):
