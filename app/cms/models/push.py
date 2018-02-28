@@ -4,6 +4,8 @@ from django.db import models
 from datetime import datetime
 from sortedm2m.fields import SortedManyToManyField
 
+from .attachment import Attachment
+
 
 def default_pub_date():
     now = timezone.now()
@@ -11,7 +13,7 @@ def default_pub_date():
     return default
 
 
-class Push(models.Model):
+class Push(Attachment):
     """
     Pushes fassen Meldungen zusammen. Diese Meldungen werden zum jeweils festgelegten Zeitpunkt
     an alle Abonnenten versandt.

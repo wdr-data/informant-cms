@@ -3,6 +3,7 @@ from django import forms
 from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
 
 from ..models.push import Push
+from .attachment import AttachmentAdmin, DisplayImageWidgetTabularInline, DisplayImageWidgetStackedInline
 
 
 class PushModelForm(forms.ModelForm):
@@ -18,10 +19,11 @@ class PushModelForm(forms.ModelForm):
     class Meta:
         model = Push
         fields = ('pub_date', 'headline', 'intro', 'reports',
-                  'outro', 'published', 'breaking', 'delivered')
+                  'outro', 'media', 'media_original', 'media_note',
+                  'published', 'breaking', 'delivered')
 
 
-class PushAdmin(admin.ModelAdmin):
+class PushAdmin(AttachmentAdmin):
     form = PushModelForm
     date_hierarchy = 'pub_date'
     list_filter = ['published']
