@@ -17,7 +17,8 @@ class PushModelForm(forms.ModelForm):
 
     class Meta:
         model = Push
-        fields = '__all__'
+        fields = ('pub_date', 'headline', 'intro', 'reports',
+                  'outro', 'published', 'breaking', 'delivered')
 
 
 class PushAdmin(admin.ModelAdmin):
