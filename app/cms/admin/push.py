@@ -18,17 +18,17 @@ class PushModelForm(forms.ModelForm):
 
     class Meta:
         model = Push
-        fields = ('pub_date', 'headline', 'intro', 'reports',
+        fields = ('pub_date', 'timing', 'headline', 'intro', 'reports',
                   'outro', 'media', 'media_original', 'media_note',
-                  'published', 'breaking', 'delivered')
+                  'published', 'delivered')
 
 
 class PushAdmin(AttachmentAdmin):
     form = PushModelForm
     date_hierarchy = 'pub_date'
-    list_filter = ['published']
+    list_filter = ['published', 'timing']
     search_fields = ['headline']
-    list_display = ('published', 'pub_date', 'headline', 'breaking', 'delivered')
+    list_display = ('published', 'pub_date', 'timing', 'headline', 'delivered')
     list_display_links = ('pub_date', )
     ordering = ('-pub_date',)
 
