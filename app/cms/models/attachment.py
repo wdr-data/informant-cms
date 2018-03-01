@@ -37,6 +37,10 @@ class Attachment(models.Model):
             with open(Path(settings.MEDIA_ROOT) / str(self.media_original), 'rb') as f:
                 file_content = f.read()
 
+        if str(self.media_original).lower().endswith('.gif'):
+            self.media = self.media_original
+            return
+
         try:
             img = Image.open(BytesIO(file_content))
         except:
