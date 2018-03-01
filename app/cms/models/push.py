@@ -1,16 +1,10 @@
+from enum import Enum
+
 from django.db import models
-from django.utils import timezone
-from django.db import models
-from datetime import datetime
+from datetime import date
 from sortedm2m.fields import SortedManyToManyField
 
 from .attachment import Attachment
-
-
-def default_pub_date():
-    now = timezone.now()
-    default = datetime(now.year, now.month, now.day, hour=18, minute=00)
-    return default
 
 
 class Push(Attachment):
@@ -23,19 +17,28 @@ class Push(Attachment):
         verbose_name = 'Push'
         verbose_name_plural = 'Pushes'
 
-    pub_date = models.DateTimeField(
-        'Push Zeitpunkt',
-        default=default_pub_date)
+    class Timing(Enum):
+        MORNING = 'morning'
+        EVENING = 'evening'
+        BREAKING = 'breaking'
+
+    pub_date = models.DateField(
+        'Push Datum',
+        default=date.today)
+
+    timing = models.CharField(
+        'Zeitpunkt', null=False, blank=False, max_length=20,
+        choices=[(Timing.MORNING.value, '🌇 Morgen'),
+                 (Timing.EVENING.value, '🌆 Abend'),
+                 (Timing.BREAKING.value, '🚨 Breaking')],
+        help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist der Push freigegeben,'
+                  ' so wird der Push mit dem Sichern SOFORT als Breaking-Push gesendet!',
+        default=Timing.MORNING.value)
 
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
         help_text='Solange dieser Haken nicht gesetzt ist, wird dieser Push nicht versendet, '
                   'auch wenn der konfigurierte Zeitpunkt erreicht wird.')
-
-    breaking = models.BooleanField(
-        'Breaking', null=False, default=False,
-        help_text='Wird dieser Haken gesetzt UND ist der Push freigegeben,'
-                  ' so wird der Push mit dem sichern SOFORT als Breaking-Push gesendet!')
 
     headline = models.CharField('Arbeitstitel', max_length=200, null=False,
                                 help_text='Dieser Titel wird nicht ausgespielt')
@@ -44,8 +47,6 @@ class Push(Attachment):
     outro = models.CharField('Outro-Text', max_length=640, null=False, blank=True)
 
     reports = SortedManyToManyField('Report', related_name='pushes', verbose_name='Meldungen')
-
-
 
     delivered = models.BooleanField('Versendet', null=False, default=False)
 
