@@ -25,6 +25,6 @@ class ReportViewSet(ModelViewSetWithFragments):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Report.objects.all().order_by('-created')
+    queryset = Report.objects.filter(published=True).order_by('-created')
     serializer_class = ReportSerializer
     filter_fields = ('genres', 'topic', 'tags')
