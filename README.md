@@ -1,6 +1,6 @@
-# TIM - The infos maschine (CMS)
+# 1LIVE Informant (CMS)
 
-Hier wird ein CMS für den 1LIVE Infosbot entwickelt.
+CMS für den 1LIVE Infosbot: Der [**Informant**](https://github.com/wdr-data/informant-bot).
 
 ## Getting started
 
