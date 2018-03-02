@@ -1,9 +1,14 @@
-from django.contrib import admin
+import os
+
+from django.contrib import admin, messages
 from django import forms
 from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
+import requests
 
 from ..models.push import Push
-from .attachment import AttachmentAdmin, DisplayImageWidgetTabularInline, DisplayImageWidgetStackedInline
+from .attachment import AttachmentAdmin
+
+PUSH_TRIGGER_URL = os.environ['PUSH_TRIGGER_URL']
 
 
 class PushModelForm(forms.ModelForm):
@@ -36,6 +41,32 @@ class PushAdmin(AttachmentAdmin):
         if db_field.name in ('reports', ):
             kwargs['widget'] = SortedFilteredSelectMultiple()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        try:
+            if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
+                r = requests.get(
+                    url=PUSH_TRIGGER_URL,
+                    params={'timing': Push.Timing.BREAKING.value}
+                )
+
+                result = r.json()
+
+                if result.get('success', False):
+                    obj.delivered = True
+                    form.changed_data = ['delivered']
+                    super().save_model(request, obj, form, change)
+
+                    messages.success(request, result.get('message', 'Push wurde gesendet'))
+
+                else:
+                    messages.error(
+                        request, result.get('message', 'Push konnte nicht gesendet werden'))
+
+        except Exception as e:
+            messages.error(request, str(e))
 
 
 # Register your models here.
