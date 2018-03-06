@@ -23,8 +23,8 @@
       "description": "Initial password for the superuser",
       "value": ""
     },
-    "PUSH_TRIGGER_URL": {
-      "description": "URL to the AWS Lambda endpoint of the 'tim-bot' to trigger breaking pushes, should end in '/push'"
+    "BOT_SERVICE_ENDPOINT": {
+      "description": "URL to the AWS Lambda service endpoint of the 'tim-bot' cloud formation"
     }
   },
   "addons": [
