@@ -1,4 +1,5 @@
 import os
+from posixpath import join as urljoin
 
 from django.contrib import admin, messages
 from django import forms
@@ -8,7 +9,7 @@ import requests
 from ..models.push import Push
 from .attachment import AttachmentAdmin
 
-PUSH_TRIGGER_URL = os.environ['PUSH_TRIGGER_URL']
+PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
 
 
 class PushModelForm(forms.ModelForm):

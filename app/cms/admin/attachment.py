@@ -1,9 +1,13 @@
 import logging
+import os
+import requests
+from posixpath import join as urljoin
 
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
 
+ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
 IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
 
 
@@ -62,6 +66,21 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                 logging.exception('%s', obj.media_original)
                 messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.media_original}')
 
+            if obj.media:
+                r = requests.post(
+                    ATTACHMENT_TRIGGER_URL,
+                    json={'url': obj.media.url}
+                )
+
+                if r.status_code == 200:
+                    messages.success(
+                        request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
+
+                else:
+                    messages.warning(
+                        request,
+                        f'Anhang {obj.media_original} konnte nicht zu Facebook hochgeladen werden')
+
     def save_formset(self, request, form, formset, change):
         super().save_formset(request, form, formset, change)
 
@@ -76,3 +95,20 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                     logging.exception('%s', form_.instance.media_original)
                     messages.error(request, f'{IMAGE_PROCESSING_FAILED}: '
                                             f'{form_.instance.media_original}')
+
+            if form_.instance.media:
+                r = requests.post(
+                    ATTACHMENT_TRIGGER_URL,
+                    json={'url': form_.instance.media.url}
+                )
+
+                if r.status_code == 200:
+                    messages.success(
+                        request,
+                        f'Anhang {form_.instance.media_original} wurde zu Facebook hochgeladen 👌')
+
+                else:
+                    messages.warning(
+                        request,
+                        f'Anhang {form_.instance.media_original} konnte nicht zu Facebook '
+                        f'hochgeladen werden')
