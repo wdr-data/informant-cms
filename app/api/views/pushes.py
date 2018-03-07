@@ -23,6 +23,6 @@ class PushSerializer(serializers.ModelSerializer):
 
 
 class PushViewSet(viewsets.ModelViewSet):
-    queryset = Push.objects.filter(published=True).order_by('-pub_date')
+    queryset = Push.objects.filter(published=True).order_by('-pub_date', 'timing')
     serializer_class = PushSerializer
     filter_fields = ('published', 'delivered', 'pub_date', 'timing')
