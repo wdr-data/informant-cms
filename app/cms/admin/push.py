@@ -51,9 +51,9 @@ class PushAdmin(AttachmentAdmin):
             if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
                 sleep(5)  # This seems to be necessary so the push is available in the API
 
-                r = requests.get(
+                r = requests.post(
                     url=PUSH_TRIGGER_URL,
-                    params={'timing': Push.Timing.BREAKING.value}
+                    json={'timing': Push.Timing.BREAKING.value}
                 )
 
                 if r.status_code == 200:
