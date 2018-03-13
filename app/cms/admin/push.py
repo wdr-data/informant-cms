@@ -1,5 +1,6 @@
 import os
 from posixpath import join as urljoin
+from time import sleep
 
 from django.contrib import admin, messages
 from django import forms
@@ -48,23 +49,18 @@ class PushAdmin(AttachmentAdmin):
 
         try:
             if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
+                sleep(5)  # This seems to be necessary so the push is available in the API
+
                 r = requests.get(
                     url=PUSH_TRIGGER_URL,
                     params={'timing': Push.Timing.BREAKING.value}
                 )
 
-                result = r.json()
-
-                if result.get('success', False):
-                    obj.delivered = True
-                    form.changed_data = ['delivered']
-                    super().save_model(request, obj, form, change)
-
-                    messages.success(request, result.get('message', 'Push wurde gesendet'))
+                if r.status_code == 200:
+                    messages.success(request, 'Push wird jetzt gesendet...')
 
                 else:
-                    messages.error(
-                        request, result.get('message', 'Push konnte nicht gesendet werden'))
+                    messages.error(request, 'Push konnte nicht gesendet werden!')
 
         except Exception as e:
             messages.error(request, str(e))
