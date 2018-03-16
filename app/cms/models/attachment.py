@@ -1,3 +1,5 @@
+import logging
+
 from io import BytesIO
 from os.path import dirname, abspath
 from pathlib import Path
@@ -37,7 +39,8 @@ class Attachment(models.Model):
             with open(Path(settings.MEDIA_ROOT) / str(self.media_original), 'rb') as f:
                 file_content = f.read()
 
-        if str(self.media_original).lower().endswith('.gif'):
+        filename = str(self.media_original).lower()
+        if filename.endswith('.gif') or filename.endswith('mp4'):
             self.media = self.media_original
             return
 
@@ -45,7 +48,7 @@ class Attachment(models.Model):
             img = Image.open(BytesIO(file_content))
         except:
             self.media = self.media_original
-            raise
+            logging.exception('Loading attachment for processing failed')
 
         image_changed = False
         orig_mode = img.mode
