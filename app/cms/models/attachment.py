@@ -49,6 +49,7 @@ class Attachment(models.Model):
         except:
             self.media = self.media_original
             logging.exception('Loading attachment for processing failed')
+            return
 
         image_changed = False
         orig_mode = img.mode
