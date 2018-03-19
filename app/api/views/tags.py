@@ -11,3 +11,4 @@ class TagSerializer(serializers.ModelSerializer):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = ReportTag.objects.all()
     serializer_class = TagSerializer
+    filter_fields = ('name')

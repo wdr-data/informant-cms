@@ -11,3 +11,4 @@ class TopicSerializer(serializers.ModelSerializer):
 class TopicViewSet(viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
+    filter_fields = ('name')
