@@ -88,7 +88,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
             if 'media_original' in form_.changed_data or 'media_note' in form_.changed_data:
                 try:
                     form_.instance.update_attachment()
-                    form.changed_data = ['media']
+                    form_.changed_data = ['media']
                     super().save_formset(request, form, formset, change)
 
                 except:
