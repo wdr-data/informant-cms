@@ -77,7 +77,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                         request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
 
                 else:
-                    messages.warning(
+                    messages.error(
                         request,
                         f'Anhang {obj.media_original} konnte nicht zu Facebook hochgeladen werden')
 
@@ -108,7 +108,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                         f'Anhang {form_.instance.media_original} wurde zu Facebook hochgeladen 👌')
 
                 else:
-                    messages.warning(
+                    messages.error(
                         request,
                         f'Anhang {form_.instance.media_original} konnte nicht zu Facebook '
                         f'hochgeladen werden')
