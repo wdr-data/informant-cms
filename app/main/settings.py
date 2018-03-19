@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import dj_database_url
+import raven
 from urllib.parse import urlparse, unquote
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'django_filters',
     'tz_detect',
     'rest_framework.authtoken',
+    'raven.contrib.django.raven_compat',
 ]
 
 MIDDLEWARE = [
@@ -199,3 +202,10 @@ REST_FRAMEWORK = {
 }
 
 TZ_DETECT_COUNTRIES = ('DE', 'FR', 'GB', 'US', 'CN', 'IN', 'JP', 'BR', 'RU')
+
+sentry_dsn =  os.environ.get('SENTRY_DSN')
+
+if sentry_dsn is not None:
+    RAVEN_CONFIG = {
+        'dsn': sentry_dsn,
+    }
