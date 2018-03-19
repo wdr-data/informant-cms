@@ -49,6 +49,7 @@ class Push(Attachment):
     reports = SortedManyToManyField('Report', related_name='pushes', verbose_name='Meldungen')
 
     delivered = models.BooleanField('Versendet', null=False, default=False)
+    delivered_date = models.DateTimeField('Versand-Datum', null=True)
 
     def __str__(self):
         return '%s - %s' % (self.pub_date.strftime('%d.%m.%Y'), self.headline)

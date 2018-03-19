@@ -16,13 +16,13 @@ class PushSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Push
-        fields = ('id', 'pub_date', 'timing', 'published', 'delivered',
+        fields = ('id', 'pub_date', 'timing', 'published', 'delivered', 'delivered_date',
                   'headline', 'intro', 'reports', 'outro',
                   'media', 'media_original', 'media_note',
                   )
 
 
 class PushViewSet(viewsets.ModelViewSet):
-    queryset = Push.objects.filter(published=True).order_by('-pub_date', 'timing')
+    queryset = Push.objects.filter(published=True).order_by('-pub_date', '-delivered_date')
     serializer_class = PushSerializer
     filter_fields = ('published', 'delivered', 'pub_date', 'timing')
