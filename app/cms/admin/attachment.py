@@ -96,19 +96,20 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                     messages.error(request, f'{IMAGE_PROCESSING_FAILED}: '
                                             f'{form_.instance.media_original}')
 
-            if form_.instance.media:
-                r = requests.post(
-                    ATTACHMENT_TRIGGER_URL,
-                    json={'url': form_.instance.media.url}
-                )
+                if form_.instance.media:
+                    r = requests.post(
+                        ATTACHMENT_TRIGGER_URL,
+                        json={'url': form_.instance.media.url}
+                    )
 
-                if r.status_code == 200:
-                    messages.success(
-                        request,
-                        f'Anhang {form_.instance.media_original} wurde zu Facebook hochgeladen 👌')
+                    if r.status_code == 200:
+                        messages.success(
+                            request,
+                            f'Anhang {form_.instance.media_original} wurde zu Facebook '
+                            f'hochgeladen 👌')
 
-                else:
-                    messages.error(
-                        request,
-                        f'Anhang {form_.instance.media_original} konnte nicht zu Facebook '
-                        f'hochgeladen werden')
+                    else:
+                        messages.error(
+                            request,
+                            f'Anhang {form_.instance.media_original} konnte nicht zu Facebook '
+                            f'hochgeladen werden')
