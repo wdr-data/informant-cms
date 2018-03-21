@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'tz_detect',
     'rest_framework.authtoken',
     'raven.contrib.django.raven_compat',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -140,6 +141,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_URL = '/admin/login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -209,3 +211,9 @@ if sentry_dsn is not None:
     RAVEN_CONFIG = {
         'dsn': sentry_dsn,
     }
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'user': 'User profile',
+    },
+}

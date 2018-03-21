@@ -1,9 +1,12 @@
 [[source]]
+
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+
 [packages]
+
 django = "*"
 django-tags-input = {git = "https://github.com/wdr-data/django-tags-input.git", ref = "453ae779286f82247f9fecb97ca8ebabd7b8aa71", editable = true}
 dj-config-url = "*"
@@ -22,11 +25,16 @@ markdown = "*"
 django-filter = "*"
 django-tz-detect = "*"
 raven = "*"
+django-oauth-toolkit = "*"
+
 
 [dev-packages]
+
 ansible = "*"
 "heroku3" = "*"
 boto = "*"
 
+
 [requires]
+
 python_version = "3.6"

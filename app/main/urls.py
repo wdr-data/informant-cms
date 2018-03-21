@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from api.urls import router
+import cms.views as cms_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +27,8 @@ urlpatterns = [
     url(r'^api-docs/', include('rest_framework.urls')),
     url(r'^api/v1/', include(router.urls)),
     url(r'^tz_detect/', include('tz_detect.urls')),
+    url(r'^oauth/user', cms_views.OAuthUserInfo.as_view()),
+    url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 
 if settings.MEDIA_URL and settings.MEDIA_ROOT:
