@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.db import models
 from django.utils import timezone
 
-from .newsbase import NewsBaseModel
+from .news_base import NewsBaseModel
 from .fragment import Fragment
 
 

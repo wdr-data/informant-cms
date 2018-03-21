@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.db import models
 
-from .newsbase import NewsBaseModel
+from .news_base import NewsBaseModel
 from .fragment import Fragment
 
 
