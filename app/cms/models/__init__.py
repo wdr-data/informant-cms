@@ -6,3 +6,4 @@ from .attachment import *
 from .faq import *
 from .wiki import *
 from .subscription import *
+from .tag import *
