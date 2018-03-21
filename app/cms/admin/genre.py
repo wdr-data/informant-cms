@@ -36,7 +36,7 @@ class GenreAdmin(admin.ModelAdmin):
                 genre_uuid = get_entity_uuid(Entity.GENRES)
                 delete_entry(obj.name, genre_uuid)
 
-    delete_model.short_description = "Ausgewählte Gernes löschen"
+    delete_model.short_description = "Ausgewählte Genres löschen"
 
 # Register your model here
 admin.site.register(Genre, GenreAdmin)
