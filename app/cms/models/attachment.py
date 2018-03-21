@@ -40,7 +40,7 @@ class Attachment(models.Model):
                 file_content = f.read()
 
         filename = str(self.media_original).lower()
-        if filename.endswith('.gif') or filename.endswith('mp4'):
+        if filename.endswith('.gif') or filename.endswith('.mp4'):
             self.media = self.media_original
             return
 
