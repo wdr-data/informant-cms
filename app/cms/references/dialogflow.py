@@ -1,7 +1,6 @@
 import json
 import os
 from enum import Enum
-import logging
 
 import requests
 
