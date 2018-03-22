@@ -11,4 +11,4 @@ class ReportTag(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        add_entry(self.name, Entity.TAGS)
+        add_entry(self.name, Entity.TAGS, optional=True)

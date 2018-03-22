@@ -32,7 +32,7 @@ def api_call(endpoint, *, id='', attribute=None, params=None, data=None, method=
     """
 
     if TOKEN is None:
-        raise Warning(f'Skip passing data to dialogflow due to DIALOGFLOW_DEV_TOKEN is not set.')
+        raise Exception(f'DIALOGFLOW_DEV_TOKEN is not set in environment.')
 
     if not params:
         params = {}
@@ -85,7 +85,10 @@ def get_entity_uuid(entity: Entity):
             return e['id']
 
 
-def add_entry(entry, entity):
+def add_entry(entry, entity, optional=False):
+    if TOKEN is None and optional:
+        return
+
     uuid = get_entity_uuid(entity)
     data = [
         {
@@ -99,7 +102,10 @@ def add_entry(entry, entity):
     return api_call('entities', id=uuid, attribute='entries', data=data, method=POST)
 
 
-def delete_entry(entry, entity):
+def delete_entry(entry, entity, optional=False):
+    if TOKEN is None and optional:
+        return
+
     uuid = get_entity_uuid(entity)
     data = [
       entry

@@ -20,18 +20,18 @@ class GenreAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 
-        add_entry(obj.name, Entity.GENRES)
+        add_entry(obj.name, Entity.GENRES, optional=True)
 
     def delete_model(self, request, obj):
         try:
             for o in obj:
                 super().delete_model(request, o)
 
-                delete_entry(o.name, Entity.GENRES)
+                delete_entry(o.name, Entity.GENRES, optional=True)
         except TypeError:
                 super().delete_model(request, obj)
 
-                delete_entry(obj.name, Entity.GENRES)
+                delete_entry(obj.name, Entity.GENRES, optional=True)
 
     delete_model.short_description = "Ausgewählte Genres löschen"
 
