@@ -9,7 +9,11 @@ from ..models.genre import Genre
 from ..models import report
 from ..models.topic import Topic
 
-TOKEN = os.environ['DIALOGFLOW_DEV_TOKEN']
+if os.environ.get('DIALOGFLOW_DEV_TOKEN') is not None:
+    TOKEN = os.environ.get('DIALOGFLOW_DEV_TOKEN')
+else:
+    TOKEN = None
+
 GET, POST, PUT, DELETE = range(4)
 
 class Entity(Enum):
@@ -28,6 +32,9 @@ def api_call(endpoint, *, id='', attribute=None, params=None, data=None, method=
     :param method: Can be GET (querying objects), POST (adding objects) or PUT (update objects)
     :return:
     """
+
+    if TOKEN is None:
+        raise Warning(f'Skip passing data to dialogflow due to DIALOGFLOW_DEV_TOKEN is not set.')
 
     if not params:
         params = {}
