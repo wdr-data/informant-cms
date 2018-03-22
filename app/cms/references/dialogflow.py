@@ -9,10 +9,7 @@ from ..models.genre import Genre
 from ..models import report
 from ..models.topic import Topic
 
-if os.environ.get('DIALOGFLOW_DEV_TOKEN') is not None:
-    TOKEN = os.environ.get('DIALOGFLOW_DEV_TOKEN')
-else:
-    TOKEN = None
+TOKEN = os.environ.get('DIALOGFLOW_DEV_TOKEN')
 
 GET, POST, PUT, DELETE = range(4)
 
