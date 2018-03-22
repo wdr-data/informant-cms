@@ -89,7 +89,8 @@ def get_entity_uuid(entity: Entity):
             return e['id']
 
 
-def add_entry(entry, entity_uuid):
+def add_entry(entry, entity):
+    uuid = get_entity_uuid(entity)
     data = [
         {
             "synonyms": [
@@ -99,15 +100,16 @@ def add_entry(entry, entity_uuid):
         },
     ]
 
-    return api_call('entities', id=entity_uuid, attribute='entries', data=data, method=POST)
+    return api_call('entities', id=uuid, attribute='entries', data=data, method=POST)
 
 
-def delete_entry(entry, entity_uuid):
+def delete_entry(entry, entity):
+    uuid = get_entity_uuid(entity)
     data = [
       entry
     ]
 
-    return api_call('entities', id=entity_uuid, attribute='entries', data=data, method=DELETE)
+    return api_call('entities', id=uuid, attribute='entries', data=data, method=DELETE)
 
 
 def update_tags():

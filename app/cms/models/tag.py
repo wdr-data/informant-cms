@@ -1,5 +1,5 @@
 from django.db import models
-from ..references.dialogflow import get_entity_uuid, add_entry, Entity
+from ..references.dialogflow import add_entry, Entity
 
 
 class ReportTag(models.Model):
@@ -11,5 +11,4 @@ class ReportTag(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        genre_uuid = get_entity_uuid(Entity.TAGS)
-        add_entry(self.name, genre_uuid)
+        add_entry(self.name, Entity.TAGS)
