@@ -16,10 +16,12 @@ else:
 
 GET, POST, PUT, DELETE = range(4)
 
+
 class Entity(Enum):
     GENRES = 'genres'
     TOPICS = 'topics'
     TAGS = 'tags'
+
 
 def api_call(endpoint, *, id='', attribute=None, params=None, data=None, method=GET):
     """
@@ -78,12 +80,14 @@ def api_call(endpoint, *, id='', attribute=None, params=None, data=None, method=
     else:
         raise ValueError(f'Loading URL {url} failed with code {r.status_code}')
 
+
 def get_entity_uuid(entity: Entity):
     entities = api_call('entities')
 
     for e in entities:
         if e['name'] == entity.value:
             return e['id']
+
 
 def add_entry(entry, entity_uuid):
     data = [
@@ -97,12 +101,14 @@ def add_entry(entry, entity_uuid):
 
     return api_call('entities', id=entity_uuid, attribute='entries', data=data, method=POST)
 
+
 def delete_entry(entry, entity_uuid):
     data = [
       entry
     ]
 
     return api_call('entities', id=entity_uuid, attribute='entries', data=data, method=DELETE)
+
 
 def update_tags():
     tags = report.ReportTag.objects.all()
@@ -120,6 +126,7 @@ def update_tags():
         
     return api_call('entities', id=tag_uuid, attribute='entries', data=data, method=POST)
 
+
 def update_topics():
     topics = Topic.objects.all()
     topic_uuid = get_entity_uuid(Entity.TOPICS)
@@ -135,6 +142,7 @@ def update_topics():
             data.append({"value": topic.name})
     
     return api_call('entities', id=topic_uuid, attribute='entries', data=data, method=POST)
+
 
 def update_genres():
     genres = Genre.objects.all()
