@@ -5,7 +5,6 @@ from enum import Enum
 import requests
 
 from ..models.genre import Genre
-from ..models.tag import ReportTag
 from ..models.topic import Topic
 
 TOKEN = os.environ.get('DIALOGFLOW_DEV_TOKEN')
@@ -115,6 +114,7 @@ def delete_entry(entry, entity, optional=False):
 
 
 def update_tags():
+    from ..models.tag import ReportTag
     tags = ReportTag.objects.all()
     tag_uuid = get_entity_uuid(Entity.TAGS)
     existing_tags = [
