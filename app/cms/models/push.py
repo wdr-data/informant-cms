@@ -46,7 +46,9 @@ class Push(Attachment):
     intro = models.CharField('Intro-Text', max_length=640, null=False, blank=True)
     outro = models.CharField('Outro-Text', max_length=640, null=False, blank=True)
 
-    reports = SortedManyToManyField('Report', related_name='pushes', verbose_name='Meldungen')
+    reports = SortedManyToManyField(
+        'Report', related_name='pushes', verbose_name='Meldungen',
+        help_text='Bitte maximal 4 Meldungen auswählen.')
 
     delivered = models.BooleanField('Versendet', null=False, default=False)
     delivered_date = models.DateTimeField('Versand-Datum', null=True)
