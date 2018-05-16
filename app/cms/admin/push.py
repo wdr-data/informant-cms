@@ -5,8 +5,8 @@ from time import sleep
 from django.contrib import admin, messages
 from django import forms
 from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
+from emoji_picker.widgets import EmojiPickerTextarea
 import requests
-from django.db.models.signals import pre_save
 from django.core.exceptions import ValidationError
 
 from ..models.push import Push
@@ -17,9 +17,9 @@ PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
 
 class PushModelForm(forms.ModelForm):
     intro = forms.CharField(
-        required=True, label="Intro-Text", widget=forms.Textarea, max_length=640)
+        required=True, label="Intro-Text", widget=EmojiPickerTextarea, max_length=640)
     outro = forms.CharField(
-        required=True, label="Outro-Text", widget=forms.Textarea, max_length=640)
+        required=True, label="Outro-Text", widget=EmojiPickerTextarea, max_length=640)
 
     delivered = forms.BooleanField(
         label='Versendet', help_text="Wurde dieser Push bereits versendet?", disabled=True,
