@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from emoji_picker.widgets import EmojiPickerTextInput
 from tags_input import admin as tags_input_admin
 
 from ..models.report import Report, ReportFragment
@@ -23,6 +24,8 @@ class ReportFragmentAdminInline(FragmentAdminInline):
 
 
 class ReportModelForm(NewsBaseModelForm):
+
+    headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInput, max_length=200)
 
     delivered = forms.BooleanField(
         label='Versendet',
