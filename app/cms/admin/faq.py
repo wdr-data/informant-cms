@@ -2,12 +2,11 @@ from django.contrib import admin
 from django import forms
 
 from ..models.faq import FAQ, FAQFragment
-from .attachment import AttachmentAdmin, DisplayImageWidgetTabularInline, DisplayImageWidgetStackedInline
+from .attachment import AttachmentAdmin
+from .fragment import FragmentModelForm, FragmentAdminInline
 
 
-class FAQFragmentModelForm(forms.ModelForm):
-    text = forms.CharField(
-        required=True, label="Text", widget=forms.Textarea, max_length=640)
+class FAQFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = FAQFragment
@@ -15,13 +14,11 @@ class FAQFragmentModelForm(forms.ModelForm):
                   'media_note', 'link_faq']
 
 
-class FAQFragmentAdminInline(DisplayImageWidgetStackedInline):
-    image_display_fields = ['media']
+class FAQFragmentAdminInline(FragmentAdminInline):
     model = FAQFragment
     form = FAQFragmentModelForm
 
     fk_name = 'faq'
-    extra = 1
 
 
 class FAQModelForm(forms.ModelForm):
