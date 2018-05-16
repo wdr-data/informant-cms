@@ -3,29 +3,26 @@ from django import forms
 from tags_input import admin as tags_input_admin
 
 from ..models.report import Report, ReportFragment
-from .attachment import AttachmentAdmin, DisplayImageWidgetTabularInline, DisplayImageWidgetStackedInline
+from .attachment import AttachmentAdmin
+from .fragment import FragmentModelForm, FragmentAdminInline
+from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
 
-class ReportFragmentModelForm(forms.ModelForm):
-    text = forms.CharField(
-        required=True, label="Text", widget=forms.Textarea, max_length=640)
+class ReportFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = ReportFragment
         fields = ['question', 'text', 'media', 'media_original', 'media_note', 'link_wiki']
 
 
-class ReportFragmentAdminInline(DisplayImageWidgetStackedInline):
-    image_display_fields = ['media']
+class ReportFragmentAdminInline(FragmentAdminInline):
     model = ReportFragment
     form = ReportFragmentModelForm
 
     extra = 1
 
 
-class ReportModelForm(forms.ModelForm):
-    text = forms.CharField(
-        required=True, label="Intro-Text", widget=forms.Textarea, max_length=640)
+class ReportModelForm(NewsBaseModelForm):
 
     delivered = forms.BooleanField(
         label='Versendet',
@@ -39,14 +36,13 @@ class ReportModelForm(forms.ModelForm):
                   'media_note', 'created', 'published', 'delivered']
 
 
-class ReportAdmin(tags_input_admin.TagsInputAdmin, AttachmentAdmin):
+class ReportAdmin(NewsBaseAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
     list_filter = ['published']
     search_fields = ['headline']
     list_display = ('headline', 'created', 'published')
     inlines = (ReportFragmentAdminInline, )
-    tag_fields = ['tags']
 
 
 # Register your models here.
