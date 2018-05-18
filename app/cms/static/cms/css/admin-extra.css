@@ -10,6 +10,10 @@ div.maxlength {
         margin-left: 170px;
     }
 
+    .dep-container > .maxlength {
+        margin-left: 0;
+    }
+
     /* TabularInline */
     tr > td > div.maxlength {
         margin-left: 0;
