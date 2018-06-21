@@ -1,5 +1,5 @@
 from django.db import models
-from ..references.dialogflow import add_entry, Entity
+from ..references.dialogflow import add_entry, delete_entry, Entity
 
 
 class ReportTag(models.Model):
@@ -13,6 +13,10 @@ class ReportTag(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        # Check if it's a new object
+        if self.pk is not None:
+            delete_entry(self.name, Entity.TAGS, optional=True)
+
         super().save(*args, **kwargs)
 
         add_entry(self.name, Entity.TAGS, optional=True)
