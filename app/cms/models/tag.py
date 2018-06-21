@@ -20,3 +20,7 @@ class ReportTag(models.Model):
         super().save(*args, **kwargs)
 
         add_entry(self.name, Entity.TAGS, optional=True)
+
+    def delete(self, *args, **kwargs):
+        super().delete(self, *args, **kwargs)
+        delete_entry(self.name, Entity.TAGS, optional=True)
