@@ -19,6 +19,10 @@ class Report(NewsBaseModel):
         ordering = ['-created']
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
+    short_headline = models.CharField(
+        'Button-Text', max_length=20, null=False,
+        help_text='Dies ist der Text, der auf dem Auswahl-Button für diese Nachricht angezeigt '
+                  'wird. Bitte möglichst kurzes Schlagwort eintragen.')
 
     created = models.DateTimeField(
         'Erstellt',
