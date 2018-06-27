@@ -17,8 +17,8 @@ class ReportSerializer(ModelSerializerWithFragments):
 
     class Meta:
         model = Report
-        fields = ('id', 'created', 'genres', 'topic', 'tags', 'headline', 'text', 'media',
-                  'media_original', 'media_note', 'published', 'delivered')
+        fields = ('id', 'created', 'genres', 'topic', 'tags', 'headline', 'short_headline', 'text',
+                  'media', 'media_original', 'media_note', 'published', 'delivered')
 
 
 class ReportViewSet(ModelViewSetWithFragments):
