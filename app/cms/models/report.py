@@ -19,6 +19,7 @@ class Report(NewsBaseModel):
         ordering = ['-created']
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
+    short_headline = models.CharField('Button-Titel', max_length=20, null=False)
 
     created = models.DateTimeField(
         'Erstellt',

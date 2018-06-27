@@ -35,16 +35,17 @@ class ReportModelForm(NewsBaseModelForm):
 
     class Meta:
         model = Report
-        fields = ['headline', "genres", 'topic', 'tags', 'text', 'media', 'media_original',
-                  'media_note', 'created', 'published', 'delivered']
+        fields = ['headline', 'short_headline', 'genres', 'tags', 'text', 'media',
+                  'media_original', 'media_note', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(NewsBaseAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
     list_filter = ['published']
-    search_fields = ['headline']
-    list_display = ('headline', 'created', 'published')
+    search_fields = ['headline', 'short_headline']
+    list_display = ('published', 'headline', 'short_headline', 'created')
+    list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, )
 
 
