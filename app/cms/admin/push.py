@@ -66,11 +66,12 @@ class PushAdmin(AttachmentAdmin):
                         url=PUSH_TRIGGER_URL,
                         json={'timing': Push.Timing.BREAKING.value}
                     )
+
                     if r.status_code == 200:
-                        messages.success(request, 'Push wird jetzt gesendet...')
+                        messages.success(request, '🚨 Breaking wird jetzt gesendet...')
 
                     else:
-                        messages.error(request, 'Push konnte nicht gesendet werden!')
+                        messages.error(request, '🚨 Breaking konnte nicht gesendet werden!')
 
                 transaction.on_commit(commit_hook)
 
