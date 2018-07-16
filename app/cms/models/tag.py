@@ -15,7 +15,8 @@ class ReportTag(models.Model):
     def save(self, *args, **kwargs):
         # Check if it's a new object
         if self.pk is not None:
-            delete_entry(self.name, Entity.TAGS, optional=True)
+            formerTag = self.__class__.objects.get(pk=self.pk)
+            delete_entry(formerTag.name, Entity.TAGS, optional=True)
 
         super().save(*args, **kwargs)
 
