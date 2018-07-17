@@ -1,13 +1,20 @@
-from django.contrib import admin
+import os
+from posixpath import join as urljoin
+from time import sleep
+
+from django.contrib import admin, messages
 from django import forms
 from emoji_picker.widgets import EmojiPickerTextInput
 from tags_input import admin as tags_input_admin
+import requests
+from django.db import transaction
 
 from ..models.report import Report, ReportFragment
 from .attachment import AttachmentAdmin
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
+AMP_TRIGGER_URL = urljoin(os.environ['AMP_ENDPOINT'], 'updateReport')
 
 class ReportFragmentModelForm(FragmentModelForm):
 
@@ -47,6 +54,23 @@ class ReportAdmin(NewsBaseAdmin):
     list_display = ('published', 'headline', 'short_headline', 'created')
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, )
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        if obj.published:
+
+            def commit_hook():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_TRIGGER_URL,
+                    json={'id': obj.id},
+                )
+
+                if not r.ok:
+                    raise Exception('AMP trigger failed: ' + r.reason)
+
+            transaction.on_commit(commit_hook)
 
 
 # Register your models here.
