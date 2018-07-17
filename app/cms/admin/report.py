@@ -14,7 +14,7 @@ from .attachment import AttachmentAdmin
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
-AMP_TRIGGER_URL = urljoin(os.environ['AMP_ENDPOINT'], 'updateReport')
+AMP_TRIGGER_URL = urljoin(os.environ.get('AMP_ENDPOINT', ''), 'updateReport')
 
 class ReportFragmentModelForm(FragmentModelForm):
 
@@ -58,7 +58,7 @@ class ReportAdmin(NewsBaseAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 
-        if obj.published:
+        if obj.published and os.environ.get('AMP_ENDPOINT'):
 
             def commit_hook():
                 sleep(1)  # Wait for DB
