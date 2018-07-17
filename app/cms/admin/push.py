@@ -3,6 +3,7 @@ from posixpath import join as urljoin
 from time import sleep
 
 from django.contrib import admin, messages
+from django.db import transaction
 from django import forms
 from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
 from emoji_picker.widgets import EmojiPickerTextarea
@@ -30,14 +31,14 @@ class PushModelForm(forms.ModelForm):
         fields = ('pub_date', 'timing', 'headline', 'intro', 'reports',
                   'outro', 'media', 'media_original', 'media_note',
                   'published', 'delivered')
-    
+
     def clean(self):
         """Validate number of reports"""
         reports = list(self.cleaned_data['reports'])
         if len(reports) > 4:
             raise ValidationError("Ein Push darf nicht mehr als 4 Meldungen enthalten!")
         return self.cleaned_data
-    
+
 
 class PushAdmin(AttachmentAdmin):
     form = PushModelForm
@@ -58,18 +59,21 @@ class PushAdmin(AttachmentAdmin):
 
         try:
             if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
-                sleep(5)  # This seems to be necessary so the push is available in the API
 
-                r = requests.post(
-                    url=PUSH_TRIGGER_URL,
-                    json={'timing': Push.Timing.BREAKING.value}
-                )
+                def commit_hook():
+                    sleep(1)  # Wait for DB
+                    r = requests.post(
+                        url=PUSH_TRIGGER_URL,
+                        json={'timing': Push.Timing.BREAKING.value}
+                    )
 
-                if r.status_code == 200:
-                    messages.success(request, 'Push wird jetzt gesendet...')
+                    if r.status_code == 200:
+                        messages.success(request, '🚨 Breaking wird jetzt gesendet...')
 
-                else:
-                    messages.error(request, 'Push konnte nicht gesendet werden!')
+                    else:
+                        messages.error(request, '🚨 Breaking konnte nicht gesendet werden!')
+
+                transaction.on_commit(commit_hook)
 
         except Exception as e:
             messages.error(request, str(e))
