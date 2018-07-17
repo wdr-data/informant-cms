@@ -24,7 +24,12 @@
       "value": ""
     },
     "BOT_SERVICE_ENDPOINT": {
-      "description": "URL to the AWS Lambda service endpoint of the 'tim-bot' cloud formation"
+      "description": "URL to the AWS Lambda service endpoint of the 'informant-bot' cloud formation",
+      "value": ""
+    },
+    "AMP_SERVICE_ENDPOINT": {
+      "description": "URL to the AWS Lambda service endpoint of the 'informant-amp' cloud formation",
+      "value": ""
     }
   },
   "addons": [
