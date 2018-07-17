@@ -3,6 +3,7 @@ from posixpath import join as urljoin
 from time import sleep
 
 from django.contrib import admin, messages
+from django.utils import timezone
 from django import forms
 from emoji_picker.widgets import EmojiPickerTextInput
 from tags_input import admin as tags_input_admin
@@ -56,6 +57,10 @@ class ReportAdmin(NewsBaseAdmin):
     inlines = (ReportFragmentAdminInline, )
 
     def save_model(self, request, obj, form, change):
+        obj.modified = timezone.now()
+        if obj.published and obj.published_date is None:
+            obj.published_date = timezone.now()
+
         super().save_model(request, obj, form, change)
 
         if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):

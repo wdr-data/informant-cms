@@ -27,6 +27,12 @@ class Report(NewsBaseModel):
     created = models.DateTimeField(
         'Erstellt',
         default=timezone.now)
+    published_date = models.DateTimeField(
+        'Veröffentlicht', null=True,
+    )
+    modified = models.DateTimeField(
+        'Bearbeitet', null=False,
+    )
 
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
