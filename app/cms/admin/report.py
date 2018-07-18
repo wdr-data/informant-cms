@@ -1,4 +1,5 @@
 import os
+import logging
 from posixpath import join as urljoin
 from time import sleep
 
@@ -73,7 +74,7 @@ class ReportAdmin(NewsBaseAdmin):
                 )
 
                 if not r.ok:
-                    raise Exception('AMP trigger failed: ' + r.reason)
+                    logging.error('AMP trigger failed: ' + r.reason)
 
             transaction.on_commit(commit_hook)
 
