@@ -16,7 +16,8 @@ from .attachment import AttachmentAdmin
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
-AMP_TRIGGER_URL = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
+AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
+AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
 
 class ReportFragmentModelForm(FragmentModelForm):
 
@@ -69,12 +70,33 @@ class ReportAdmin(NewsBaseAdmin):
             def commit_hook():
                 sleep(1)  # Wait for DB
                 r = requests.post(
-                    url=AMP_TRIGGER_URL,
+                    url=AMP_UPDATE_REPORT,
                     json={'id': obj.id},
                 )
 
                 if not r.ok:
-                    logging.error('AMP trigger failed: ' + r.reason)
+                    logging.error('AMP update trigger failed: ' + r.reason)
+
+            transaction.on_commit(commit_hook)
+
+    def delete_model(self, request, obj):
+        id = obj.id
+        super().delete_model(request, obj)
+
+        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+
+            def commit_hook():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_DELETE_REPORT,
+                    json={
+                        'id': id,
+                        'created': obj.created.isoformat(),
+                    },
+                )
+
+                if not r.ok:
+                    logging.error('AMP delete trigger failed: ' + r.reason)
 
             transaction.on_commit(commit_hook)
 
