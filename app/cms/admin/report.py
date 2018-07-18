@@ -63,6 +63,10 @@ class ReportAdmin(NewsBaseAdmin):
         if obj.published and obj.published_date is None:
             obj.published_date = timezone.now()
 
+        original = None
+        if obj.pk:
+            original = obj.__class__.objects.get(pk=obj.pk)
+
         super().save_model(request, obj, form, change)
 
         if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
@@ -76,6 +80,21 @@ class ReportAdmin(NewsBaseAdmin):
 
                 if not r.ok:
                     logging.error('AMP update trigger failed: ' + r.reason)
+
+            transaction.on_commit(commit_hook)
+        elif original and not obj.published and original.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+            def commit_hook():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_DELETE_REPORT,
+                    json={
+                        'id': obj.id,
+                        'created': obj.created.isoformat(),
+                    },
+                )
+
+                if not r.ok:
+                    logging.error('AMP delete trigger failed: ' + r.reason)
 
             transaction.on_commit(commit_hook)
 
