@@ -1,4 +1,5 @@
 import os
+import logging
 from posixpath import join as urljoin
 from time import sleep
 
@@ -14,6 +15,7 @@ from ..models.push import Push
 from .attachment import AttachmentAdmin
 
 PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
+AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
 
 
 class PushModelForm(forms.ModelForm):
@@ -55,7 +57,35 @@ class PushAdmin(AttachmentAdmin):
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
+        original = None
+        if obj.pk:
+            original = obj.__class__.objects.get(pk=obj.pk)
+
+        former_id = None
+        if original and not obj.published and original.published:
+            i = 1
+            while former_id is None:
+                former = obj.__class__.objects.get(id=obj.id-i)
+                i+=1
+                if former.published:
+                    former_id = former.id
+
         super().save_model(request, obj, form, change)
+
+        def update_index():
+            sleep(1)  # Wait for DB
+            r = requests.post(
+                url=AMP_UPDATE_INDEX,
+                json={'id': obj.id if former_id is None else former_id})
+
+            if not r.ok:
+                logging.error('Index-Site update trigger failed: ' + r.reason)
+
+        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+            transaction.on_commit(update_index)
+
+        elif original and not obj.published and original.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+            transaction.on_commit(update_index)
 
         try:
             if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
@@ -77,6 +107,34 @@ class PushAdmin(AttachmentAdmin):
 
         except Exception as e:
             messages.error(request, str(e))
+
+    def delete_model(self, request, obj):
+        id = obj.id
+        former_id = None
+        i = 1
+        while former_id is None:
+            try:
+                former = obj.__class__.objects.get(id=id-i)
+                i+=1
+                if former.published:
+                    former_id = former.id
+            except obj.__class__.DoesNotExist:
+                i+=1
+
+        super().delete_model(request, obj)
+
+        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+
+            def update_index():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_UPDATE_INDEX,
+                    json={'id': former_id})
+
+                if not r.ok:
+                    logging.error('Index-Site update trigger failed: ' + r.reason)
+
+            transaction.on_commit(update_index)
 
 
 # Register your models here.
