@@ -62,7 +62,7 @@ class PushAdmin(AttachmentAdmin):
             original = obj.__class__.objects.get(pk=obj.pk)
 
         former_id = None
-        if original and not obj.published and original.published:
+        if obj.id > 1 and original and not obj.published and original.published:
             i = 1
             while former_id is None:
                 former = obj.__class__.objects.get(id=obj.id-i)
@@ -112,18 +112,19 @@ class PushAdmin(AttachmentAdmin):
         id = obj.id
         former_id = None
         i = 1
-        while former_id is None:
-            try:
-                former = obj.__class__.objects.get(id=id-i)
-                i+=1
-                if former.published:
-                    former_id = former.id
-            except obj.__class__.DoesNotExist:
-                i+=1
+        if id > 1:
+            while former_id is None:
+                try:
+                    former = obj.__class__.objects.get(id=id-i)
+                    i+=1
+                    if former.published:
+                        former_id = former.id
+                except obj.__class__.DoesNotExist:
+                    i+=1
 
         super().delete_model(request, obj)
 
-        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+        if former_id is not None and obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
 
             def update_index():
                 sleep(1)  # Wait for DB
