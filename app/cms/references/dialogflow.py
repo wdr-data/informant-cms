@@ -5,7 +5,6 @@ from enum import Enum
 import requests
 
 from ..models.genre import Genre
-from ..models.topic import Topic
 
 TOKEN = os.environ.get('DIALOGFLOW_DEV_TOKEN')
 
@@ -14,7 +13,6 @@ GET, POST, PUT, DELETE = range(4)
 
 class Entity(Enum):
     GENRES = 'genres'
-    TOPICS = 'topics'
     TAGS = 'tags'
 
 
@@ -129,23 +127,6 @@ def update_tags():
             data.append({"value": tag.name})
         
     return api_call('entities', id=tag_uuid, attribute='entries', data=data, method=POST)
-
-
-def update_topics():
-    topics = Topic.objects.all()
-    topic_uuid = get_entity_uuid(Entity.TOPICS)
-    existing_topics = [
-        entry['value']
-        for entry in
-        api_call('entities', id=topic_uuid)['entries']
-    ]
-
-    data = []
-    for topic in topics:
-        if not topic.name in existing_topics:
-            data.append({"value": topic.name})
-    
-    return api_call('entities', id=topic_uuid, attribute='entries', data=data, method=POST)
 
 
 def update_genres():
