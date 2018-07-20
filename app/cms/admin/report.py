@@ -1,13 +1,23 @@
-from django.contrib import admin
+import os
+import logging
+from posixpath import join as urljoin
+from time import sleep
+
+from django.contrib import admin, messages
+from django.utils import timezone
 from django import forms
 from emoji_picker.widgets import EmojiPickerTextInput
 from tags_input import admin as tags_input_admin
+import requests
+from django.db import transaction
 
 from ..models.report import Report, ReportFragment
 from .attachment import AttachmentAdmin
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
+AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
+AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
 
 class ReportFragmentModelForm(FragmentModelForm):
 
@@ -47,6 +57,67 @@ class ReportAdmin(NewsBaseAdmin):
     list_display = ('published', 'headline', 'short_headline', 'created')
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, )
+
+    def save_model(self, request, obj, form, change):
+        obj.modified = timezone.now()
+        if obj.published and obj.published_date is None:
+            obj.published_date = timezone.now()
+
+        original = None
+        if obj.pk:
+            original = obj.__class__.objects.get(pk=obj.pk)
+
+        super().save_model(request, obj, form, change)
+
+        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+
+            def commit_hook():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_UPDATE_REPORT,
+                    json={'id': obj.id},
+                )
+
+                if not r.ok:
+                    logging.error('AMP update trigger failed: ' + r.reason)
+
+            transaction.on_commit(commit_hook)
+        elif original and not obj.published and original.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+            def commit_hook():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_DELETE_REPORT,
+                    json={
+                        'id': obj.id,
+                        'created': obj.created.isoformat(),
+                    },
+                )
+
+                if not r.ok:
+                    logging.error('AMP delete trigger failed: ' + r.reason)
+
+            transaction.on_commit(commit_hook)
+
+    def delete_model(self, request, obj):
+        id = obj.id
+        super().delete_model(request, obj)
+
+        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+
+            def commit_hook():
+                sleep(1)  # Wait for DB
+                r = requests.post(
+                    url=AMP_DELETE_REPORT,
+                    json={
+                        'id': id,
+                        'created': obj.created.isoformat(),
+                    },
+                )
+
+                if not r.ok:
+                    logging.error('AMP delete trigger failed: ' + r.reason)
+
+            transaction.on_commit(commit_hook)
 
 
 # Register your models here.

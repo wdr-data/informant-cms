@@ -24,14 +24,14 @@ class WikiModelForm(NewsBaseModelForm):
     class Meta:
         model = Wiki
         fields = ['name', 'follow_up_at', 'genres',
-                  'topic', 'tags', 'text', 'media', 'media_original',
+                  'tags', 'text', 'media', 'media_original',
                   'media_note']
 
 
 class WikiAdmin(NewsBaseAdmin):
     form = WikiModelForm
     search_fields = ['name']
-    list_display = ('name', 'get_genres', 'topic', 'follow_up_at')
+    list_display = ('name', 'get_genres', 'follow_up_at')
     inlines = (WikiFragmentAdminInline, )
     ordering = ('follow_up_at',)
 
