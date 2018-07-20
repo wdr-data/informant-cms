@@ -100,7 +100,7 @@
         "django-sortedm2m-filter-horizontal-widget": {
             "editable": true,
             "git": "https://github.com/wdr-data/sortedm2m-filter-horizontal-widget.git",
-            "ref": "0eaf0155728bbc4d5fda673a1be724b62c2730cc"
+            "ref": "488e9d348bec8c1c3e9fafd2df017bc967d15674"
         },
         "django-storages": {
             "hashes": [
