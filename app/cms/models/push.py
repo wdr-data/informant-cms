@@ -57,17 +57,20 @@ class Push(Attachment):
         return '%s - %s' % (self.pub_date.strftime('%d.%m.%Y'), self.headline)
 
     @classmethod
-    def last(cls, *, count=1, offset=0, only_published=True, delivered=False, by_date=True):
+    def last(cls, *, count=1, offset=0, only_published=True, delivered=False, by_date=True, breaking=True):
         pushes = cls.objects.all()
 
         if only_published:
             pushes = pushes.filter(published=True)
 
+        if not breaking:
+            pushes = pushes.exclude(timing='breaking')
+
         if not delivered:
             pushes = pushes.filter(delivered=False)
 
         if by_date:
-            pushes = pushes.order_by('-pub_date')
+            pushes = pushes.order_by('-pub_date', 'timing')
         else:
             pushes = pushes.order_by('-id')
 

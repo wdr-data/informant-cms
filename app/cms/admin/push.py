@@ -57,34 +57,40 @@ class PushAdmin(AttachmentAdmin):
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
-        original = None
-        if obj.pk:
-            original = obj.__class__.objects.get(pk=obj.pk)
+        try:
+            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
+            messages.success(request, '🚨 was last push id: ' + str(last_push.id))
+        except:
+            last_push = None
 
-        former_id = None
-        if obj.id > 1 and original and not obj.published and original.published:
-            i = 1
-            while former_id is None:
-                former = obj.__class__.objects.get(id=obj.id-i)
-                i+=1
-                if former.published:
-                    former_id = former.id
+        was_last_push = last_push and last_push.id == obj.id
 
         super().save_model(request, obj, form, change)
 
+        try:
+            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
+            messages.success(request, '🚨 is last push id: ' + str(last_push.id))
+        except:
+            last_push = None
+
+        is_last_push = last_push and last_push.id == obj.id
+
         def update_index():
+            if not last_push:
+                return
+
             sleep(1)  # Wait for DB
             r = requests.post(
                 url=AMP_UPDATE_INDEX,
-                json={'id': obj.id if former_id is None else former_id})
+                json={'id': last_push.id})
 
             if not r.ok:
                 logging.error('Index-Site update trigger failed: ' + r.reason)
 
-        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+        if is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             transaction.on_commit(update_index)
 
-        elif original and not obj.published and original.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+        elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             transaction.on_commit(update_index)
 
         try:
@@ -109,28 +115,33 @@ class PushAdmin(AttachmentAdmin):
             messages.error(request, str(e))
 
     def delete_model(self, request, obj):
-        id = obj.id
-        former_id = None
-        i = 1
-        if id > 1:
-            while former_id is None:
-                try:
-                    former = obj.__class__.objects.get(id=id-i)
-                    i+=1
-                    if former.published:
-                        former_id = former.id
-                except obj.__class__.DoesNotExist:
-                    i+=1
+        try:
+            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
+            messages.success(request, '🚨 was last push id: ' + str(last_push.id))
+        except:
+            last_push = None
+
+        was_last_push = last_push and last_push.id == obj.id
 
         super().delete_model(request, obj)
 
-        if former_id is not None and obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
+        try:
+            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
+            messages.success(request, '🚨 is last push id: ' + str(last_push.id))
+        except:
+            last_push = None
 
+        is_last_push = last_push and last_push.id == obj.id
+
+        if was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             def update_index():
+                if not last_push:
+                    return
+
                 sleep(1)  # Wait for DB
                 r = requests.post(
                     url=AMP_UPDATE_INDEX,
-                    json={'id': former_id})
+                    json={'id': last_push.id})
 
                 if not r.ok:
                     logging.error('Index-Site update trigger failed: ' + r.reason)
