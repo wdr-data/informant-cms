@@ -167,6 +167,10 @@ if aws_url is not None:
     AWS_STORAGE_BUCKET_NAME = aws_creds.hostname
     AWS_AUTO_CREATE_BUCKET = False
     AWS_QUERYSTRING_AUTH = False
+
+    custom_domain = os.environ.get('S3_CUSTOM_DOMAIN')
+    if custom_domain:
+        AWS_S3_CUSTOM_DOMAIN = custom_domain
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL[1:])
