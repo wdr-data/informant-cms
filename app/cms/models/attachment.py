@@ -24,6 +24,7 @@ class Attachment(models.Model):
         abstract = True
 
     media_original = models.FileField('Medien-Anhang', null=True, blank=True)
+    media_alt = models.CharField('Alternativ-Text', max_length=125, null=True, blank=True)
     media_note = models.CharField('Credit', max_length=100, null=True, blank=True)
 
     media = models.FileField('Verarbeitet', null=True, blank=True)

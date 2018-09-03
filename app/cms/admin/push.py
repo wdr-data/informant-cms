@@ -31,7 +31,7 @@ class PushModelForm(forms.ModelForm):
     class Meta:
         model = Push
         fields = ('pub_date', 'timing', 'headline', 'intro', 'reports',
-                  'outro', 'media', 'media_original', 'media_note',
+                  'outro', 'media', 'media_original', 'media_alt', 'media_note',
                   'published', 'delivered')
 
     def clean(self):

@@ -18,7 +18,7 @@ class PushSerializer(serializers.ModelSerializer):
         model = Push
         fields = ('id', 'pub_date', 'timing', 'published', 'delivered', 'delivered_date',
                   'headline', 'intro', 'reports', 'outro',
-                  'media', 'media_original', 'media_note',
+                  'media', 'media_original', 'media_alt', 'media_note',
                   )
 
 

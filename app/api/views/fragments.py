@@ -42,7 +42,7 @@ class BaseFragmentViewSet(viewsets.ModelViewSet):
 class ReportFragmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportFragment
-        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_note',
+        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_alt', 'media_note',
                   'link_wiki', 'report')
 
 
@@ -56,7 +56,7 @@ class ReportFragmentViewSet(BaseFragmentViewSet):
 class FAQFragmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQFragment
-        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_note',
+        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_alt', 'media_note',
                   'link_faq', 'faq')
 
 
@@ -70,7 +70,7 @@ class FAQFragmentViewSet(BaseFragmentViewSet):
 class WikiFragmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = WikiFragment
-        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_note',
+        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_alt', 'media_note',
                   'link_wiki', 'wiki')
 
 

@@ -9,7 +9,7 @@ class WikiFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = WikiFragment
-        fields = ['question', 'text', 'media', 'media_original',
+        fields = ['question', 'text', 'media', 'media_original', 'media_alt',
                   'media_note', 'link_wiki']
 
 
@@ -24,7 +24,7 @@ class WikiModelForm(NewsBaseModelForm):
     class Meta:
         model = Wiki
         fields = ['name', 'follow_up_at', 'genres',
-                  'tags', 'text', 'media', 'media_original',
+                  'tags', 'text', 'media', 'media_original', 'media_alt',
                   'media_note']
 
 
