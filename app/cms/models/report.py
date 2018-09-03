@@ -43,6 +43,8 @@ class Report(NewsBaseModel):
     delivered = models.BooleanField(
         'Versendet', null=False, default=False)
 
+    author = models.CharField('Autor', max_length=200, null=False)
+
     def __str__(self):
         return f'{"✅" if self.published else "🚫"} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
