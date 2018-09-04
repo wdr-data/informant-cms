@@ -43,6 +43,12 @@ class ReportModelForm(NewsBaseModelForm):
         disabled=True,
         required=False)
 
+    media_alt = forms.CharField(
+        label='Alternativ-Tag',
+        help_text='Beschreibung des Bildes/Gifs für Blinde.',
+        max_length=125
+    )
+
     class Meta:
         model = Report
         fields = ['headline', 'short_headline', 'genres', 'tags', 'text', 'media',
