@@ -44,7 +44,7 @@ class ReportQuizAdminInline(QuizAdminInline):
     model = ReportQuiz
     form = ReportQuizModelForm
 
-    extra = 1
+    extra = 0
     max_num = 3
 
 
@@ -68,7 +68,7 @@ class ReportModelForm(NewsBaseModelForm):
     class Meta:
         model = Report
         fields = ['headline', 'short_headline', 'genres', 'tags', 'text', 'media',
-                  'media_original', 'media_alt', 'media_note', 'is_quiz', 'created', 'published', 'delivered']
+                  'media_original', 'media_alt', 'media_note', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(NewsBaseAdmin):

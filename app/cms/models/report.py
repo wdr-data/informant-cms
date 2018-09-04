@@ -24,9 +24,6 @@ class Report(NewsBaseModel):
         'Button-Text', max_length=17, null=False,
         help_text='Dies ist der Text, der auf dem Auswahl-Button für diese Nachricht angezeigt '
                   'wird. Bitte möglichst kurzes Schlagwort eintragen.')
-    is_quiz = models.BooleanField(
-        'Quiz Element', null=False, default=False,
-        help_text='Diese Meldung ist ein Quiz Element.')
 
     created = models.DateTimeField(
         'Erstellt',
@@ -90,8 +87,8 @@ class ReportFragment(Fragment):
 class ReportQuiz(Quiz):
 
     class Meta:
-        verbose_name = 'Quiz-Fragment'
-        verbose_name_plural = 'Quiz-Fragmente'
+        verbose_name = 'Quiz-Button'
+        verbose_name_plural = 'Quiz-Buttons'
         ordering = ('id', )
 
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz',
