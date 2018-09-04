@@ -12,7 +12,7 @@ class WikiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wiki
         fields = ('id', 'name', 'follow_up_at', 'genres',
-                  'tags', 'text', 'media', 'media_original', 'media_note')
+                  'tags', 'text', 'media', 'media_original', 'media_alt', 'media_note')
 
 
 class WikiViewSet(viewsets.ModelViewSet):

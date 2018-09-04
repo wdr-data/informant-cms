@@ -11,7 +11,7 @@ class FAQFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = FAQFragment
-        fields = ['question', 'text', 'media', 'media_original',
+        fields = ['question', 'text', 'media', 'media_original', 'media_alt',
                   'media_note', 'link_faq']
 
 
@@ -32,7 +32,7 @@ class FAQModelForm(forms.ModelForm):
 
     class Meta:
         model = FAQ
-        fields = ['name', 'slug', 'text', 'media', 'media_original',
+        fields = ['name', 'slug', 'text', 'media', 'media_original', 'media_alt',
                   'media_note']
 
 

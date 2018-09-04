@@ -8,7 +8,7 @@ class FAQSerializer(ModelSerializerWithFragments):
 
     class Meta:
         model = FAQ
-        fields = ('id', 'name', 'slug', 'text', 'media', 'media_original', 'media_note')
+        fields = ('id', 'name', 'slug', 'text', 'media', 'media_original', 'media_alt', 'media_note')
 
 
 class FAQViewSet(ModelViewSetWithFragments):
