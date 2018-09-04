@@ -46,7 +46,7 @@ class ReportModelForm(NewsBaseModelForm):
     class Meta:
         model = Report
         fields = ['headline', 'short_headline', 'genres', 'tags', 'text', 'media',
-                  'media_original', 'media_alt', 'media_note', 'created', 'published', 'delivered']
+                  'media_original', 'media_note', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(NewsBaseAdmin):
@@ -66,6 +66,9 @@ class ReportAdmin(NewsBaseAdmin):
         original = None
         if obj.pk:
             original = obj.__class__.objects.get(pk=obj.pk)
+
+        if not obj.author:
+            obj.author = request.user.get_full_name()
 
         super().save_model(request, obj, form, change)
 
