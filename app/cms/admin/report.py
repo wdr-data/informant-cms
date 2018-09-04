@@ -44,7 +44,7 @@ class ReportModelForm(NewsBaseModelForm):
         required=False)
 
     media_alt = forms.CharField(
-        label='Alternativ-Tag',
+        label='Alternativ-Text',
         help_text='Beschreibung des Bildes/Gifs für Blinde.',
         max_length=125
     )
