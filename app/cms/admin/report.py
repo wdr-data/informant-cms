@@ -45,6 +45,7 @@ class ReportQuizAdminInline(QuizAdminInline):
     form = ReportQuizModelForm
 
     extra = 1
+    max_num = 3
 
 
 class ReportModelForm(NewsBaseModelForm):
