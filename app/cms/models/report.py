@@ -3,6 +3,7 @@ from django.db import models
 
 from .news_base import NewsBaseModel
 from .fragment import Fragment
+from .quiz import Quiz
 
 
 class Report(NewsBaseModel):
@@ -23,6 +24,9 @@ class Report(NewsBaseModel):
         'Button-Text', max_length=17, null=False,
         help_text='Dies ist der Text, der auf dem Auswahl-Button für diese Nachricht angezeigt '
                   'wird. Bitte möglichst kurzes Schlagwort eintragen.')
+    is_quiz = models.BooleanField(
+        'Quiz Element', null=False, default=False,
+        help_text='Diese Meldung ist ein Quiz Element.')
 
     created = models.DateTimeField(
         'Erstellt',
@@ -82,3 +86,15 @@ class ReportFragment(Fragment):
 
     def __str__(self):
         return f'{self.report.headline} - {self.question}'
+
+class ReportQuiz(Quiz):
+
+    class Meta:
+        verbose_name = 'Quiz-Fragment'
+        verbose_name_plural = 'Quiz-Fragmente'
+        ordering = ('id', )
+
+    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz',
+                               related_query_name='quiz')
+    def __str__(self):
+        return f'{self.report.headline} - {self.quiz_option}'

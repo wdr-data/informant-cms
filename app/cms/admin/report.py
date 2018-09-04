@@ -11,9 +11,10 @@ from tags_input import admin as tags_input_admin
 import requests
 from django.db import transaction
 
-from ..models.report import Report, ReportFragment
+from ..models.report import Report, ReportFragment, ReportQuiz
 from .attachment import AttachmentAdmin
 from .fragment import FragmentModelForm, FragmentAdminInline
+from .quiz import QuizModelForm, QuizAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
@@ -29,6 +30,19 @@ class ReportFragmentModelForm(FragmentModelForm):
 class ReportFragmentAdminInline(FragmentAdminInline):
     model = ReportFragment
     form = ReportFragmentModelForm
+
+    extra = 1
+
+class ReportQuizModelForm(QuizModelForm):
+
+    class Meta:
+        model = ReportQuiz
+        fields = ['quiz_option', 'quiz_text', 'media', 'media_original', 'media_alt', 'media_note']
+
+
+class ReportQuizAdminInline(QuizAdminInline):
+    model = ReportQuiz
+    form = ReportQuizModelForm
 
     extra = 1
 
@@ -53,7 +67,7 @@ class ReportModelForm(NewsBaseModelForm):
     class Meta:
         model = Report
         fields = ['headline', 'short_headline', 'genres', 'tags', 'text', 'media',
-                  'media_original', 'media_alt', 'media_note', 'created', 'published', 'delivered']
+                  'media_original', 'media_alt', 'media_note', 'is_quiz', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(NewsBaseAdmin):
@@ -63,7 +77,7 @@ class ReportAdmin(NewsBaseAdmin):
     search_fields = ['headline', 'short_headline']
     list_display = ('published', 'headline', 'short_headline', 'created')
     list_display_links = ('headline', )
-    inlines = (ReportFragmentAdminInline, )
+    inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
 
     def save_model(self, request, obj, form, change):
         obj.modified = timezone.now()
