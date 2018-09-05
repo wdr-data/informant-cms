@@ -21,11 +21,13 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
 
+
 class ReportFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = ['question', 'text', 'media', 'media_original', 'media_alt', 'media_note', 'link_wiki']
+        fields = ['question', 'text', 'media', 'media_original', 'media_alt', 'media_note',
+                  'link_wiki']
 
 
 class ReportFragmentAdminInline(FragmentAdminInline):
