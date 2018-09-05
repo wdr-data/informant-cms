@@ -12,3 +12,6 @@ class Quiz(Attachment):
 
     quiz_option = models.CharField('Quiz Option', max_length=20, null=True, blank=True)
     quiz_text = models.CharField('Quiz Antwort', max_length=640, null=False, blank=False)
+
+    def is_quiz(self):
+        return True if len(self.quiz_option) >= 1 else False

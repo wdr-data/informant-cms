@@ -4,7 +4,7 @@ from django.conf.urls import url, include
 
 router = routers.DefaultRouter()
 router.register(r'reports/fragments', fragments.ReportFragmentViewSet)
-router.register(r'reports/quiz', quiz.ReportQuizViewSet)
+router.register(r'quiz', quiz.ReportQuizViewSet)
 router.register(r'reports', reports.ReportViewSet)
 router.register(r'genres', genres.GenreViewSet)
 router.register(r'tags', tags.TagViewSet)

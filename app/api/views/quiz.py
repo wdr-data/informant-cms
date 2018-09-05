@@ -12,4 +12,3 @@ class ReportQuizViewSet(viewsets.ModelViewSet):
     queryset = ReportQuiz.objects.all().order_by('id')
     serializer_class = ReportQuizSerializer
     filter_fields = ('report',)
-    fragment_group_field = 'report'
