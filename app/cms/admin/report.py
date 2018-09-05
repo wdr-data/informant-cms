@@ -4,6 +4,7 @@ from posixpath import join as urljoin
 from time import sleep
 
 from django.contrib import admin, messages
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django import forms
 from emoji_picker.widgets import EmojiPickerTextInput
@@ -33,16 +34,52 @@ class ReportFragmentAdminInline(FragmentAdminInline):
 
     extra = 1
 
+
 class ReportQuizModelForm(QuizModelForm):
 
     class Meta:
         model = ReportQuiz
-        fields = ['correct_option', 'quiz_option', 'quiz_text', 'media', 'media_original', 'media_alt', 'media_note']
+        fields = ['correct_option', 'quiz_option', 'quiz_text', 'media', 'media_original',
+                  'media_alt', 'media_note']
+
+
+class ReportQuizInlineFormset(forms.models.BaseInlineFormSet):
+    def is_valid(self):
+        return super().is_valid() and not any([bool(e) for e in self.errors])
+
+    def clean(self):
+
+        super().clean()
+
+        # get forms that actually have valid data
+        option_count = 0
+        correct_option_count = 0
+
+        for form in self.forms:
+            try:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    option_count += 1
+                    if form.cleaned_data['correct_option']:
+                        correct_option_count += 1
+            except AttributeError:
+                # annoyingly, if a subform is invalid Django explicity raises
+                # an AttributeError for cleaned_data
+                pass
+        if option_count == 1:
+            raise forms.ValidationError(
+                'Es müssen mindestens 2 Antworten für ein Quiz existieren!')
+        elif option_count > 1 and correct_option_count != 1:
+            raise forms.ValidationError(
+                'Es gibt mehr als eine richtige Antwort!')
+        elif option_count > 1 and correct_option_count == 0:
+            raise forms.ValidationError(
+                'Es gibt keine richtige Antwort!')
 
 
 class ReportQuizAdminInline(QuizAdminInline):
     model = ReportQuiz
     form = ReportQuizModelForm
+    formset = ReportQuizInlineFormset
 
     extra = 0
     max_num = 3
