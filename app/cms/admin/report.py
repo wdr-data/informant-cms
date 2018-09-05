@@ -37,7 +37,7 @@ class ReportQuizModelForm(QuizModelForm):
 
     class Meta:
         model = ReportQuiz
-        fields = ['quiz_option', 'quiz_text', 'media', 'media_original', 'media_alt', 'media_note']
+        fields = ['correct_option', 'quiz_option', 'quiz_text', 'media', 'media_original', 'media_alt', 'media_note']
 
 
 class ReportQuizAdminInline(QuizAdminInline):

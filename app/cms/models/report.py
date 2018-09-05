@@ -91,7 +91,7 @@ class ReportQuiz(Quiz):
         verbose_name_plural = 'Quiz-Buttons'
         ordering = ('id', )
 
-    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz',
-                               related_query_name='quiz')
+    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz_options',
+                               related_query_name='quiz_options')
     def __str__(self):
         return f'{self.report.headline} - {self.quiz_option}'
