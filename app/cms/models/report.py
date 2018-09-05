@@ -46,6 +46,9 @@ class Report(NewsBaseModel):
 
     author = models.CharField('Autor', max_length=200, null=False)
 
+    def is_quiz(self):
+        return len(self.quiz_options.all()) > 1
+
     def __str__(self):
         return f'{"✅" if self.published else "🚫"} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
