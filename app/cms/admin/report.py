@@ -70,12 +70,12 @@ class ReportQuizInlineFormset(forms.models.BaseInlineFormSet):
         if option_count == 1:
             raise forms.ValidationError(
                 'Es müssen mindestens 2 Antworten für ein Quiz existieren!')
-        elif option_count > 1 and correct_option_count != 1:
-            raise forms.ValidationError(
-                'Es gibt mehr als eine richtige Antwort!')
         elif option_count > 1 and correct_option_count == 0:
             raise forms.ValidationError(
                 'Es gibt keine richtige Antwort!')
+        elif option_count > 1 and correct_option_count != 1:
+            raise forms.ValidationError(
+                'Es gibt mehr als eine richtige Antwort!')
 
 
 class ReportQuizAdminInline(QuizAdminInline):
