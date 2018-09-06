@@ -3,6 +3,7 @@ from django.db import models
 
 from .news_base import NewsBaseModel
 from .fragment import Fragment
+from .quiz import Quiz
 
 
 class Report(NewsBaseModel):
@@ -45,6 +46,9 @@ class Report(NewsBaseModel):
 
     author = models.CharField('Autor', max_length=200, null=False)
 
+    def is_quiz(self):
+        return len(self.quiz_options.all()) > 1
+
     def __str__(self):
         return f'{"✅" if self.published else "🚫"} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
@@ -82,3 +86,15 @@ class ReportFragment(Fragment):
 
     def __str__(self):
         return f'{self.report.headline} - {self.question}'
+
+class ReportQuiz(Quiz):
+
+    class Meta:
+        verbose_name = 'Quiz-Button'
+        verbose_name_plural = 'Quiz-Buttons'
+        ordering = ('id', )
+
+    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz_options',
+                               related_query_name='quiz_options')
+    def __str__(self):
+        return f'{self.report.headline} - {self.quiz_option}'
