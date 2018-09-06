@@ -59,7 +59,6 @@ class PushAdmin(AttachmentAdmin):
     def save_model(self, request, obj, form, change):
         try:
             last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-            messages.success(request, '🚨 was last push id: ' + str(last_push.id))
         except:
             last_push = None
 
@@ -69,7 +68,6 @@ class PushAdmin(AttachmentAdmin):
 
         try:
             last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-            messages.success(request, '🚨 is last push id: ' + str(last_push.id))
         except:
             last_push = None
 
@@ -117,7 +115,6 @@ class PushAdmin(AttachmentAdmin):
     def delete_model(self, request, obj):
         try:
             last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-            messages.success(request, '🚨 was last push id: ' + str(last_push.id))
         except:
             last_push = None
 
@@ -127,7 +124,6 @@ class PushAdmin(AttachmentAdmin):
 
         try:
             last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-            messages.success(request, '🚨 is last push id: ' + str(last_push.id))
         except:
             last_push = None
 
