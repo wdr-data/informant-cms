@@ -21,6 +21,7 @@ class Push(Attachment):
         MORNING = 'morning'
         EVENING = 'evening'
         BREAKING = 'breaking'
+        TESTING = 'testing'
 
     pub_date = models.DateField(
         'Push Datum',
@@ -30,7 +31,8 @@ class Push(Attachment):
         'Zeitpunkt', null=False, blank=False, max_length=20,
         choices=[(Timing.MORNING.value, '🌇 Morgen'),
                  (Timing.EVENING.value, '🌆 Abend'),
-                 (Timing.BREAKING.value, '🚨 Breaking')],
+                 (Timing.BREAKING.value, '🚨 Breaking'),
+                 (Timing.TESTING.value, '⚗️ Test')],
         help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist der Push freigegeben,'
                   ' so wird der Push mit dem Sichern SOFORT als Breaking-Push gesendet!',
         default=Timing.MORNING.value)
