@@ -36,7 +36,7 @@ class PushModelForm(forms.ModelForm):
 
     def clean(self):
         """Validate number of reports"""
-        reports = list(self.cleaned_data['reports'])
+        reports = list(self.cleaned_data.get('reports', []))
         if len(reports) > 4:
             raise ValidationError("Ein Push darf nicht mehr als 4 Meldungen enthalten!")
         return self.cleaned_data
