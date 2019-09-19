@@ -171,7 +171,7 @@ if aws_url is not None:
     AWS_AUTO_CREATE_BUCKET = False
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_REGION_NAME = 'eu-central-1'
-    AWS_S3_ENDPOINT_URL = f'https://s3-{AWS_S3_REGION_NAME}.amazonaws.com'
+    AWS_S3_ENDPOINT_URL = f'https://s3.{AWS_S3_REGION_NAME}.amazonaws.com'
 
     custom_domain = os.environ.get('S3_CUSTOM_DOMAIN')
     if custom_domain:
