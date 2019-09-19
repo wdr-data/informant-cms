@@ -14,6 +14,8 @@ import os
 import dj_database_url
 import raven
 from urllib.parse import urlparse, unquote
+from os.path import splitext
+from uuid import uuid4
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
