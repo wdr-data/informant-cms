@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
     'oauth2_provider',
     'emoji_picker',
+    's3direct',
 ]
 
 MIDDLEWARE = [
@@ -167,6 +168,8 @@ if aws_url is not None:
     AWS_STORAGE_BUCKET_NAME = aws_creds.hostname
     AWS_AUTO_CREATE_BUCKET = False
     AWS_QUERYSTRING_AUTH = False
+    AWS_S3_REGION_NAME = 'eu-central-1'
+    AWS_S3_ENDPOINT_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3-{AWS_S3_REGION_NAME}.amazonaws.com'
 
     custom_domain = os.environ.get('S3_CUSTOM_DOMAIN')
     if custom_domain:
@@ -226,5 +229,25 @@ if sentry_dsn is not None:
 OAUTH2_PROVIDER = {
     'SCOPES': {
         'user': 'User profile',
+    },
+}
+
+# S3Direct
+def generate_filename(fn):
+    name, ext = splitext(fn)
+    return f'{name}-{str(uuid4())}{ext}'
+
+
+S3DIRECT_DESTINATIONS = {
+    'default': {
+        # REQUIRED
+        'key': generate_filename,
+
+        # OPTIONAL
+        'auth': lambda u: u.is_staff,  # Default allow anybody to upload
+        'cache_control': 'max-age=2592000',  # Default no cache-control
+        'content_disposition': 'attachment',  # Default no content disposition
+        'content_length_range': (0, 26214400),  # Default allow any size
+        'allow_existence_optimization': True,  # Don't re-upload files that exist on S3 already
     },
 }
