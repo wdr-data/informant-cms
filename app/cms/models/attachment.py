@@ -30,10 +30,9 @@ class Attachment(models.Model):
 
     media = models.FileField('Verarbeitet', null=True, blank=True)
 
-    def update_attachment(self):
+    def process_attachment(self):
         if not self.media_original:
-            self.media = None
-            return
+            return None, None
 
         original_url = str(self.media_original)
 
@@ -42,17 +41,15 @@ class Attachment(models.Model):
         if not (filename.lower().endswith('.png')
                 or filename.lower().endswith('.jpg')
                 or filename.lower().endswith('.jpeg')):
-            self.media = filename
-            return
+            return filename, original_url
 
         file_content = requests.get(original_url).content
 
         try:
             img = Image.open(BytesIO(file_content))
         except:
-            self.media = filename
             logging.exception('Loading attachment for processing failed')
-            return
+            return filename, original_url
 
         image_changed = False
         orig_mode = img.mode
@@ -74,7 +71,7 @@ class Attachment(models.Model):
             draw = ImageDraw.Draw(alpha)
 
             # Configuration for text drawing
-            the_text = 'FOTO: ' + self.media_note.upper()
+            the_text = 'FOTO: ' + str(self.media_note).upper()
             fontsize = max((img.size[0] + img.size[1]) / 2 / 50, 10)
             shadow_radius = fontsize / 3
             shadow_mult = 0.75
@@ -111,8 +108,7 @@ class Attachment(models.Model):
             image_changed = True
 
         if not image_changed:
-            self.media = filename
-            return
+            return filename, original_url
 
         # Save result
         bio = BytesIO()
@@ -123,4 +119,5 @@ class Attachment(models.Model):
 
         new_filename = default_storage.generate_filename(filename)
         path = default_storage.save(new_filename, ContentFile(bio.read(), name=new_filename))
-        self.media = path
+        url = default_storage.url(path)
+        return path, url

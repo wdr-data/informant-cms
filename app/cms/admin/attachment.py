@@ -58,23 +58,31 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
 
         if 'media_original' in form.changed_data or 'media_note' in form.changed_data:
             try:
-                obj.update_attachment()
-                form.changed_data = ['media']
-                super().save_model(request, obj, form, change)
+                path, url = obj.process_attachment()
 
             except:
                 logging.exception('%s', obj.media_original)
                 messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.media_original}')
 
-            if obj.media:
+            else:
+                if path is None:
+                    obj.media = None
+                    form.changed_data = ['media']
+                    super().save_model(request, obj, form, change)
+                    return
+
                 r = requests.post(
                     ATTACHMENT_TRIGGER_URL,
-                    json={'url': obj.media.url}
+                    json={'url': url}
                 )
 
                 if r.status_code == 200:
                     messages.success(
                         request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
+
+                    obj.media = path
+                    form.changed_data = ['media']
+                    super().save_model(request, obj, form, change)
 
                 else:
                     messages.error(
@@ -87,19 +95,23 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
         for form_ in formset.forms:
             if 'media_original' in form_.changed_data or 'media_note' in form_.changed_data:
                 try:
-                    form_.instance.update_attachment()
-                    form_.changed_data = ['media']
-                    super().save_formset(request, form, formset, change)
+                    path, url = form_.instance.process_attachment()
 
                 except:
                     logging.exception('%s', form_.instance.media_original)
                     messages.error(request, f'{IMAGE_PROCESSING_FAILED}: '
                                             f'{form_.instance.media_original}')
 
-                if form_.instance.media:
+                else:
+                    if path is None:
+                        form_.instance.media = None
+                        form_.changed_data = ['media']
+                        super().save_formset(request, form, formset, change)
+                        return
+
                     r = requests.post(
                         ATTACHMENT_TRIGGER_URL,
-                        json={'url': form_.instance.media.url}
+                        json={'url': url}
                     )
 
                     if r.status_code == 200:
@@ -107,6 +119,10 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                             request,
                             f'Anhang {form_.instance.media_original} wurde zu Facebook '
                             f'hochgeladen 👌')
+
+                        form_.instance.media = path
+                        form_.changed_data = ['media']
+                        super().save_formset(request, form, formset, change)
 
                     else:
                         messages.error(
