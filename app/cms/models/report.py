@@ -42,9 +42,14 @@ class Report(NewsBaseModel):
                   'Sportarten, Sportlern, Disziplinen etc.')
 
     delivered = models.BooleanField(
-        'Versendet', null=False, default=False)
+        'Versendet', null=False, default=True)
 
     author = models.CharField('Autor', max_length=200, null=False)
+
+    link = models.URLField('DeepLink', blank=True, max_length=500,
+                           help_text= 'Der Link wird am Ende einer Meldung angehangen.'
+                                      ' Der Button-Text lautet "MEHR 🌍".'
+                           )
 
     def is_quiz(self):
         return len(self.quiz_options.all()) > 1
