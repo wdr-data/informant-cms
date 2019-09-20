@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3dc71ff6dbe15ac9248e2b886616dfded78e8d7397a09d6b2e43d54e82f28576"
+            "sha256": "2ac55a4b0c4743c781662f213b7e815f63ecc9ba5175331e8aa65066072c49cc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -110,7 +110,7 @@
         },
         "django-tags-input": {
             "git": "https://github.com/wdr-data/django-tags-input.git",
-            "ref": "9e751854bd658a661b2849dd2b5a7712fc48d85c"
+            "ref": "22f79d87c4a9ca11b4bb4498c61137248a8d732a"
         },
         "django-tz-detect": {
             "hashes": [
