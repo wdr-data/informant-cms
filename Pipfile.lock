@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "310a7fea09be4cd27a7f0790920f0fb0e5d1b305a68d3f155ef87bc110c757ea"
+            "sha256": "a797486ce56c6e4aa50f79abd871ea6a76445c77e47a599c6e7c40efe2eedd28"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -101,7 +101,7 @@
         },
         "django-s3direct": {
             "git": "https://github.com/wdr-data/django-s3direct.git",
-            "ref": "51412284be820d0cd50e2d2655d444aa9250d1c9"
+            "ref": "a8767d4b95bb508ccf7e35db99504ae65fae0352"
         },
         "django-sortedm2m": {
             "hashes": [
