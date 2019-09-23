@@ -47,7 +47,7 @@ class Report(NewsBaseModel):
 
     author = models.CharField('Autor', max_length=200, null=False)
 
-    link = models.URLField('DeepLink', blank=True, max_length=500, default=None,
+    link = models.URLField('DeepLink', blank=True, null=True, max_length=500, default=None,
                            help_text= 'Der Link wird am Ende einer Meldung angehangen.'
                                       ' Der Button-Text lautet "MEHR 🌍".'
                            )

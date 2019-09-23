@@ -24,6 +24,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='report',
             name='link',
-            field=models.URLField(blank=True, default=None, help_text='Der Link wird am Ende einer Meldung angehangen. Der Button-Text lautet "MEHR 🌍".', max_length=500, verbose_name='DeepLink'),
+            field=models.URLField(blank=True, null=True, default=None, help_text='Der Link wird am Ende einer Meldung angehangen. Der Button-Text lautet "MEHR 🌍".', max_length=500, verbose_name='DeepLink'),
         ),
     ]
