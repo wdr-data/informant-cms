@@ -43,8 +43,8 @@ class Push(Attachment):
     headline = models.CharField('Arbeitstitel', max_length=200, null=False,
                                 help_text='Dieser Titel wird nicht ausgespielt')
 
-    intro = models.CharField('Intro-Text', max_length=640, null=False, blank=True)
-    outro = models.CharField('Outro-Text', max_length=640, null=False, blank=True)
+    intro = models.CharField('Intro-Text', max_length=1000, null=False, blank=True)
+    outro = models.CharField('Outro-Text', max_length=2000, null=False, blank=True)
 
     reports = SortedManyToManyField(
         'Report', related_name='pushes', verbose_name='Meldungen',

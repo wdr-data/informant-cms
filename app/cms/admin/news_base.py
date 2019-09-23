@@ -7,7 +7,7 @@ from .attachment import AttachmentAdmin
 
 class NewsBaseModelForm(forms.ModelForm):
     text = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextarea, max_length=640)
+        required=True, label="Intro-Text", widget=EmojiPickerTextarea, max_length=2000)
 
 
 class NewsBaseAdmin(tags_input_admin.TagsInputAdmin, AttachmentAdmin):
