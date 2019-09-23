@@ -24,7 +24,7 @@ django-tz-detect = "*"
 raven = "*"
 django-oauth-toolkit = "*"
 django-emoji-picker = "*"
-django-s3direct = {git = "https://github.com/wdr-data/django-s3direct.git",ref = "51412284be820d0cd50e2d2655d444aa9250d1c9"}
+django-s3direct = {git = "https://github.com/wdr-data/django-s3direct.git",ref = "aa3e8eca64ab11b3b4d352b91ce0ee1991683517"}
 
 [dev-packages]
 ansible = "*"
