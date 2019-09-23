@@ -41,7 +41,7 @@ class Attachment(models.Model):
         if not (filename.lower().endswith('.png')
                 or filename.lower().endswith('.jpg')
                 or filename.lower().endswith('.jpeg')):
-            return filename, original_url
+            return filename, default_storage.url(filename)
 
         file_content = requests.get(original_url).content
 
@@ -49,7 +49,7 @@ class Attachment(models.Model):
             img = Image.open(BytesIO(file_content))
         except:
             logging.exception('Loading attachment for processing failed')
-            return filename, original_url
+            return filename, default_storage.url(filename)
 
         image_changed = False
         orig_mode = img.mode
@@ -108,7 +108,7 @@ class Attachment(models.Model):
             image_changed = True
 
         if not image_changed:
-            return filename, original_url
+            return filename, default_storage.url(filename)
 
         # Save result
         bio = BytesIO()
