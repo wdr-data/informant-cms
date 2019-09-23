@@ -13,8 +13,8 @@ class QuizModelForm(forms.ModelForm):
         help_text='Trage hier den Button-Text für eine Antwortmöglichkeit ein. '
                   'Um ein Quiz zu erstellen müssen mindestens 2, maximal 3 Buttons gegeben sein.')
     quiz_text = forms.CharField(
-        required=True, label='Quiz Antwort', widget=EmojiPickerTextarea, max_length=640,
-        help_text='Hier kannst du einen individuellen Text für diese Antwortmöglichkeit eingtragen')
+        required=True, label='Quiz Antwort', widget=EmojiPickerTextarea, max_length=2000,
+        help_text='Hier kannst du einen individuellen Text für diese Antwortmöglichkeit eintragen')
 
 
 class QuizAdminInline(DisplayImageWidgetStackedInline):

@@ -9,7 +9,7 @@ class FragmentModelForm(forms.ModelForm):
     question = forms.CharField(
         required=False, label="Frage", widget=EmojiPickerTextInput, max_length=20)
     text = forms.CharField(
-        required=True, label="Text", widget=EmojiPickerTextarea, max_length=640)
+        required=True, label="Text", widget=EmojiPickerTextarea, max_length=2000)
 
 
 class FragmentAdminInline(DisplayImageWidgetStackedInline):
