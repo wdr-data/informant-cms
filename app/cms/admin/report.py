@@ -7,7 +7,7 @@ from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django import forms
-from emoji_picker.widgets import EmojiPickerTextInput
+from emoji_picker.widgets import EmojiPickerTextInputAdmin
 from tags_input import admin as tags_input_admin
 import requests
 from django.db import transaction
@@ -89,7 +89,7 @@ class ReportQuizAdminInline(QuizAdminInline):
 
 class ReportModelForm(NewsBaseModelForm):
 
-    headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInput, max_length=200)
+    headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
     delivered = forms.BooleanField(
         label='Versendet',

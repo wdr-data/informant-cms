@@ -25,6 +25,7 @@ raven = "*"
 django-oauth-toolkit = "*"
 django-emoji-picker = "*"
 django-s3direct = {git = "https://github.com/wdr-data/django-s3direct.git",ref = "51412284be820d0cd50e2d2655d444aa9250d1c9"}
+dialogflow = "*"
 
 [dev-packages]
 ansible = "*"
