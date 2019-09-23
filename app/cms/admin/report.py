@@ -20,6 +20,7 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
+ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
 
 
 class ReportFragmentModelForm(FragmentModelForm):
@@ -133,6 +134,24 @@ class ReportAdmin(NewsBaseAdmin):
             obj.author = request.user.get_full_name()
 
         super().save_model(request, obj, form, change)
+
+        if 'audio' in form.changed_data:
+            url = obj.audio
+
+            r = requests.post(
+                ATTACHMENT_TRIGGER_URL,
+                json={'url': url}
+            )
+            if r.status_code == 200:
+                messages.success(
+                    request, f'Anhang {obj.audio} wurde zu Facebook hochgeladen 👌')
+
+                super().save_model(request, obj, form, change)
+
+            else:
+                messages.error(
+                    request,
+                    f'Anhang {obj.audio} konnte nicht zu Facebook hochgeladen werden')
 
         if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
 
