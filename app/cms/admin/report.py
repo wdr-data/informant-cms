@@ -135,7 +135,7 @@ class ReportAdmin(NewsBaseAdmin):
 
         super().save_model(request, obj, form, change)
 
-        if 'audio' in form.changed_data:
+        if 'audio' in form.changed_data and obj.audio:
             url = str(obj.audio)
 
             r = requests.post(
