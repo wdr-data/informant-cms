@@ -107,7 +107,8 @@ class ReportModelForm(NewsBaseModelForm):
     class Meta:
         model = Report
         fields = ['headline', 'short_headline', 'genres', 'tags', 'media',
-                  'media_original', 'media_alt', 'media_note', 'text', 'link', 'created', 'published', 'delivered']
+                  'media_original', 'media_alt', 'media_note', 'text', 'audio',
+                  'link', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(NewsBaseAdmin):

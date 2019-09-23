@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db import models
+from s3direct.fields import S3DirectField
 
 from .news_base import NewsBaseModel
 from .fragment import Fragment
@@ -46,10 +47,13 @@ class Report(NewsBaseModel):
 
     author = models.CharField('Autor', max_length=200, null=False)
 
-    link = models.URLField('DeepLink', blank=True, max_length=500,
+    link = models.URLField('DeepLink', blank=True, max_length=500, default=None,
                            help_text= 'Der Link wird am Ende einer Meldung angehangen.'
                                       ' Der Button-Text lautet "MEHR 🌍".'
                            )
+
+    audio = S3DirectField('Audio-Feature', null=True, blank=True, dest='default',
+                          help_text='Das Audio-Feature zu dieser Meldung ist nach dem Intro-Text optional abrufbar.')
 
     def is_quiz(self):
         return len(self.quiz_options.all()) > 1
