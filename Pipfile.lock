@@ -18,18 +18,18 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:0e4d047feb4d7d701e9b2107f10bb8d674952243385cd35d0b413a273c299751",
-                "sha256:67f957389cf56fb4c24c1093c6d58baebe6cf18139f6dca0f8a177239b0a4f8c"
+                "sha256:012dee0d170d9ee637831a2766c3d5a9cddbe3b18bf688b4c348ec591411bd21",
+                "sha256:2fd733957e83546547cede51ebf7356a14eeb369293e1e918e7eabcc7cf30e2c"
             ],
             "index": "pypi",
-            "version": "==1.9.232"
+            "version": "==1.9.233"
         },
         "botocore": {
             "hashes": [
-                "sha256:724d2349198c6f15f3cee0c0e4d33ecf4435e6d0db311bb79a3a28f6cf5a4090",
-                "sha256:a57a8fd0145c68e31bb4baab549b27a12f6695068c8dd5f2901d8dc06572dbeb"
+                "sha256:9b0bf5614a0e6a29838dc1bc3d38405c57ec6dc3e25709776f9d2d7f7e84b0e0",
+                "sha256:9b93ca5743e9209daaece3e682626d8370f04c9693760c7c1e7fd95b746e45ff"
             ],
-            "version": "==1.12.232"
+            "version": "==1.12.233"
         },
         "certifi": {
             "hashes": [
@@ -63,11 +63,11 @@
         },
         "django-emoji-picker": {
             "hashes": [
-                "sha256:634a58344e2d70d02b591b09f01af157e9abe8808dd86c882b2c8be5ee262882",
-                "sha256:c8e3b89ee941ae849de6a677efbe2e1c329ee2d2e2afba66d947194ca53eedaa"
+                "sha256:232552a3e73e668af482563a9f2b04d9e93cc51deeae21b81365731a6cfec02d",
+                "sha256:f9ad6268d317ff596b5e62bb651a5d059dbb49e36b0df9b2e13356a5a4fada76"
             ],
             "index": "pypi",
-            "version": "==0.0.4"
+            "version": "==0.0.5"
         },
         "django-filter": {
             "hashes": [
