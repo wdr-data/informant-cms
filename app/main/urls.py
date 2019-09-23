@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^tz_detect/', include('tz_detect.urls')),
     url(r'^oauth/user', cms_views.OAuthUserInfo.as_view()),
     url(r'^oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    url(r'^s3direct/', include('s3direct.urls')),
 ]
 
 if settings.MEDIA_URL and settings.MEDIA_ROOT:

@@ -11,6 +11,7 @@ from django.conf import settings
 import requests
 from requests.exceptions import MissingSchema
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
+from s3direct.fields import S3DirectField
 
 ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / 'assets'
 
@@ -23,34 +24,32 @@ class Attachment(models.Model):
     class Meta:
         abstract = True
 
-    media_original = models.FileField('Medien-Anhang', null=True, blank=True)
+    media_original = S3DirectField('Medien-Anhang', null=True, blank=True, dest='default')
     media_alt = models.CharField('Alternativ-Text', max_length=125, null=True, blank=True)
     media_note = models.CharField('Credit', max_length=100, null=True, blank=True)
 
     media = models.FileField('Verarbeitet', null=True, blank=True)
 
-    def update_attachment(self):
+    def process_attachment(self):
         if not self.media_original:
-            self.media = None
-            return
+            return None, None
 
-        try:
-            file_content = requests.get(self.media_original.url).content
-        except MissingSchema:
-            with open(Path(settings.MEDIA_ROOT) / str(self.media_original), 'rb') as f:
-                file_content = f.read()
+        original_url = str(self.media_original)
 
-        filename = str(self.media_original).lower()
-        if filename.endswith('.gif') or filename.endswith('.mp4'):
-            self.media = self.media_original
-            return
+        filename = original_url.split('/')[-1]
+
+        if not (filename.lower().endswith('.png')
+                or filename.lower().endswith('.jpg')
+                or filename.lower().endswith('.jpeg')):
+            return filename, original_url
+
+        file_content = requests.get(original_url).content
 
         try:
             img = Image.open(BytesIO(file_content))
         except:
-            self.media = self.media_original
             logging.exception('Loading attachment for processing failed')
-            return
+            return filename, original_url
 
         image_changed = False
         orig_mode = img.mode
@@ -72,7 +71,7 @@ class Attachment(models.Model):
             draw = ImageDraw.Draw(alpha)
 
             # Configuration for text drawing
-            the_text = 'FOTO: ' + self.media_note.upper()
+            the_text = 'FOTO: ' + str(self.media_note).upper()
             fontsize = max((img.size[0] + img.size[1]) / 2 / 50, 10)
             shadow_radius = fontsize / 3
             shadow_mult = 0.75
@@ -109,17 +108,16 @@ class Attachment(models.Model):
             image_changed = True
 
         if not image_changed:
-            self.media = self.media_original
-            return
+            return filename, original_url
 
         # Save result
         bio = BytesIO()
-        bio.name = str(self.media_original)
+        bio.name = filename
         out = img.convert(orig_mode)
         out.save(bio)
         bio.seek(0)
 
-        new_filename = default_storage.generate_filename(str(self.media_original))
+        new_filename = default_storage.generate_filename(filename)
         path = default_storage.save(new_filename, ContentFile(bio.read(), name=new_filename))
-        self.media = path
-
+        url = default_storage.url(path)
+        return path, url
