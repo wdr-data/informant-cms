@@ -32,15 +32,16 @@ class GenreAdmin(admin.ModelAdmin):
             for o in obj:
                 super().delete_model(request, o)
 
-                delete_entity(o.name, EntityType.GENRES)
-        except TypeError:
-                super().delete_model(request, obj)
-
                 try:
-                    delete_entity(obj.name, EntityType.GENRES)
+                    delete_entity(o.name, EntityType.GENRES)
                 except Exception as e:
                     logging.error(e)
-        except Exception as e:
+        except TypeError:
+            super().delete_model(request, obj)
+
+            try:
+                delete_entity(obj.name, EntityType.GENRES)
+            except Exception as e:
                 logging.error(e)
 
     delete_model.short_description = "Ausgewählte Genres löschen"
