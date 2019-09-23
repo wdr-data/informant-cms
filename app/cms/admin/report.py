@@ -136,7 +136,7 @@ class ReportAdmin(NewsBaseAdmin):
         super().save_model(request, obj, form, change)
 
         if 'audio' in form.changed_data:
-            url = obj.audio
+            url = str(obj.audio)
 
             r = requests.post(
                 ATTACHMENT_TRIGGER_URL,
