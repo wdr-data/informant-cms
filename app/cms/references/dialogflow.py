@@ -27,6 +27,7 @@ def get_entity_type_uuid(entity_type):
 
 
 def add_entity(entity, entity_type):
+    print(f'Adding Entity "{entity}" to {entity_type} in {AGENT}')
     uuid = get_entity_type_uuid(entity_type)
 
     entity_types_client = dialogflow.EntityTypesClient()
@@ -40,6 +41,7 @@ def add_entity(entity, entity_type):
 
 
 def delete_entity(entity, entity_type):
+    print(f'Deleting Entity "{entity}" from {entity_type} in {AGENT}')
     uuid = get_entity_type_uuid(entity_type)
 
     entity_types_client = dialogflow.EntityTypesClient()
