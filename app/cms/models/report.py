@@ -53,7 +53,8 @@ class Report(NewsBaseModel):
                            )
 
     audio = S3DirectField('Audio-Feature', null=True, blank=True, dest='default',
-                          help_text='Das Audio-Feature zu dieser Meldung ist nach dem Intro-Text optional abrufbar.')
+                          help_text='Dateiformat: *mp3.'
+                                    ' Das Audio zu dieser Meldung ist nach dem Intro-Text optional abrufbar.')
 
     def is_quiz(self):
         return len(self.quiz_options.all()) > 1

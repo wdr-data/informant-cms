@@ -136,20 +136,30 @@ class ReportAdmin(NewsBaseAdmin):
         if 'audio' in form.changed_data and obj.audio:
             audio_url = str(obj.audio)
 
-            r = requests.post(
-                ATTACHMENT_TRIGGER_URL,
-                json={'url': audio_url}
-            )
-            if r.status_code == 200:
-                messages.success(
-                    request, f'Anhang {obj.audio} wurde zu Facebook hochgeladen 👌')
-
-            else:
+            filename = audio_url.split('/')[-1]
+            if not (filename.lower().endswith('.mp3')):
                 messages.error(
                     request,
-                    f'Anhang {obj.audio} konnte nicht zu Facebook hochgeladen werden')
-
+                    f'Das Audio hat das Falsche Format. Aktzeptierte Formate: *.mp3'
+                )
                 obj.audio = None
+
+            else:
+                r = requests.post(
+                    ATTACHMENT_TRIGGER_URL,
+                    json={'url': audio_url}
+                )
+
+                if r.status_code == 200:
+                    messages.success(
+                        request, f'Anhang {obj.audio} wurde zu Facebook hochgeladen 👌')
+
+                else:
+                    messages.error(
+                        request,
+                        f'Anhang {obj.audio} konnte nicht zu Facebook hochgeladen werden')
+
+                    obj.audio = None
 
         super().save_model(request, obj, form, change)
 
