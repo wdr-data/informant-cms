@@ -7,7 +7,7 @@ from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django import forms
-from emoji_picker.widgets import EmojiPickerTextInput
+from emoji_picker.widgets import EmojiPickerTextInputAdmin
 from tags_input import admin as tags_input_admin
 import requests
 from django.db import transaction
@@ -20,6 +20,7 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
+ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
 
 
 class ReportFragmentModelForm(FragmentModelForm):
@@ -89,7 +90,7 @@ class ReportQuizAdminInline(QuizAdminInline):
 
 class ReportModelForm(NewsBaseModelForm):
 
-    headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInput, max_length=200)
+    headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
     delivered = forms.BooleanField(
         label='Versendet',
@@ -107,7 +108,8 @@ class ReportModelForm(NewsBaseModelForm):
     class Meta:
         model = Report
         fields = ['headline', 'short_headline', 'genres', 'tags', 'media',
-                  'media_original', 'media_alt', 'media_note', 'text', 'link', 'created', 'published', 'delivered']
+                  'media_original', 'media_alt', 'media_note', 'text', 'audio',
+                  'link', 'created', 'published', 'delivered']
 
 
 class ReportAdmin(NewsBaseAdmin):
@@ -130,6 +132,34 @@ class ReportAdmin(NewsBaseAdmin):
 
         if not obj.author:
             obj.author = request.user.get_full_name()
+
+        if 'audio' in form.changed_data and obj.audio:
+            audio_url = str(obj.audio)
+
+            filename = audio_url.split('/')[-1]
+            if not (filename.lower().endswith('.mp3')):
+                messages.error(
+                    request,
+                    f'Das Audio hat das Falsche Format. Aktzeptierte Formate: *.mp3'
+                )
+                obj.audio = None
+
+            else:
+                r = requests.post(
+                    ATTACHMENT_TRIGGER_URL,
+                    json={'url': audio_url}
+                )
+
+                if r.status_code == 200:
+                    messages.success(
+                        request, f'Anhang {obj.audio} wurde zu Facebook hochgeladen 👌')
+
+                else:
+                    messages.error(
+                        request,
+                        f'Anhang {obj.audio} konnte nicht zu Facebook hochgeladen werden')
+
+                    obj.audio = None
 
         super().save_model(request, obj, form, change)
 

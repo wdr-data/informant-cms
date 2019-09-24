@@ -1,5 +1,7 @@
+import logging
+
 from django.db import models
-from ..references.dialogflow import add_entry, delete_entry, Entity
+from ..references.dialogflow import add_entity, delete_entity, EntityType
 
 
 class ReportTag(models.Model):
@@ -16,8 +18,14 @@ class ReportTag(models.Model):
         # Check if it's a new object
         if self.pk is not None:
             formerTag = self.__class__.objects.get(pk=self.pk)
-            delete_entry(formerTag.name, Entity.TAGS, optional=True)
+            try:
+                delete_entity(formerTag.name, EntityType.TAGS)
+            except Exception as e:
+                logging.error(e)
 
         super().save(*args, **kwargs)
 
-        add_entry(self.name, Entity.TAGS, optional=True)
+        try:
+            add_entity(self.name, EntityType.TAGS)
+        except Exception as e:
+            logging.error(e)

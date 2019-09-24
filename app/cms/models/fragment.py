@@ -11,4 +11,4 @@ class Fragment(Attachment):
         abstract = True
 
     question = models.CharField('Frage', max_length=20, null=True, blank=True)
-    text = models.CharField('Text', max_length=640, null=False, blank=False)
+    text = models.CharField('Text', max_length=2000, null=False, blank=False)

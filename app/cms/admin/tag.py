@@ -1,7 +1,9 @@
+import logging
+
 from django.contrib import admin
 
 from ..models.tag import ReportTag
-from ..references.dialogflow import delete_entry, Entity
+from ..references.dialogflow import delete_entity, EntityType
 
 
 class ReportTagAdmin(admin.ModelAdmin):
@@ -24,12 +26,17 @@ class ReportTagAdmin(admin.ModelAdmin):
             for o in obj:
                 super().delete_model(request, o)
 
-                delete_entry(o.name, Entity.TAGS, optional=True)
+                try:
+                    delete_entity(o.name, EntityType.TAGS)
+                except Exception as e:
+                    logging.error(e)
         except TypeError:
             super().delete_model(request, obj)
 
-            delete_entry(obj.name, Entity.TAGS, optional=True)
-
+            try:
+                delete_entity(obj.name, EntityType.TAGS)
+            except Exception as e:
+                logging.error(e)
 
 # Register your model here
 admin.site.register(ReportTag, ReportTagAdmin)

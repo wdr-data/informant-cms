@@ -16,7 +16,7 @@ class FAQ(Attachment):
 
     name = models.CharField('Begriff', max_length=200, null=False)
     slug = models.CharField('Slug', max_length=200, null=True, blank=True)
-    text = models.CharField('Intro-Text', max_length=640, null=False)
+    text = models.CharField('Intro-Text', max_length=2000, null=False)
 
     def __str__(self):
         return f'{self.name}'

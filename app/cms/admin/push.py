@@ -7,7 +7,7 @@ from django.contrib import admin, messages
 from django.db import transaction
 from django import forms
 from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
-from emoji_picker.widgets import EmojiPickerTextarea
+from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
 
@@ -20,9 +20,9 @@ AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIn
 
 class PushModelForm(forms.ModelForm):
     intro = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextarea, max_length=640)
+        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=1000)
     outro = forms.CharField(
-        required=True, label="Outro-Text", widget=EmojiPickerTextarea, max_length=640)
+        required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=2000)
 
     delivered = forms.BooleanField(
         label='Versendet', help_text="Wurde dieser Push bereits versendet?", disabled=True,

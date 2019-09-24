@@ -1,146 +1,86 @@
 import json
 import os
 from enum import Enum
+from functools import lru_cache
+import logging
 
-import requests
-
-from ..models.genre import Genre
-
-TOKEN = os.environ.get('DIALOGFLOW_DEV_TOKEN')
-
-GET, POST, PUT, DELETE = range(4)
+import dialogflow_v2 as dialogflow
 
 
-class Entity(Enum):
+AGENT = os.environ['DIALOGFLOW_AGENT']
+
+
+class EntityType(Enum):
     GENRES = 'genres'
     TAGS = 'tags'
 
 
-def api_call(endpoint, *, id='', attribute=None, params=None, data=None, method=GET):
-    """
-    Makes a call to the Dialogflow API
-    :param endpoint: API endpoint (eg. 'intents')
-    :param id: The UUID of an API object
-    :param attribute: The attribute you want to access ('entries' in '/entities/{id}/entries')
-    :param params: Additional parameters you want to pass. By default, 'v' and 'lang' are passed.
-    :param data: JSON-serializable data to be sent
-    :param method: Can be GET (querying objects), POST (adding objects) or PUT (update objects)
-    :return:
-    """
-
-    if TOKEN is None:
-        raise Exception(f'DIALOGFLOW_DEV_TOKEN is not set in environment.')
-
-    if not params:
-        params = {}
-
-    params['v'] = '20150910'
-    params['lang'] = 'de'
-
-    params_url = '&'.join(f'{k}={v}' for k, v in params.items())
-    url = f'https://api.dialogflow.com/v1/{endpoint}'
-
-    if id:
-        url += f'/{id}'
-
-    if attribute:
-        url += f'/{attribute}'
-
-    url += f'?{params_url}'
-
-    headers = {
-        'Authorization': f'Bearer {TOKEN}',
-        'Content-Type': 'application/json',
-    }
-
-    methods = {
-        GET: requests.get,
-        POST: requests.post,
-        PUT: requests.put,
-        DELETE: requests.delete,
-    }
-
-    the_method = methods[method]
-
-    if data is not None:
-        data = json.dumps(data)
-
-    r = the_method(url, headers=headers, data=data)
-
-    if r.status_code == 200:
-        return r.json()
-
-    else:
-        raise ValueError(f'Loading URL {url} failed with code {r.status_code}')
+@lru_cache()
+def get_entity_type_uuid(entity_type):
+    entity_types_client = dialogflow.EntityTypesClient()
+    parent = entity_types_client.project_agent_path(AGENT)
+    entity_types = entity_types_client.list_entity_types(parent)
+    for e in entity_types:
+        if e.display_name == entity_type.value:
+            uuid = e.name.split('/')[-1]
+            return uuid
 
 
-def get_entity_uuid(entity: Entity):
-    entities = api_call('entities')
+def add_entity(entity, entity_type):
+    print(f'Adding Entity "{entity}" to {entity_type} in {AGENT}')
+    uuid = get_entity_type_uuid(entity_type)
 
-    for e in entities:
-        if e['name'] == entity.value:
-            return e['id']
+    entity_types_client = dialogflow.EntityTypesClient()
+    parent = entity_types_client.entity_type_path(AGENT, uuid)
+
+    new_entity = dialogflow.types.EntityType.Entity()
+    new_entity.value = entity
+    new_entity.synonyms.extend([entity])
+
+    return entity_types_client.batch_create_entities(parent, [new_entity])
 
 
-def add_entry(entry, entity, optional=False):
-    if TOKEN is None and optional:
-        return
+def delete_entity(entity, entity_type):
+    print(f'Deleting Entity "{entity}" from {entity_type} in {AGENT}')
+    uuid = get_entity_type_uuid(entity_type)
 
-    uuid = get_entity_uuid(entity)
-    data = [
-        {
-            "synonyms": [
-                entry,
-            ],
-            "value": entry,
-        },
+    entity_types_client = dialogflow.EntityTypesClient()
+    parent = entity_types_client.entity_type_path(AGENT, uuid)
+
+    return entity_types_client.batch_delete_entities(parent, [entity])
+
+
+def update_entity_type(uuid, db_objects):
+    entity_types_client = dialogflow.EntityTypesClient()
+    parent = entity_types_client.entity_type_path(AGENT, uuid)
+
+    existing_entities = [
+        entity.value
+        for entity in
+        entity_types_client.get_entity_type(parent).entities
     ]
 
-    return api_call('entities', id=uuid, attribute='entries', data=data, method=POST)
+    new_entities = []
 
+    for db_object in db_objects:
+        if not db_object.name in existing_entities:
+            new_entity = dialogflow.types.EntityType.Entity()
+            new_entity.value = db_object.name
+            new_entity.synonyms.extend([db_object.name])
+            new_entities.append(new_entity)
 
-def delete_entry(entry, entity, optional=False):
-    if TOKEN is None and optional:
-        return
-
-    uuid = get_entity_uuid(entity)
-    data = [
-      entry
-    ]
-
-    return api_call('entities', id=uuid, attribute='entries', data=data, method=DELETE)
+    return entity_types_client.batch_create_entities(parent, new_entities)
 
 
 def update_tags():
     from ..models.tag import ReportTag
     tags = ReportTag.objects.all()
-    tag_uuid = get_entity_uuid(Entity.TAGS)
-    existing_tags = [
-        entry['value']
-        for entry in
-        api_call('entities', id=tag_uuid)['entries']
-    ]
-
-    data = []
-    for tag in tags:
-        if not tag.name in existing_tags:
-            data.append({"value": tag.name})
-        
-    return api_call('entities', id=tag_uuid, attribute='entries', data=data, method=POST)
+    uuid = get_entity_type_uuid(EntityType.TAGS)
+    return update_entity_type(uuid, tags)
 
 
 def update_genres():
+    from ..models.genre import Genre
     genres = Genre.objects.all()
-    gerne_uuid = get_entity_uuid(Entity.GENRES)
-    existing_genres = [
-        entry['value']
-        for entry in
-        api_call('entities', id=gerne_uuid)['entries']
-    ]
-
-    data = []
-    for genre in genres:
-        if not genre.name in existing_genres:
-            data.append({"value": genre.name})
-
-    return api_call('entities', id=gerne_uuid, attribute='entries', data=data, method=POST)
+    uuid = get_entity_type_uuid(EntityType.GENRES)
+    return update_entity_type(uuid, genres)
