@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.utils import timezone
 from django.db import models
 from s3direct.fields import S3DirectField
@@ -19,6 +21,18 @@ class Report(NewsBaseModel):
         verbose_name = 'Meldung'
         verbose_name_plural = 'Meldungen'
         ordering = ['-created']
+
+    class Type(Enum):
+        REGULAR = 'regular'
+        BREAKING = 'breaking'
+
+    type = models.CharField(
+        'Meldungstyp', null=False, blank=False, max_length=20,
+        choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
+                 (Type.BREAKING.value, '🚨 Breaking')],
+        help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist die Meldung freigegeben,'
+                  ' so wird die Meldung mit dem Sichern SOFORT als Breaking-Push gesendet!',
+        default=Type.REGULAR.value)
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
     short_headline = models.CharField(
@@ -60,7 +74,12 @@ class Report(NewsBaseModel):
         return len(self.quiz_options.all()) > 1
 
     def __str__(self):
-        return f'{"✅" if self.published else "🚫"} {self.created.strftime("%d.%m.%Y")} - ' \
+        emoji = '✅' if self.published else '🚫'
+
+        if Report.Type(self.type) is Report.Type.BREAKING:
+            emoji = '🚨'
+
+        return f'{emoji} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
 
     @classmethod

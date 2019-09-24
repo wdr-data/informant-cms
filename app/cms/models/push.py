@@ -33,8 +33,6 @@ class Push(Attachment):
                  (Timing.EVENING.value, '🌆 Abend'),
                  (Timing.BREAKING.value, '🚨 Breaking'),
                  (Timing.TESTING.value, '⚗️ Test')],
-        help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist der Push freigegeben,'
-                  ' so wird der Push mit dem Sichern SOFORT als Breaking-Push gesendet!',
         default=Timing.MORNING.value)
 
     published = models.BooleanField(
