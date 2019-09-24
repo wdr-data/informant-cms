@@ -133,25 +133,25 @@ class ReportAdmin(NewsBaseAdmin):
         if not obj.author:
             obj.author = request.user.get_full_name()
 
-        super().save_model(request, obj, form, change)
-
         if 'audio' in form.changed_data and obj.audio:
-            url = str(obj.audio)
+            audio_url = str(obj.audio)
 
             r = requests.post(
                 ATTACHMENT_TRIGGER_URL,
-                json={'url': url}
+                json={'url': audio_url}
             )
             if r.status_code == 200:
                 messages.success(
                     request, f'Anhang {obj.audio} wurde zu Facebook hochgeladen 👌')
 
-                super().save_model(request, obj, form, change)
-
             else:
                 messages.error(
                     request,
                     f'Anhang {obj.audio} konnte nicht zu Facebook hochgeladen werden')
+
+                obj.audio = None
+
+        super().save_model(request, obj, form, change)
 
         if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
 
