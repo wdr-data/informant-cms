@@ -14,7 +14,6 @@ from django.core.exceptions import ValidationError
 from ..models.push import Push
 from .attachment import AttachmentAdmin
 
-PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
 AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
 
 
