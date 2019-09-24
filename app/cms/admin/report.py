@@ -95,7 +95,8 @@ class ReportModelForm(NewsBaseModelForm):
 
     delivered = forms.BooleanField(
         label='Versendet',
-        help_text="Wurde diese Meldung bereits in einem Highlights-Push vom Bot versendet?",
+        help_text='Dieses Feld wird nur markiert, '
+                  'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
         disabled=True,
         required=False)
 
@@ -108,7 +109,7 @@ class ReportModelForm(NewsBaseModelForm):
 
     class Meta:
         model = Report
-        fields = ['type', 'headline', 'short_headline', 'genres', 'tags', 'media',
+        fields = ['type', 'published', 'headline', 'short_headline', 'genres', 'tags', 'media',
                   'media_original', 'media_alt', 'media_note', 'text', 'audio',
                   'link', 'created', 'published', 'delivered']
 
@@ -118,7 +119,7 @@ class ReportAdmin(NewsBaseAdmin):
     date_hierarchy = 'created'
     list_filter = ['published', 'type']
     search_fields = ['headline', 'short_headline']
-    list_display = ('published', 'type', 'headline', 'short_headline', 'created')
+    list_display = ('published',  'headline', 'short_headline', 'type', 'created')
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
 

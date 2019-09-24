@@ -52,12 +52,13 @@ class Report(NewsBaseModel):
 
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
-        help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht versendet, '
-                  'weder in terminierten Highlight-Pushes noch an Abonnenten von bestimmten '
-                  'Sportarten, Sportlern, Disziplinen etc.')
+        help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. '
+                  'Dieser Haken in Kombination mit dem Meldungstyp "Breaking" schickt'
+                  ' die Meldung beim speichern an alle Breaking-Abbonenten ab.')
 
     delivered = models.BooleanField(
-        'Versendet', null=False, default=True)
+        'Breaking Versendet', null=False, default=True,
+        help_text='Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.')
 
     author = models.CharField('Autor', max_length=200, null=False)
 
