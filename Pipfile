@@ -24,7 +24,7 @@ django-tz-detect = "*"
 raven = "*"
 django-oauth-toolkit = "*"
 django-emoji-picker = "*"
-django-s3direct = {git = "https://github.com/wdr-data/django-s3direct.git",ref = "aa3e8eca64ab11b3b4d352b91ce0ee1991683517"}
+django-s3direct = {git = "https://github.com/wdr-data/django-s3direct.git",ref = "d66bfef59c14836496fad878f6f9f6e6958adc4a"}
 dialogflow = "*"
 
 [dev-packages]
