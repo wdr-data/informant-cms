@@ -19,7 +19,7 @@ class Report(NewsBaseModel):
 
     class Meta:
         verbose_name = 'Meldung'
-        verbose_name_plural = 'Meldungen'
+        verbose_name_plural = 'Meldungen und Eilmeldungen'
         ordering = ['-created']
 
     class Type(Enum):
