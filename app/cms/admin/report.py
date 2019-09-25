@@ -21,6 +21,7 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
 ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
+BREAKING_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'breaking')
 
 
 class ReportFragmentModelForm(FragmentModelForm):
@@ -94,7 +95,8 @@ class ReportModelForm(NewsBaseModelForm):
 
     delivered = forms.BooleanField(
         label='Versendet',
-        help_text="Wurde diese Meldung bereits in einem Highlights-Push vom Bot versendet?",
+        help_text='Dieses Feld wird nur markiert, '
+                  'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
         disabled=True,
         required=False)
 
@@ -107,7 +109,7 @@ class ReportModelForm(NewsBaseModelForm):
 
     class Meta:
         model = Report
-        fields = ['headline', 'short_headline', 'genres', 'tags', 'media',
+        fields = ['type', 'published', 'headline', 'short_headline', 'genres', 'tags', 'media',
                   'media_original', 'media_alt', 'media_note', 'text', 'audio',
                   'link', 'created', 'published', 'delivered']
 
@@ -115,9 +117,9 @@ class ReportModelForm(NewsBaseModelForm):
 class ReportAdmin(NewsBaseAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
-    list_filter = ['published']
+    list_filter = ['published', 'type']
     search_fields = ['headline', 'short_headline']
-    list_display = ('published', 'headline', 'short_headline', 'created')
+    list_display = ('published',  'headline', 'short_headline', 'type', 'created')
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
 
@@ -191,6 +193,29 @@ class ReportAdmin(NewsBaseAdmin):
                     logging.error('AMP delete trigger failed: ' + r.reason)
 
             transaction.on_commit(commit_hook)
+
+        try:
+            if Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered:
+
+                def commit_hook():
+                    sleep(1)  # Wait for DB
+                    r = requests.post(
+                        url=BREAKING_TRIGGER_URL,
+                        json={
+                            'report': obj.id,
+                        }
+                    )
+
+                    if r.status_code == 200:
+                        messages.success(request, '🚨 Breaking wird jetzt gesendet...')
+
+                    else:
+                        messages.error(request, '🚨 Breaking konnte nicht gesendet werden!')
+
+                transaction.on_commit(commit_hook)
+
+        except Exception as e:
+            messages.error(request, str(e))
 
     def delete_model(self, request, obj):
         id = obj.id

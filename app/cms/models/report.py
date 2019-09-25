@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.utils import timezone
 from django.db import models
 from s3direct.fields import S3DirectField
@@ -17,8 +19,20 @@ class Report(NewsBaseModel):
 
     class Meta:
         verbose_name = 'Meldung'
-        verbose_name_plural = 'Meldungen'
+        verbose_name_plural = 'Meldungen und Eilmeldungen'
         ordering = ['-created']
+
+    class Type(Enum):
+        REGULAR = 'regular'
+        BREAKING = 'breaking'
+
+    type = models.CharField(
+        'Meldungstyp', null=False, blank=False, max_length=20,
+        choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
+                 (Type.BREAKING.value, '🚨 Breaking')],
+        help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist die Meldung freigegeben,'
+                  ' so wird die Meldung mit dem Sichern SOFORT als Breaking-Push gesendet!',
+        default=Type.REGULAR.value)
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
     short_headline = models.CharField(
@@ -38,12 +52,13 @@ class Report(NewsBaseModel):
 
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
-        help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht versendet, '
-                  'weder in terminierten Highlight-Pushes noch an Abonnenten von bestimmten '
-                  'Sportarten, Sportlern, Disziplinen etc.')
+        help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. '
+                  'Dieser Haken in Kombination mit dem Meldungstyp "Breaking" schickt'
+                  ' die Meldung beim speichern an alle Breaking-Abbonenten ab.')
 
     delivered = models.BooleanField(
-        'Versendet', null=False, default=True)
+        'Breaking Versendet', null=False, default=True,
+        help_text='Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.')
 
     author = models.CharField('Autor', max_length=200, null=False)
 
@@ -60,7 +75,12 @@ class Report(NewsBaseModel):
         return len(self.quiz_options.all()) > 1
 
     def __str__(self):
-        return f'{"✅" if self.published else "🚫"} {self.created.strftime("%d.%m.%Y")} - ' \
+        emoji = '✅' if self.published else '🚫'
+
+        if Report.Type(self.type) is Report.Type.BREAKING:
+            emoji = '🚨'
+
+        return f'{emoji} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
 
     @classmethod

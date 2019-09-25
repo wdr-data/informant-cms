@@ -14,11 +14,16 @@ from django.core.exceptions import ValidationError
 from ..models.push import Push
 from .attachment import AttachmentAdmin
 
-PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
 AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
 
 
 class PushModelForm(forms.ModelForm):
+    timing = forms.ChoiceField(
+        required=True,
+        label="Zeitpunkt",
+        choices=[(Push.Timing.MORNING.value, '🌇 Morgen'),
+                 (Push.Timing.EVENING.value, '🌆 Abend')],
+        help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
         required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=1000)
     outro = forms.CharField(
@@ -91,26 +96,6 @@ class PushAdmin(AttachmentAdmin):
         elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             transaction.on_commit(update_index)
 
-        try:
-            if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
-
-                def commit_hook():
-                    sleep(1)  # Wait for DB
-                    r = requests.post(
-                        url=PUSH_TRIGGER_URL,
-                        json={'timing': Push.Timing.BREAKING.value}
-                    )
-
-                    if r.status_code == 200:
-                        messages.success(request, '🚨 Breaking wird jetzt gesendet...')
-
-                    else:
-                        messages.error(request, '🚨 Breaking konnte nicht gesendet werden!')
-
-                transaction.on_commit(commit_hook)
-
-        except Exception as e:
-            messages.error(request, str(e))
 
     def delete_model(self, request, obj):
         try:
