@@ -118,10 +118,24 @@ class ReportAdmin(NewsBaseAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
     list_filter = ['published', 'type']
-    search_fields = ['headline', 'short_headline']
-    list_display = ('published',  'headline', 'short_headline', 'type', 'created')
+    search_fields = ['headline']
+    list_display = ('typ_status' , 'headline', 'short_headline', 'created',)
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
+
+    def typ_status(self, obj):
+        if Report.Type(obj.type) == Report.Type.BREAKING and obj.published == False:
+            display = '🚨'
+        else:
+            display = '📰'
+        if not obj.published:
+            display += ' -  ✏️'
+        elif not obj.delivered:
+            display += ' -  ✅'
+        elif obj.delivered:
+            display += ' -  📤'
+
+        return display
 
     def save_model(self, request, obj, form, change):
         obj.modified = timezone.now()
