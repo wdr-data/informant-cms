@@ -94,10 +94,9 @@ class ReportModelForm(NewsBaseModelForm):
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
     delivered = forms.BooleanField(
-        label='Versendet',
+        label='Breaking erfolgreich versendet',
         help_text='Dieses Feld wird nur markiert, '
                   'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
-        disabled=True,
         required=False)
 
     media_alt = forms.CharField(
@@ -111,7 +110,7 @@ class ReportModelForm(NewsBaseModelForm):
         model = Report
         fields = ['type', 'published', 'headline', 'short_headline', 'genres', 'tags', 'media',
                   'media_original', 'media_alt', 'media_note', 'text', 'audio',
-                  'link', 'created', 'published', 'delivered']
+                  'link']
 
 
 class ReportAdmin(NewsBaseAdmin):
