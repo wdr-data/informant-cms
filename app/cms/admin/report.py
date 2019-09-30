@@ -128,11 +128,12 @@ class ReportAdmin(NewsBaseAdmin):
         else:
             display = '📰'
         if not obj.published:
-            display += ' -  ✏️'
+            display += '✏️'
         elif not obj.delivered:
-            display += ' -  ✅'
-        elif obj.delivered:
-            display += ' -  📤'
+            display += '✅'
+
+        if obj.delivered:
+            display += '📤'
 
         return display
 
