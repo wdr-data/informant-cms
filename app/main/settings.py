@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'emoji_picker',
     's3direct',
+    'admin_object_actions',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'tz_detect.middleware.TimezoneMiddleware',
+    'crum.CurrentRequestUserMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -88,7 +90,7 @@ ROOT_URLCONF = 'main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['app/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

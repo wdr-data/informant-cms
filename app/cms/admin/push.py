@@ -10,10 +10,12 @@ from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultipl
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
+from crum import get_current_request
 
 from ..models.push import Push
 from .attachment import AttachmentAdmin
 
+PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
 AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
 
 
@@ -35,9 +37,7 @@ class PushModelForm(forms.ModelForm):
 
     class Meta:
         model = Push
-        fields = ('pub_date', 'timing', 'headline', 'intro', 'reports',
-                  'outro', 'media', 'media_original', 'media_alt', 'media_note',
-                  'published', 'delivered')
+        exclude = ()
 
     def clean(self):
         """Validate number of reports"""
@@ -49,12 +49,60 @@ class PushModelForm(forms.ModelForm):
 
 class PushAdmin(AttachmentAdmin):
     form = PushModelForm
+    fields = (
+        'display_object_actions_detail', 'pub_date', 'timing', 'headline', 'intro', 'reports',
+        'outro', 'media', 'media_original', 'media_alt', 'media_note', 'published', 'delivered',
+    )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
     search_fields = ['headline']
-    list_display = ('published', 'pub_date', 'timing', 'headline', 'delivered')
+    list_display = (
+        'published', 'pub_date', 'timing', 'headline', 'delivered', 'display_object_actions_list',
+    )
+    readonly_fields = (
+        'display_object_actions_detail',
+    )
     list_display_links = ('pub_date', )
-    ordering = ('-pub_date',)
+    ordering = ('-pub_date', )
+
+    def display_object_actions_list(self, obj=None):
+        return self.display_object_actions(obj, list_only=True)
+    display_object_actions_list.short_description = 'Aktionen'
+
+    def display_object_actions_detail(self, obj=None):
+        return self.display_object_actions(obj, detail_only=True)
+    display_object_actions_detail.short_description = 'Aktionen'
+
+    object_actions = [
+        {
+            'slug': 'preview-push',
+            'verbose_name': 'Testen',
+            'verbose_name_past': 'getestet',
+            'form_method': 'GET',
+            'function': 'preview',
+        },
+    ]
+
+    def preview(self, obj, form):
+        request = get_current_request()
+
+        error_message = 'Bitte trage deine PSID in deinem Profil ein'
+        try:
+            if not request.user.profile.psid:
+                raise Exception(error_message)
+        except:
+            raise Exception(error_message)
+
+        r = requests.post(
+            url=PUSH_TRIGGER_URL,
+            json={
+                'push': obj.id,
+                'preview': request.user.profile.psid,
+            }
+        )
+
+        if not r.ok:
+            raise Exception('Nicht erfolgreich')
 
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):
         if db_field.name in ('reports', ):

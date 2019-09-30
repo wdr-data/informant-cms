@@ -30,8 +30,8 @@ class Report(NewsBaseModel):
         'Meldungstyp', null=False, blank=False, max_length=20,
         choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
                  (Type.BREAKING.value, '🚨 Breaking')],
-        help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist die Meldung freigegeben,'
-                  ' so wird die Meldung mit dem Sichern SOFORT als Breaking-Push gesendet!',
+        help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, '
+                  'kann sie als Breaking versendet werden.',
         default=Type.REGULAR.value)
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
