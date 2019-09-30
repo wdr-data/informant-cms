@@ -123,7 +123,7 @@ class ReportAdmin(NewsBaseAdmin):
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
 
     def typ_status(self, obj):
-        if Report.Type(obj.type) == Report.Type.BREAKING and obj.published == False:
+        if Report.Type(obj.type) == Report.Type.BREAKING:
             display = '🚨'
         else:
             display = '📰'
