@@ -57,7 +57,7 @@ class Report(NewsBaseModel):
                   ' die Meldung beim speichern an alle Breaking-Abbonenten ab.')
 
     delivered = models.BooleanField(
-        'Breaking Versendet', null=False, default=True,
+        'Breaking Versendet', null=False, default=False,
         help_text='Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.')
 
     author = models.CharField('Autor', max_length=200, null=False)
