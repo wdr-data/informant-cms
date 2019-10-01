@@ -10,7 +10,11 @@ def make_serializer(reqire_published=False):
         reports = SerializerMethodField()
 
         def get_reports(self, obj):
-            reports_queryset = obj.reports.filter(published=reqire_published)
+            if reqire_published:
+                reports_queryset = obj.reports.filter(published=True)
+            else:
+                reports_queryset = obj.reports.all()
+
             serializer = ReportSerializer(
                 instance=reports_queryset, many=True, read_only=True, context=self.context)
             return serializer.data
