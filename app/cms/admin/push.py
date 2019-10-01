@@ -10,6 +10,7 @@ from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultipl
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
+from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from crum import get_current_request
 
 from ..models.push import Push
@@ -47,7 +48,7 @@ class PushModelForm(forms.ModelForm):
         return self.cleaned_data
 
 
-class PushAdmin(AttachmentAdmin):
+class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     form = PushModelForm
     fields = (
         'display_object_actions_detail', 'pub_date', 'timing', 'headline', 'intro', 'reports',
