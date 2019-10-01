@@ -53,8 +53,8 @@ class Report(NewsBaseModel):
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
         help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. '
-                  'Dieser Haken in Kombination mit dem Meldungstyp "Breaking" schickt'
-                  ' die Meldung beim speichern an alle Breaking-Abbonenten ab.')
+                  'Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking"'
+                  ' an alle Breaking-Abonnenten senden zu können.')
 
     delivered = models.BooleanField(
         'Breaking Versendet', null=False, default=False,
