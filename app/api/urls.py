@@ -3,7 +3,7 @@ from rest_framework import routers
 from django.conf.urls import url, include
 
 router = routers.DefaultRouter()
-router.register(r'reports/fragments', fragments.ReportFragmentViewSet)
+router.register(r'reports/fragments', fragments.ReportFragmentViewSet, basename='report fragment')
 router.register(r'quiz', quiz.ReportQuizViewSet)
 router.register(r'reports', reports.ReportViewSet, basename='reports')
 router.register(r'genres', genres.GenreViewSet)

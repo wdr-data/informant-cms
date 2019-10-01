@@ -47,7 +47,12 @@ class ReportFragmentSerializer(serializers.ModelSerializer):
 
 
 class ReportFragmentViewSet(BaseFragmentViewSet):
-    queryset = ReportFragment.objects.all().order_by('id')
+    def get_queryset(self):
+        if self.request.user and self.request.user.is_authenticated:
+            return ReportFragment.objects.all().order_by('id')
+        else:
+            return ReportFragment.objects.filter(report__published=True).order_by('id')
+
     serializer_class = ReportFragmentSerializer
     filter_fields = ('report',)
     fragment_group_field = 'report'

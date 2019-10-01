@@ -5,27 +5,43 @@ from .reports import ReportSerializer
 from rest_framework import serializers, viewsets
 
 
-class PushSerializer(serializers.ModelSerializer):
-    reports = SerializerMethodField()
+def make_serializer(reqire_published=False):
+    class PushSerializer(serializers.ModelSerializer):
+        reports = SerializerMethodField()
 
-    def get_reports(self, obj):
-        reports_queryset = obj.reports.filter(published=True)
-        serializer = ReportSerializer(
-            instance=reports_queryset, many=True, read_only=True, context=self.context)
-        return serializer.data
+        def get_reports(self, obj):
+            if reqire_published:
+                reports_queryset = obj.reports.filter(published=True)
+            else:
+                reports_queryset = obj.reports.all()
 
-    class Meta:
-        model = Push
-        fields = (
-            'id', 'pub_date', 'timing', 'published', 'delivered', 'delivered_date',
-            'headline', 'intro', 'reports', 'outro',
-            'media', 'media_original', 'media_alt', 'media_note',
-        )
+            serializer = ReportSerializer(
+                instance=reports_queryset, many=True, read_only=True, context=self.context)
+            return serializer.data
+
+        class Meta:
+            model = Push
+            fields = (
+                'id', 'pub_date', 'timing', 'published', 'delivered', 'delivered_date',
+                'headline', 'intro', 'reports', 'outro',
+                'media', 'media_original', 'media_alt', 'media_note',
+            )
+
+    return PushSerializer
+
+
+PushSerializerPublished = make_serializer(reqire_published=True)
+PushSerializerAny = make_serializer(reqire_published=False)
 
 
 class PushViewSet(viewsets.ModelViewSet):
-    serializer_class = PushSerializer
     filter_fields = ('published', 'delivered', 'pub_date', 'timing')
+
+    def get_serializer_class(self):
+        if self.request.user and self.request.user.is_authenticated:
+            return PushSerializerAny
+        else:
+            return PushSerializerPublished
 
     def get_queryset(self):
         if self.request.user and self.request.user.is_authenticated:
