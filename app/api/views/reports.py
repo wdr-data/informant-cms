@@ -15,15 +15,22 @@ class ReportSerializer(ModelSerializerWithFragments):
 
     class Meta:
         model = Report
-        fields = ('id', 'created', 'published_date', 'modified', 'is_quiz', 'genres',
-                  'tags', 'headline', 'short_headline', 'audio', 'text',
-                  'media', 'media_original', 'media_alt', 'media_note', 'link', 'published', 'delivered', 'author')
+        fields = (
+            'id', 'type', 'created', 'published_date', 'modified', 'is_quiz', 'genres',
+            'tags', 'headline', 'short_headline', 'audio', 'text', 'media', 'media_original',
+            'media_alt', 'media_note', 'link', 'published', 'delivered', 'author',
+        )
 
 
 class ReportViewSet(ModelViewSetWithFragments):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Report.objects.filter(published=True).order_by('-created')
     serializer_class = ReportSerializer
     filter_fields = ('genres', 'tags')
+
+    def get_queryset(self):
+        if self.request.user and self.request.user.is_authenticated:
+            return Report.objects.order_by('-created')
+        else:
+            return Report.objects.filter(published=True).order_by('-created')

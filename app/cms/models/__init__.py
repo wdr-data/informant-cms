@@ -6,6 +6,7 @@ from .faq import *
 from .wiki import *
 from .subscription import *
 from .tag import *
+from .profile import *
 
 from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
 

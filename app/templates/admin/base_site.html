@@ -1,0 +1,10 @@
+{% extends 'admin/base_site.html' %}
+
+{% block userlinks %}
+    {{ block.super }}
+    {% if user.profile %}
+    / <a href="{% url 'admin:cms_profile_change' object_id=user.profile.pk %}" >PROFIL</a>
+    {% else %}
+    / <a href="{% url 'admin:cms_profile_add' %}" >PROFIL</a>
+    {% endif %}
+{% endblock %}

@@ -11,6 +11,8 @@ from emoji_picker.widgets import EmojiPickerTextInputAdmin
 from tags_input import admin as tags_input_admin
 import requests
 from django.db import transaction
+from admin_object_actions.admin import ModelAdminObjectActionsMixin
+from crum import get_current_request
 
 from ..models.report import Report, ReportFragment, ReportQuiz
 from .attachment import AttachmentAdmin
@@ -21,6 +23,7 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
 ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
+BREAKING_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'breaking')
 
 
 class ReportFragmentModelForm(FragmentModelForm):
@@ -93,9 +96,9 @@ class ReportModelForm(NewsBaseModelForm):
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
     delivered = forms.BooleanField(
-        label='Versendet',
-        help_text="Wurde diese Meldung bereits in einem Highlights-Push vom Bot versendet?",
-        disabled=True,
+        label='Breaking erfolgreich versendet',
+        help_text='Dieses Feld wird nur markiert, '
+                  'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
         required=False)
 
     media_alt = forms.CharField(
@@ -107,19 +110,111 @@ class ReportModelForm(NewsBaseModelForm):
 
     class Meta:
         model = Report
-        fields = ['headline', 'short_headline', 'genres', 'tags', 'media',
-                  'media_original', 'media_alt', 'media_note', 'text', 'audio',
-                  'link', 'created', 'published', 'delivered']
+        exclude = ()
 
 
-class ReportAdmin(NewsBaseAdmin):
+class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
     date_hierarchy = 'created'
-    list_filter = ['published']
-    search_fields = ['headline', 'short_headline']
-    list_display = ('published', 'headline', 'short_headline', 'created')
+    list_filter = ['published', 'type']
+    search_fields = ['headline']
+    list_display = (
+        'typ_status' ,
+        'headline',
+        'short_headline',
+        'created',
+        'display_object_actions_list',
+    )
+    fields = (
+        'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline',
+        'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text', 'audio',
+        'link',
+    )
+    readonly_fields = (
+        'display_object_actions_detail',
+    )
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
+
+    def display_object_actions_list(self, obj=None):
+        return self.display_object_actions(obj, list_only=True)
+    display_object_actions_list.short_description = 'Aktionen'
+
+    def display_object_actions_detail(self, obj=None):
+        return self.display_object_actions(obj, detail_only=True)
+    display_object_actions_detail.short_description = 'Aktionen'
+
+    object_actions = [
+        {
+            'slug': 'preview-report',
+            'verbose_name': 'Testen',
+            'verbose_name_past': 'getestet',
+            'form_method': 'GET',
+            'function': 'preview',
+        },
+        {
+            'slug': 'breaking-report',
+            'verbose_name': '🚨 Jetzt als Breaking senden',
+            'verbose_name_past': 'als Breaking gesendet',
+            'form_method': 'GET',
+            'function': 'send_breaking',
+            'permission': 'send_breaking',
+        },
+    ]
+
+    def preview(self, obj, form):
+        request = get_current_request()
+
+        error_message = 'Bitte trage deine PSID in deinem Profil ein'
+        try:
+            if not request.user.profile.psid:
+                raise Exception(error_message)
+        except:
+            raise Exception(error_message)
+
+        r = requests.post(
+            url=BREAKING_TRIGGER_URL,
+            json={
+                'report': obj.id,
+                'preview': request.user.profile.psid,
+            }
+        )
+
+        if not r.ok:
+            raise Exception('Nicht erfolgreich')
+
+    def has_send_breaking_permission(self, request, obj=None):
+        return Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered
+
+    def send_breaking(self, obj, form):
+        if Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered:
+            r = requests.post(
+                url=BREAKING_TRIGGER_URL,
+                json={
+                    'report': obj.id,
+                }
+            )
+
+            if not r.ok:
+                raise Exception('Nicht erfolgreich')
+        else:
+            raise Exception('Nicht erlaubt')
+
+    def typ_status(self, obj):
+        if Report.Type(obj.type) == Report.Type.BREAKING:
+            display = '🚨'
+        else:
+            display = '📰'
+
+        if not obj.published:
+            display += '✏️'
+        else:
+            display += '✅'
+
+        if obj.delivered:
+            display += '📤'
+
+        return display
 
     def save_model(self, request, obj, form, change):
         obj.modified = timezone.now()

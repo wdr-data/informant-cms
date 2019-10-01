@@ -10,6 +10,8 @@ from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultipl
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
+from admin_object_actions.admin import ModelAdminObjectActionsMixin
+from crum import get_current_request
 
 from ..models.push import Push
 from .attachment import AttachmentAdmin
@@ -19,6 +21,12 @@ AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIn
 
 
 class PushModelForm(forms.ModelForm):
+    timing = forms.ChoiceField(
+        required=True,
+        label="Zeitpunkt",
+        choices=[(Push.Timing.MORNING.value, '🌇 Morgen'),
+                 (Push.Timing.EVENING.value, '🌆 Abend')],
+        help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
         required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=1000)
     outro = forms.CharField(
@@ -30,9 +38,7 @@ class PushModelForm(forms.ModelForm):
 
     class Meta:
         model = Push
-        fields = ('pub_date', 'timing', 'headline', 'intro', 'reports',
-                  'outro', 'media', 'media_original', 'media_alt', 'media_note',
-                  'published', 'delivered')
+        exclude = ()
 
     def clean(self):
         """Validate number of reports"""
@@ -42,14 +48,62 @@ class PushModelForm(forms.ModelForm):
         return self.cleaned_data
 
 
-class PushAdmin(AttachmentAdmin):
+class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     form = PushModelForm
+    fields = (
+        'display_object_actions_detail', 'pub_date', 'timing', 'headline', 'intro', 'reports',
+        'outro', 'media', 'media_original', 'media_alt', 'media_note', 'published', 'delivered',
+    )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
     search_fields = ['headline']
-    list_display = ('published', 'pub_date', 'timing', 'headline', 'delivered')
+    list_display = (
+        'published', 'pub_date', 'timing', 'headline', 'delivered', 'display_object_actions_list',
+    )
+    readonly_fields = (
+        'display_object_actions_detail',
+    )
     list_display_links = ('pub_date', )
-    ordering = ('-pub_date',)
+    ordering = ('-pub_date', )
+
+    def display_object_actions_list(self, obj=None):
+        return self.display_object_actions(obj, list_only=True)
+    display_object_actions_list.short_description = 'Aktionen'
+
+    def display_object_actions_detail(self, obj=None):
+        return self.display_object_actions(obj, detail_only=True)
+    display_object_actions_detail.short_description = 'Aktionen'
+
+    object_actions = [
+        {
+            'slug': 'preview-push',
+            'verbose_name': 'Testen',
+            'verbose_name_past': 'getestet',
+            'form_method': 'GET',
+            'function': 'preview',
+        },
+    ]
+
+    def preview(self, obj, form):
+        request = get_current_request()
+
+        error_message = 'Bitte trage deine PSID in deinem Profil ein'
+        try:
+            if not request.user.profile.psid:
+                raise Exception(error_message)
+        except:
+            raise Exception(error_message)
+
+        r = requests.post(
+            url=PUSH_TRIGGER_URL,
+            json={
+                'push': obj.id,
+                'preview': request.user.profile.psid,
+            }
+        )
+
+        if not r.ok:
+            raise Exception('Nicht erfolgreich')
 
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):
         if db_field.name in ('reports', ):
@@ -91,26 +145,6 @@ class PushAdmin(AttachmentAdmin):
         elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             transaction.on_commit(update_index)
 
-        try:
-            if obj.timing == Push.Timing.BREAKING.value and obj.published and not obj.delivered:
-
-                def commit_hook():
-                    sleep(1)  # Wait for DB
-                    r = requests.post(
-                        url=PUSH_TRIGGER_URL,
-                        json={'timing': Push.Timing.BREAKING.value}
-                    )
-
-                    if r.status_code == 200:
-                        messages.success(request, '🚨 Breaking wird jetzt gesendet...')
-
-                    else:
-                        messages.error(request, '🚨 Breaking konnte nicht gesendet werden!')
-
-                transaction.on_commit(commit_hook)
-
-        except Exception as e:
-            messages.error(request, str(e))
 
     def delete_model(self, request, obj):
         try:
