@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 from django.conf.urls.static import static
 from django.conf import settings
 from api.urls import router
@@ -23,6 +24,7 @@ import cms.views as cms_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^$', RedirectView.as_view(url='/admin')),
     url(r'^tags_input/', include(('tags_input.urls', 'tags_input'), namespace='tags_input')),
     url(r'^api-docs/', include('rest_framework.urls')),
     url(r'^api/v1/', include(router.urls)),
