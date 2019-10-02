@@ -28,6 +28,7 @@ django-s3direct = {git = "https://github.com/wdr-data/django-s3direct.git",ref =
 dialogflow = "*"
 django-admin-object-actions = "*"
 django-crum = "*"
+httpx = "*"
 
 [dev-packages]
 ansible = "*"
@@ -36,4 +37,4 @@ boto = "*"
 pylint = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

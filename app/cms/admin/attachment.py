@@ -1,13 +1,21 @@
+import asyncio
 import logging
 import os
 import requests
 from posixpath import join as urljoin
 
+import httpx
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
 
-ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
+ATTACHMENT_TRIGGER_URLS = [
+    urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment'),
+]
+
+if 'BOT_SERVICE_ENDPOINT_OLD' in os.environ:
+    ATTACHMENT_TRIGGER_URLS.append(urljoin(os.environ['BOT_SERVICE_ENDPOINT_OLD'], 'attachment'))
+
 IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
 
 
@@ -73,12 +81,23 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                     super().save_model(request, obj, form, change)
                     return
 
-                r = requests.post(
-                    ATTACHMENT_TRIGGER_URL,
-                    json={'url': url}
-                )
+                async def trigger_attachments():
+                    async with httpx.AsyncClient() as client:
+                        coroutines = [
+                            client.post(trigger, json={'url': url})
+                            for trigger in ATTACHMENT_TRIGGER_URLS
+                        ]
+                        results = await asyncio.gather(*coroutines, return_exceptions=True)
+                        return results
 
-                if r.status_code == 200:
+                results = asyncio.run(trigger_attachments())
+
+                for result in results:
+                    if isinstance(result, Exception):
+                        print(results)
+                        raise result
+
+                if all(result.status_code == 200 for results in results):
                     messages.success(
                         request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
 
@@ -87,6 +106,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                     super().save_model(request, obj, form, change)
 
                 else:
+                    print(results)
                     messages.error(
                         request,
                         f'Anhang {obj.media_original} konnte nicht zu Facebook hochgeladen werden')
