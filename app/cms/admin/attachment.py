@@ -84,7 +84,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                 async def trigger_attachments():
                     async with httpx.AsyncClient() as client:
                         coroutines = [
-                            client.post(trigger, json={'url': url})
+                            client.post(trigger, json={'url': url}, timeout=25.0)
                             for trigger in ATTACHMENT_TRIGGER_URLS
                         ]
                         results = await asyncio.gather(*coroutines, return_exceptions=True)
