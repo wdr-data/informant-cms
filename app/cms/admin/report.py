@@ -1,3 +1,4 @@
+import asyncio
 import os
 import logging
 from posixpath import join as urljoin
@@ -15,14 +16,13 @@ from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from crum import get_current_request
 
 from ..models.report import Report, ReportFragment, ReportQuiz
-from .attachment import AttachmentAdmin
+from .attachment import AttachmentAdmin, trigger_attachments
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .quiz import QuizModelForm, QuizAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
-ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
 BREAKING_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'breaking')
 
 
@@ -240,12 +240,9 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                 obj.audio = None
 
             else:
-                r = requests.post(
-                    ATTACHMENT_TRIGGER_URL,
-                    json={'url': audio_url}
-                )
+                success = trigger_attachments(audio_url)
 
-                if r.status_code == 200:
+                if success:
                     messages.success(
                         request, f'Anhang {obj.audio} wurde zu Facebook hochgeladen 👌')
 

@@ -1,14 +1,45 @@
+import asyncio
 import logging
 import os
 import requests
 from posixpath import join as urljoin
 
+import httpx
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
+from raven.contrib.django.raven_compat.models import client
 
-ATTACHMENT_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment')
+ATTACHMENT_TRIGGER_URLS = [
+    urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment'),
+]
+
+if 'BOT_SERVICE_ENDPOINT_OLD' in os.environ:
+    ATTACHMENT_TRIGGER_URLS.append(urljoin(os.environ['BOT_SERVICE_ENDPOINT_OLD'], 'attachment'))
+
 IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
+
+
+async def _trigger_attachments(url):
+    async with httpx.AsyncClient() as client:
+        coroutines = [
+            client.post(trigger, json={'url': url}, timeout=26.0)
+            for trigger in ATTACHMENT_TRIGGER_URLS
+        ]
+        results = await asyncio.gather(*coroutines, return_exceptions=True)
+        return results
+
+
+def trigger_attachments(url):
+    results = asyncio.run(_trigger_attachments(url))
+
+    failed = False
+    for result in results:
+        if isinstance(result, Exception):
+            failed = True
+            client.captureException(result)
+
+    return not failed and all(result.status_code == 200 for results in results)
 
 
 class AdminDisplayImageWidget(AdminFileWidget):
@@ -56,7 +87,9 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 
-        if 'media_original' in form.changed_data or 'media_note' in form.changed_data:
+        if ('media_original' in form.changed_data
+                or 'media_note' in form.changed_data
+                or obj.media_original and not obj.media):
             try:
                 path, url = obj.process_attachment()
 
@@ -71,12 +104,9 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                     super().save_model(request, obj, form, change)
                     return
 
-                r = requests.post(
-                    ATTACHMENT_TRIGGER_URL,
-                    json={'url': url}
-                )
+                success = trigger_attachments(url)
 
-                if r.status_code == 200:
+                if success:
                     messages.success(
                         request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
 
@@ -109,12 +139,9 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                         super().save_formset(request, form, formset, change)
                         return
 
-                    r = requests.post(
-                        ATTACHMENT_TRIGGER_URL,
-                        json={'url': url}
-                    )
+                    success = trigger_attachments(url)
 
-                    if r.status_code == 200:
+                    if success:
                         messages.success(
                             request,
                             f'Anhang {form_.instance.media_original} wurde zu Facebook '
