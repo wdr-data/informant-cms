@@ -56,7 +56,9 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 
-        if 'media_original' in form.changed_data or 'media_note' in form.changed_data:
+        if ('media_original' in form.changed_data
+                or 'media_note' in form.changed_data
+                or obj.media_original and not obj.media):
             try:
                 path, url = obj.process_attachment()
 
