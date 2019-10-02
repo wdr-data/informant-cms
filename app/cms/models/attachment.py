@@ -3,6 +3,7 @@ import logging
 from io import BytesIO
 from os.path import dirname, abspath
 from pathlib import Path
+from urllib.parse import unquote
 
 from django.db import models
 from django.core.files.storage import default_storage
@@ -36,7 +37,7 @@ class Attachment(models.Model):
 
         original_url = str(self.media_original)
 
-        filename = original_url.split('/')[-1]
+        filename = unquote(original_url.split('/')[-1])
 
         if not (filename.lower().endswith('.png')
                 or filename.lower().endswith('.jpg')
