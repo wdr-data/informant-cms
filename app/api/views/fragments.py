@@ -92,28 +92,35 @@ class ModelViewSetWithFragments(viewsets.ModelViewSet):
         kwargs['with_fragments'] = bool(
             strtobool(self.request.query_params.get('withFragments', 'no'))
         )
+        kwargs['all_fragments'] = bool(
+            strtobool(self.request.query_params.get('allFragments', 'no'))
+        )
         return super().get_serializer(*args, **kwargs)
 
 
 class ModelSerializerWithFragments(serializers.ModelSerializer):
 
-    def __init__(self, *args, with_fragments=False, **kwargs):
+    def __init__(self, *args, with_fragments=False, all_fragments=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.with_fragments = with_fragments
+        self.all_fragments = all_fragments
 
     def to_representation(self, obj):
         rep = super().to_representation(obj)
-        if not self.with_fragments:
+        if not self.with_fragments and not self.all_fragments:
             return rep
 
         serializer = self.fragment_serializer_class(many=True, read_only=True)
         fragments = obj.fragments.all()
 
-        next_fragments = []
-        for fragment in fragments:
-            next_fragments.append(fragment)
-            if fragment.question:
-                break
+        if self.all_fragments:
+            next_fragments = list(fragments)
+        else:
+            next_fragments = []
+            for fragment in fragments:
+                next_fragments.append(fragment)
+                if fragment.question:
+                    break
 
         rep['next_fragments'] = serializer.to_representation(next_fragments)
         return rep
