@@ -2,6 +2,7 @@ import os
 import logging
 from posixpath import join as urljoin
 from time import sleep
+from datetime import date
 
 from django.contrib import admin, messages
 from django.db import transaction
@@ -18,6 +19,7 @@ from .attachment import AttachmentAdmin
 
 PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
 AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
+MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
 
 class PushModelForm(forms.ModelForm):
@@ -82,6 +84,14 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             'form_method': 'GET',
             'function': 'preview',
         },
+        {
+            'slug': 'manual-push',
+            'verbose_name': 'Manuell senden',
+            'verbose_name_past': 'gesendet',
+            'form_method': 'GET',
+            'function': 'send_manual',
+            'permission': 'send_manual',
+        },
     ]
 
     def preview(self, obj, form):
@@ -104,6 +114,29 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
 
         if not r.ok:
             raise Exception('Nicht erfolgreich')
+
+    def send_manual(self, obj, form):
+        r = requests.post(
+            url=PUSH_TRIGGER_URL,
+            json={
+                'push': obj.id,
+                'manual': True,
+            }
+        )
+
+        if not r.ok:
+            raise Exception('Nicht erfolgreich')
+
+    def has_send_manual_permission(self, request, obj=None):
+        return (
+            obj.published and
+            not obj.delivered and
+            obj.pub_date == date.today() and
+            (
+                request.user.is_superuser or
+                any(group.name == MANUAL_PUSH_GROUP for group in request.user.groups.all())
+            )
+        )
 
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):
         if db_field.name in ('reports', ):
