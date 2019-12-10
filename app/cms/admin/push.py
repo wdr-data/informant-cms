@@ -12,6 +12,7 @@ from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
+from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 
 from ..models.push import Push
@@ -48,6 +49,31 @@ class PushModelForm(forms.ModelForm):
         if len(reports) > 4:
             raise ValidationError("Ein Push darf nicht mehr als 4 Meldungen enthalten!")
         return self.cleaned_data
+
+
+class SendManualForm(AdminObjectActionForm):
+
+    confirm = forms.BooleanField(
+        required=True,
+        help_text='Nur manuell senden, falls ein Push nicht automatisch versendet wurde, weil er z. B. nicht rechtzeitig freigegeben wurde.',
+        label='Ja, ich möchte wirklich den Push manuell versenden',
+    )
+
+    class Meta:
+        model = Push
+        fields = ()
+
+    def do_object_action(self):
+        r = requests.post(
+            url=PUSH_TRIGGER_URL,
+            json={
+                'push': self.instance.id,
+                'manual': True,
+            }
+        )
+
+        if not r.ok:
+            raise Exception('Nicht erfolgreich')
 
 
 class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
@@ -88,8 +114,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             'slug': 'manual-push',
             'verbose_name': 'Manuell senden',
             'verbose_name_past': 'gesendet',
-            'form_method': 'GET',
-            'function': 'send_manual',
+            'form_class': SendManualForm,
             'permission': 'send_manual',
         },
     ]
@@ -109,18 +134,6 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             json={
                 'push': obj.id,
                 'preview': request.user.profile.psid,
-            }
-        )
-
-        if not r.ok:
-            raise Exception('Nicht erfolgreich')
-
-    def send_manual(self, obj, form):
-        r = requests.post(
-            url=PUSH_TRIGGER_URL,
-            json={
-                'push': obj.id,
-                'manual': True,
             }
         )
 
