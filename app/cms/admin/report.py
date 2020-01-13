@@ -119,10 +119,11 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     list_filter = ['published', 'type']
     search_fields = ['headline']
     list_display = (
-        'typ_status' ,
+        'typ_status',
         'headline',
         'short_headline',
         'created',
+        'assets',
         'display_object_actions_list',
     )
     fields = (
@@ -215,6 +216,19 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display += '📤'
 
         return display
+
+    def assets(self, obj):
+        assets = ''
+        if obj.media and str(obj.media) != '':
+            assets = '🖼️'
+
+        if obj.link and str(obj.link) != '':
+            assets += '🔗️'
+
+        if obj.audio and str(obj.audio) != '':
+            assets += '🔊'
+
+        return assets
 
     def save_model(self, request, obj, form, change):
         obj.modified = timezone.now()
