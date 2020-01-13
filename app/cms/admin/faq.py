@@ -38,6 +38,7 @@ class FAQModelForm(forms.ModelForm):
 
 class FAQAdmin(AttachmentAdmin):
     form = FAQModelForm
+    ordering = ('name',)
     search_fields = ['name', 'slug']
     list_display = ('name', 'slug')
     inlines = (FAQFragmentAdminInline, )
