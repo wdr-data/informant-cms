@@ -11,14 +11,13 @@ class FAQFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = FAQFragment
-        fields = ['question', 'text', 'media', 'media_original', 'media_alt',
-                  'media_note', 'link_faq']
+        fields = ['media', 'media_original', 'media_alt', 'media_note', 'text']
 
 
 class FAQFragmentAdminInline(FragmentAdminInline):
     model = FAQFragment
     form = FAQFragmentModelForm
-
+    fields = ('media', 'media_original', 'media_alt', 'media_note', 'text',)
     fk_name = 'faq'
 
 
@@ -32,8 +31,8 @@ class FAQModelForm(forms.ModelForm):
 
     class Meta:
         model = FAQ
-        fields = ['name', 'slug', 'text', 'media', 'media_original', 'media_alt',
-                  'media_note']
+        fields = ['name', 'slug', 'media', 'media_original', 'media_alt',
+                  'media_note', 'text']
 
 
 class FAQAdmin(AttachmentAdmin):
