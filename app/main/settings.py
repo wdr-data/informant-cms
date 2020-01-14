@@ -251,7 +251,7 @@ S3DIRECT_DESTINATIONS = {
         'auth': lambda u: u.is_staff,  # Default allow anybody to upload
         'cache_control': 'max-age=2592000',  # Default no cache-control
         'content_disposition': 'attachment',  # Default no content disposition
-        'content_length_range': (0, 26214400),  # Default allow any size
+        'content_length_range': (0, 5000000),  # Default allow any size
         'allow_existence_optimization': True,  # Don't re-upload files that exist on S3 already
     },
 }
