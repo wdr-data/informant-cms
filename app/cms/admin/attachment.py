@@ -21,7 +21,7 @@ IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
 
 
 async def _trigger_attachments(url):
-    async with httpx.Client() as client:
+    async with httpx.AsyncClient() as client:
         coroutines = [
             client.post(trigger, json={'url': url}, timeout=26.0)
             for trigger in ATTACHMENT_TRIGGER_URLS
