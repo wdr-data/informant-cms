@@ -17,7 +17,7 @@ class FAQFragmentModelForm(FragmentModelForm):
 class FAQFragmentAdminInline(FragmentAdminInline):
     model = FAQFragment
     form = FAQFragmentModelForm
-    fields = ('media', 'media_original', 'media_alt', 'media_note', 'text',)
+    fields = ['media', 'media_original', 'media_alt', 'media_note', 'text']
     fk_name = 'faq'
 
 

@@ -37,9 +37,7 @@ class ReportFragmentModelForm(FragmentModelForm):
 class ReportFragmentAdminInline(FragmentAdminInline):
     model = ReportFragment
     form = ReportFragmentModelForm
-    fields = (
-        'question', 'media', 'media_original', 'media_alt', 'media_note', 'text',
-    )
+    fields = ['question', 'media', 'media_original', 'media_alt', 'media_note', 'text']
     extra = 1
 
 
