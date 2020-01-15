@@ -23,8 +23,12 @@
       "description": "Initial password for the superuser",
       "value": ""
     },
-    "BOT_SERVICE_ENDPOINT": {
-      "description": "URL to the AWS Lambda service endpoint of the 'informant-bot' cloud formation",
+    "BOT_SERVICE_ENDPOINT_FB": {
+      "description": "URL to the AWS Lambda service endpoint of the 'wdraktuell-bot-fb' cloud formation",
+      "value": ""
+    },
+    "BOT_SERVICE_ENDPOINT_TG": {
+      "description": "URL to the AWS Lambda service endpoint of the 'wdraktuell-bot-fb' cloud formation",
       "value": ""
     },
     "AMP_SERVICE_ENDPOINT": {
@@ -32,9 +36,7 @@
       "value": ""
     }
   },
-  "addons": [
-    "heroku-postgresql:hobby-dev"
-  ],
+  "addons": ["heroku-postgresql:hobby-dev"],
   "buildpacks": [
     {
       "url": "heroku/python"

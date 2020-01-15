@@ -11,11 +11,10 @@ from django.utils.safestring import mark_safe
 from raven.contrib.django.raven_compat.models import client
 
 ATTACHMENT_TRIGGER_URLS = [
-    urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'attachment'),
+    urljoin(os.environ[var_name], 'attachment')
+    for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
+    if var_name in os.environ
 ]
-
-if 'BOT_SERVICE_ENDPOINT_OLD' in os.environ:
-    ATTACHMENT_TRIGGER_URLS.append(urljoin(os.environ['BOT_SERVICE_ENDPOINT_OLD'], 'attachment'))
 
 IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
 
