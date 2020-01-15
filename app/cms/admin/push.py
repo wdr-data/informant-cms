@@ -82,7 +82,7 @@ class SendManualForm(AdminObjectActionForm):
                 failed.append(push_trigger_url)
 
         if failed:
-            raise Exception(f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({', '.join(failed)})')
+            raise Exception(f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
 
 
 class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
