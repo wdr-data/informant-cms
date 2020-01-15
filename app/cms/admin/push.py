@@ -18,7 +18,11 @@ from crum import get_current_request
 from ..models.push import Push
 from .attachment import AttachmentAdmin
 
-PUSH_TRIGGER_URL = urljoin(os.environ['BOT_SERVICE_ENDPOINT'], 'push')
+PUSH_TRIGGER_URLS = [
+    urljoin(os.environ[var_name], 'push')
+    for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
+    if var_name in os.environ
+]
 AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
 MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
@@ -64,16 +68,21 @@ class SendManualForm(AdminObjectActionForm):
         fields = ()
 
     def do_object_action(self):
-        r = requests.post(
-            url=PUSH_TRIGGER_URL,
-            json={
-                'push': self.instance.id,
-                'manual': True,
-            }
-        )
+        failed = []
+        for push_trigger_url in PUSH_TRIGGER_URLS:
+            r = requests.post(
+                url=push_trigger_url,
+                json={
+                    'push': self.instance.id,
+                    'manual': True,
+                }
+            )
 
-        if not r.ok:
-            raise Exception('Nicht erfolgreich')
+            if not r.ok:
+                failed.append(push_trigger_url)
+
+        if failed:
+            raise Exception(f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({', '.join(failed)})')
 
 
 class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
@@ -122,7 +131,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     def preview(self, obj, form):
         request = get_current_request()
 
-        error_message = 'Bitte trage deine PSID in deinem Profil ein'
+        error_message = 'Bitte trage deine Facebook-PSID in deinem Profil ein'
         try:
             if not request.user.profile.psid:
                 raise Exception(error_message)
@@ -130,7 +139,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             raise Exception(error_message)
 
         r = requests.post(
-            url=PUSH_TRIGGER_URL,
+            url=os.environ['BOT_SERVICE_ENDPOINT_FB'],
             json={
                 'push': obj.id,
                 'preview': request.user.profile.psid,
