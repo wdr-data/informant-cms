@@ -205,7 +205,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                     failed.append(breaking_trigger_url)
 
             if failed:
-                raise Exception(f'Breaking für mindestens einen Bot ist fehlgeschlagen ({', '.join(failed)})')
+                raise Exception(f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
         else:
             raise Exception('Nicht erlaubt')
 
