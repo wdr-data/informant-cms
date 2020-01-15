@@ -61,8 +61,7 @@ class ReportFragmentViewSet(BaseFragmentViewSet):
 class FAQFragmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQFragment
-        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_alt', 'media_note',
-                  'link_faq', 'faq')
+        fields = ('id', 'text', 'media_original', 'media', 'media_alt', 'media_note', 'faq')
 
 
 class FAQFragmentViewSet(BaseFragmentViewSet):
