@@ -139,7 +139,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             raise Exception(error_message)
 
         r = requests.post(
-            url=os.environ['BOT_SERVICE_ENDPOINT_FB'],
+            url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'push'),
             json={
                 'push': obj.id,
                 'preview': request.user.profile.psid,

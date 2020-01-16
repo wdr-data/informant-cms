@@ -24,7 +24,7 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
 BREAKING_TRIGGER_URLS = [
-    urljoin(os.environ.get(f'{var_name}_BREAKING', var_name), 'breaking')
+    urljoin(os.environ[var_name], 'breaking')
     for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
     if var_name in os.environ
 ]
@@ -177,7 +177,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             raise Exception(error_message)
 
         r = requests.post(
-            url=os.environ['BOT_SERVICE_ENDPOINT_FB'],
+            url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'breaking'),
             json={
                 'report': obj.id,
                 'preview': request.user.profile.psid,
