@@ -11,20 +11,19 @@ class FAQFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = FAQFragment
-        fields = ['question', 'text', 'media', 'media_original', 'media_alt',
-                  'media_note', 'link_faq']
+        fields = ['media', 'media_original', 'media_alt', 'media_note', 'text']
 
 
 class FAQFragmentAdminInline(FragmentAdminInline):
     model = FAQFragment
     form = FAQFragmentModelForm
-
+    fields = ['media', 'media_original', 'media_alt', 'media_note', 'text']
     fk_name = 'faq'
 
 
 class FAQModelForm(forms.ModelForm):
     text = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=2000)
+        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
     slug = forms.CharField(
         label='Slug', help_text="Wird automatisch ausgefüllt", disabled=True,
@@ -32,12 +31,13 @@ class FAQModelForm(forms.ModelForm):
 
     class Meta:
         model = FAQ
-        fields = ['name', 'slug', 'text', 'media', 'media_original', 'media_alt',
-                  'media_note']
+        fields = ['name', 'slug', 'media', 'media_original', 'media_alt',
+                  'media_note', 'text']
 
 
 class FAQAdmin(AttachmentAdmin):
     form = FAQModelForm
+    ordering = ('name',)
     search_fields = ['name', 'slug']
     list_display = ('name', 'slug')
     inlines = (FAQFragmentAdminInline, )

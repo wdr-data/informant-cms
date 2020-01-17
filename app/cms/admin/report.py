@@ -23,8 +23,11 @@ from .news_base import NewsBaseAdmin, NewsBaseModelForm
 
 AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
 AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
-BREAKING_TRIGGER_URL = urljoin(os.environ.get('BOT_SERVICE_ENDPOINT_BREAKING', os.environ['BOT_SERVICE_ENDPOINT']), 'breaking')
-
+BREAKING_TRIGGER_URLS = [
+    urljoin(os.environ[var_name], 'breaking')
+    for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
+    if var_name in os.environ
+]
 
 class ReportFragmentModelForm(FragmentModelForm):
 
@@ -37,7 +40,7 @@ class ReportFragmentModelForm(FragmentModelForm):
 class ReportFragmentAdminInline(FragmentAdminInline):
     model = ReportFragment
     form = ReportFragmentModelForm
-
+    fields = ['question', 'media', 'media_original', 'media_alt', 'media_note', 'text']
     extra = 1
 
 
@@ -119,10 +122,11 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     list_filter = ['published', 'type']
     search_fields = ['headline']
     list_display = (
-        'typ_status' ,
+        'typ_status',
         'headline',
         'short_headline',
         'created',
+        'assets',
         'display_object_actions_list',
     )
     fields = (
@@ -165,7 +169,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def preview(self, obj, form):
         request = get_current_request()
 
-        error_message = 'Bitte trage deine PSID in deinem Profil ein'
+        error_message = 'Bitte trage deine Facebook-PSID in deinem Profil ein'
         try:
             if not request.user.profile.psid:
                 raise Exception(error_message)
@@ -173,7 +177,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             raise Exception(error_message)
 
         r = requests.post(
-            url=BREAKING_TRIGGER_URL,
+            url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'breaking'),
             json={
                 'report': obj.id,
                 'preview': request.user.profile.psid,
@@ -188,15 +192,20 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
     def send_breaking(self, obj, form):
         if Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered:
-            r = requests.post(
-                url=BREAKING_TRIGGER_URL,
-                json={
-                    'report': obj.id,
-                }
-            )
+            failed = []
+            for breaking_trigger_url in BREAKING_TRIGGER_URLS:
+                r = requests.post(
+                    url=breaking_trigger_url,
+                    json={
+                        'report': obj.id,
+                    }
+                )
 
-            if not r.ok:
-                raise Exception('Nicht erfolgreich')
+                if not r.ok:
+                    failed.append(breaking_trigger_url)
+
+            if failed:
+                raise Exception(f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
         else:
             raise Exception('Nicht erlaubt')
 
@@ -215,6 +224,19 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display += '📤'
 
         return display
+
+    def assets(self, obj):
+        assets = ''
+        if obj.media and str(obj.media) != '':
+            assets = '🖼️'
+
+        if obj.link and str(obj.link) != '':
+            assets += '🔗️'
+
+        if obj.audio and str(obj.audio) != '':
+            assets += '🔊'
+
+        return assets
 
     def save_model(self, request, obj, form, change):
         obj.modified = timezone.now()
