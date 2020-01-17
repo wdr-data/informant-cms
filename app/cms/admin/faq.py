@@ -23,7 +23,7 @@ class FAQFragmentAdminInline(FragmentAdminInline):
 
 class FAQModelForm(forms.ModelForm):
     text = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=2000)
+        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
     slug = forms.CharField(
         label='Slug', help_text="Wird automatisch ausgefüllt", disabled=True,

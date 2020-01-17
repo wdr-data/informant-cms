@@ -35,9 +35,9 @@ class PushModelForm(forms.ModelForm):
                  (Push.Timing.EVENING.value, '🌆 Abend')],
         help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=1000)
+        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=200)
     outro = forms.CharField(
-        required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=2000)
+        required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
     delivered = forms.BooleanField(
         label='Versendet', help_text="Wurde dieser Push bereits versendet?", disabled=True,
