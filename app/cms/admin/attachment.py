@@ -38,7 +38,7 @@ def trigger_attachments(url):
             failed = True
             client.captureException(result)
 
-    return not failed and all(result.status_code == 200 for results in results)
+    return not failed and all(result.status_code == 200 for result in results)
 
 
 class AdminDisplayImageWidget(AdminFileWidget):
