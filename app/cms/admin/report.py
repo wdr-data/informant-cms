@@ -131,9 +131,10 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     fields = (
         'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline',
-        'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text', 'audio',
+        'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text',
         'link',
     )
+    # value 'audio' is supposed to be added to fields again, once the feature is communicated
     readonly_fields = (
         'display_object_actions_detail',
     )
