@@ -104,8 +104,10 @@ class ReportModelForm(NewsBaseModelForm):
                   'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
         required=False)
 
-    media = forms.FileField(
-        help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4'
+    media_original = forms.FileField(
+        label='Medien-Anhang',
+        help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4',
+        required=False
     )
 
     media_alt = forms.CharField(
