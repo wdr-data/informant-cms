@@ -104,6 +104,10 @@ class ReportModelForm(NewsBaseModelForm):
                   'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
         required=False)
 
+    media = forms.FileField(
+        help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4'
+    )
+
     media_alt = forms.CharField(
         label='Alternativ-Text',
         help_text='Beschreibung des Bildes/Gifs für Blinde.',
@@ -131,9 +135,10 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     fields = (
         'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline',
-        'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text', 'audio',
+        'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text',
         'link',
     )
+    # value 'audio' is supposed to be added to fields again, once the feature is communicated
     readonly_fields = (
         'display_object_actions_detail',
     )
