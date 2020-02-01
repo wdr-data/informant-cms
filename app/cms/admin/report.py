@@ -5,18 +5,16 @@ from posixpath import join as urljoin
 from time import sleep
 
 from django.contrib import admin, messages
-from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django import forms
 from emoji_picker.widgets import EmojiPickerTextInputAdmin
-from tags_input import admin as tags_input_admin
 import requests
 from django.db import transaction
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from crum import get_current_request
 
 from ..models.report import Report, ReportFragment, ReportQuiz
-from .attachment import AttachmentAdmin, trigger_attachments
+from .attachment import trigger_attachments
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .quiz import QuizModelForm, QuizAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
@@ -28,6 +26,7 @@ BREAKING_TRIGGER_URLS = [
     for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
     if var_name in os.environ
 ]
+
 
 class ReportFragmentModelForm(FragmentModelForm):
 
