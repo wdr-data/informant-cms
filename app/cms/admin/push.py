@@ -240,7 +240,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             obj.save()
             self.message_user(
                 request,
-                f'Der {"Morgen-" if obj.timing == Push.Timing.MORNING.value else "Abend-"}Push ist Freigegeben'
+                f'Der {"Morgen-" if obj.timing == Push.Timing.MORNING.value else "Abend-"}Push ist freigegeben.'
             )
         return super().response_change(request, obj)
 

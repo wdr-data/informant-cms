@@ -333,9 +333,9 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         if "_publish-save" in request.POST:
             obj.published = True
             obj.save()
-            self.message_user(request, "Die Meldung ist Freigegeben")
+            self.message_user(request, "Die Meldung ist freigegeben.")
         return super().response_change(request, obj)
+
 
 # Register your models here.
 admin.site.register(Report, ReportAdmin)
-
