@@ -328,6 +328,12 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
             transaction.on_commit(commit_hook)
 
+    def response_change(self, request, obj):
+        if "_publish-save" in request.POST:
+            obj.published = True
+            obj.save()
+            self.message_user(request, "Die Meldung ist Freigegeben")
+        return super().response_change(request, obj)
 
 # Register your models here.
 admin.site.register(Report, ReportAdmin)
