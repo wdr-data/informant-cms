@@ -31,8 +31,8 @@ class PushModelForm(forms.ModelForm):
     timing = forms.ChoiceField(
         required=True,
         label="Zeitpunkt",
-        choices=[(Push.Timing.MORNING.value, '🌇 Morgen'),
-                 (Push.Timing.EVENING.value, '🌆 Abend')],
+        choices=[(Push.Timing.MORNING.value, '☕ Morgen'),
+                 (Push.Timing.EVENING.value, '🌙 Abend')],
         help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
         required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
@@ -200,7 +200,6 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
 
         elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             transaction.on_commit(update_index)
-
 
     def delete_model(self, request, obj):
         try:

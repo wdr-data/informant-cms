@@ -29,8 +29,8 @@ class Push(Attachment):
 
     timing = models.CharField(
         'Zeitpunkt', null=False, blank=False, max_length=20,
-        choices=[(Timing.MORNING.value, '🌇 Morgen'),
-                 (Timing.EVENING.value, '🌆 Abend'),
+        choices=[(Timing.MORNING.value, '☕ Morgen'),
+                 (Timing.EVENING.value, '🌙 Abend'),
                  (Timing.BREAKING.value, '🚨 Breaking'),
                  (Timing.TESTING.value, '⚗️ Test')],
         default=Timing.MORNING.value)
