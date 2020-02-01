@@ -31,8 +31,8 @@ class PushModelForm(forms.ModelForm):
     timing = forms.ChoiceField(
         required=True,
         label="Zeitpunkt",
-        choices=[(Push.Timing.MORNING.value, '🌇 Morgen'),
-                 (Push.Timing.EVENING.value, '🌆 Abend')],
+        choices=[(Push.Timing.MORNING.value, '☕ Morgen'),
+                 (Push.Timing.EVENING.value, '🌙 Abend')],
         help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
         required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
@@ -87,9 +87,10 @@ class SendManualForm(AdminObjectActionForm):
 
 class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     form = PushModelForm
+    change_form_template = "admin/change_form_publish_direct.html"
     fields = (
-        'display_object_actions_detail', 'pub_date', 'timing', 'headline', 'intro', 'reports',
-        'outro', 'media', 'media_original', 'media_alt', 'media_note', 'published', 'delivered',
+        'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
+        'intro', 'reports', 'outro', 'media', 'media_original', 'media_alt', 'media_note', 'delivered',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
@@ -200,7 +201,6 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
         elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
             transaction.on_commit(update_index)
 
-
     def delete_model(self, request, obj):
         try:
             last_push = obj.__class__.last(delivered=True, breaking=False)[0]
@@ -232,6 +232,16 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
                     logging.error('Index-Site update trigger failed: ' + r.reason)
 
             transaction.on_commit(update_index)
+
+    def response_change(self, request, obj):
+        if "_publish-save" in request.POST:
+            obj.published = True
+            obj.save()
+            self.message_user(
+                request,
+                f'Der {"Morgen-" if obj.timing == Push.Timing.MORNING.value else "Abend-"}Push ist freigegeben.'
+            )
+        return super().response_change(request, obj)
 
 
 # Register your models here.
