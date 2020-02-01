@@ -117,6 +117,7 @@ class ReportModelForm(NewsBaseModelForm):
 
 class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
+    change_form_template = "admin/change_form_add_button.html"
     date_hierarchy = 'created'
     list_filter = ['published', 'type']
     search_fields = ['headline']
@@ -139,6 +140,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
+
 
     def display_object_actions_list(self, obj=None):
         return self.display_object_actions(obj, list_only=True)

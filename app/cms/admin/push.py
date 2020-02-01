@@ -87,6 +87,7 @@ class SendManualForm(AdminObjectActionForm):
 
 class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     form = PushModelForm
+    change_form_template = "admin/change_form_add_button.html"
     fields = (
         'display_object_actions_detail', 'pub_date', 'timing', 'headline', 'intro', 'reports',
         'outro', 'media', 'media_original', 'media_alt', 'media_note', 'published', 'delivered',
@@ -232,6 +233,16 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
                     logging.error('Index-Site update trigger failed: ' + r.reason)
 
             transaction.on_commit(update_index)
+
+    def response_change(self, request, obj):
+        if "_publish-save" in request.POST:
+            obj.published = True
+            obj.save()
+            self.message_user(
+                request,
+                f'Der {"Morgen-" if obj.timing == Push.Timing.MORNING.value else "Abend-"}Push ist Freigegeben'
+            )
+        return super().response_change(request, obj)
 
 
 # Register your models here.
