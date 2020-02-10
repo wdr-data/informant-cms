@@ -7,7 +7,7 @@ from time import sleep
 from django.contrib import admin, messages
 from django.utils import timezone
 from django import forms
-from emoji_picker.widgets import EmojiPickerTextInputAdmin
+from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 import requests
 from django.db import transaction
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
@@ -97,6 +97,9 @@ class ReportModelForm(NewsBaseModelForm):
 
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
+    tg_text = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
+
+
     delivered = forms.BooleanField(
         label='Breaking erfolgreich versendet',
         help_text='Dieses Feld wird nur markiert, '
@@ -130,7 +133,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         'display_object_actions_list',
     )
     fields = (
-        'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline',
+        'display_object_actions_detail', 'type', 'published', 'headline', 'tg_text', 'short_headline',
         'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text',
         'link',
     )
