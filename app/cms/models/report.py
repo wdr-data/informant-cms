@@ -123,6 +123,7 @@ class ReportFragment(Fragment):
     def __str__(self):
         return f'{self.report.headline} - {self.question}'
 
+
 class ReportQuiz(Quiz):
 
     class Meta:
@@ -132,5 +133,6 @@ class ReportQuiz(Quiz):
 
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz_options',
                                related_query_name='quiz_options')
+
     def __str__(self):
         return f'{self.report.headline} - {self.quiz_option}'
