@@ -36,7 +36,10 @@ def trigger_attachments(url):
     for result in results:
         if isinstance(result, Exception):
             failed = True
-            client.captureException(result)
+            try:
+                raise result
+            except:
+                client.captureException()
 
     return not failed and all(result.status_code == 200 for result in results)
 
