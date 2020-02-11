@@ -26,7 +26,7 @@ async def _trigger_attachments(url):
             for trigger in ATTACHMENT_TRIGGER_URLS
         ]
         results = await asyncio.gather(*coroutines, return_exceptions=True)
-        return results
+    return results
 
 
 def trigger_attachments(url):
