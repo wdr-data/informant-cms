@@ -29,6 +29,7 @@ dialogflow = "*"
 django-admin-object-actions = "*"
 django-crum = "*"
 httpx = "*"
+pyopenssl = "*"
 
 [dev-packages]
 ansible = "*"
@@ -37,4 +38,4 @@ boto = "*"
 pylint = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
