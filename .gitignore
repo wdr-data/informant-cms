@@ -12,3 +12,6 @@ db.sqlite3
 get-pip.py
 /venv
 
+google-credentials.json
+
+.vscode
