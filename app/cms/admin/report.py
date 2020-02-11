@@ -117,7 +117,7 @@ class ReportModelForm(NewsBaseModelForm):
 
 class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
-    change_form_template = "admin/change_form_publish_direct.html"
+    change_form_template = "admin/cms/change_form_publish_direct.html"
     date_hierarchy = 'created'
     list_filter = ['published', 'type']
     search_fields = ['headline']

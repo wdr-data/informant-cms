@@ -87,7 +87,7 @@ class SendManualForm(AdminObjectActionForm):
 
 class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     form = PushModelForm
-    change_form_template = "admin/change_form_publish_direct.html"
+    change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
         'intro', 'reports', 'outro', 'media', 'media_original', 'media_alt', 'media_note', 'delivered',
