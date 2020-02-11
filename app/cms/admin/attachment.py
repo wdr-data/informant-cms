@@ -26,7 +26,7 @@ async def _trigger_attachments(url):
             for trigger in ATTACHMENT_TRIGGER_URLS
         ]
         results = await asyncio.gather(*coroutines, return_exceptions=True)
-        return results
+    return results
 
 
 def trigger_attachments(url):
@@ -36,7 +36,10 @@ def trigger_attachments(url):
     for result in results:
         if isinstance(result, Exception):
             failed = True
-            client.captureException(result)
+            try:
+                raise result
+            except:
+                client.captureException()
 
     return not failed and all(result.status_code == 200 for result in results)
 
