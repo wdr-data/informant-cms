@@ -36,7 +36,7 @@ class Report(NewsBaseModel):
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
 
-    tg_text = models.CharField(
+    summary = models.CharField(
         'Telegram-Text', max_length=900, null=False,
         help_text='Dieser Text wird bei Telegram als Meldungstext zusammen mit der Überschrift ausgespielt.')
 

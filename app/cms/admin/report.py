@@ -97,7 +97,7 @@ class ReportModelForm(NewsBaseModelForm):
 
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
-    tg_text = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
+    summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
 
 
     delivered = forms.BooleanField(
@@ -133,7 +133,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         'display_object_actions_list',
     )
     fields = (
-        'display_object_actions_detail', 'type', 'published', 'headline', 'tg_text', 'short_headline',
+        'display_object_actions_detail', 'type', 'published', 'headline', 'summary', 'short_headline',
         'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text',
         'link',
     )
