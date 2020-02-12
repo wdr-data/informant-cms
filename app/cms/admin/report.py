@@ -120,6 +120,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     list_display = (
         'typ_status',
         'delivered_fb',
+        'delivered_tg',
         'headline',
         'created',
         'assets',
@@ -189,6 +190,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             Report.Type(obj.type) is Report.Type.BREAKING
             and obj.published
             and Report.DeliveryStatus(obj.delivered_fb) is Report.DeliveryStatus.NOT_SENT
+            and Report.DeliveryStatus(obj.delivered_tg) is Report.DeliveryStatus.NOT_SENT
         )
 
     def send_breaking(self, obj, form):

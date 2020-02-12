@@ -18,11 +18,11 @@ from crum import get_current_request
 from ..models.push import Push
 from .attachment import AttachmentAdmin
 
-PUSH_TRIGGER_URLS = [
-    urljoin(os.environ[var_name], 'push')
-    for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
+PUSH_TRIGGER_URLS = {
+    service: urljoin(os.environ[var_name], 'push')
+    for service, var_name in (('fb', 'BOT_SERVICE_ENDPOINT_FB'), ('tg', 'BOT_SERVICE_ENDPOINT_TG'))
     if var_name in os.environ
-]
+}
 AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
 MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
@@ -55,7 +55,8 @@ class SendManualForm(AdminObjectActionForm):
 
     confirm = forms.BooleanField(
         required=True,
-        help_text='Nur manuell senden, falls ein Push nicht automatisch versendet wurde, weil er z. B. nicht rechtzeitig freigegeben wurde.',
+        help_text='''Nur manuell senden, falls ein Push nicht automatisch versendet wurde, weil er z. B. nicht rechtzeitig freigegeben wurde.
+        Falls in einem Kanal bereits gesendet wurde, wird in diesem Kanal nicht noch einmal versendet.''',
         label='Ja, ich möchte wirklich den Push manuell versenden',
     )
 
@@ -65,7 +66,10 @@ class SendManualForm(AdminObjectActionForm):
 
     def do_object_action(self):
         failed = []
-        for push_trigger_url in PUSH_TRIGGER_URLS:
+        for service, push_trigger_url in PUSH_TRIGGER_URLS.items():
+            if self.instance[f'delivered_{service}'] != Push.DeliveryStatus.NOT_SENT:
+                continue
+
             r = requests.post(
                 url=push_trigger_url,
                 json={
@@ -75,7 +79,7 @@ class SendManualForm(AdminObjectActionForm):
             )
 
             if not r.ok:
-                failed.append(push_trigger_url)
+                failed.append(service.upper())
 
         if failed:
             raise Exception(f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
@@ -92,7 +96,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     list_filter = ['published', 'timing']
     search_fields = ['headline']
     list_display = (
-        'published', 'pub_date', 'timing', 'headline', 'delivered_fb', 'display_object_actions_list',
+        'published', 'pub_date', 'timing', 'headline', 'delivered_fb', 'delivered_tg', 'display_object_actions_list',
     )
     readonly_fields = (
         'display_object_actions_detail',
@@ -149,7 +153,8 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     def has_send_manual_permission(self, request, obj=None):
         return (
             obj.published and
-            not obj.delivered_fb == Push.DeliveryStatus.NOT_SENT.value and
+            (not obj.delivered_fb == Push.DeliveryStatus.NOT_SENT.value or
+            not obj.delivered_tg == Push.DeliveryStatus.NOT_SENT.value) and
             obj.pub_date == date.today() and
             (
                 request.user.is_superuser or

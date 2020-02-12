@@ -73,6 +73,13 @@ class Report(NewsBaseModel):
                  (DeliveryStatus.SENT.value, 'gesendet')],
         default=DeliveryStatus.NOT_SENT.value)
 
+    delivered_tg = models.CharField(
+        'Breaking: Telegram', null=False, blank=False, max_length=20,
+        choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
+                 (DeliveryStatus.SENDING.value, 'wird gesendet'),
+                 (DeliveryStatus.SENT.value, 'gesendet')],
+        default=DeliveryStatus.NOT_SENT.value)
+
     author = models.CharField('Autor', max_length=200, null=False)
 
     link = models.URLField('DeepLink', blank=True, null=True, max_length=500, default=None,

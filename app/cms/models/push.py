@@ -64,6 +64,15 @@ class Push(Attachment):
 
     delivered_date_fb = models.DateTimeField('Versand-Datum Facebook', null=True)
 
+    delivered_tg = models.CharField(
+        'Telegram', null=False, blank=False, max_length=20,
+        choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
+                 (DeliveryStatus.SENDING.value, 'wird gesendet'),
+                 (DeliveryStatus.SENT.value, 'gesendet')],
+        default=DeliveryStatus.NOT_SENT.value)
+
+    delivered_date_tg = models.DateTimeField('Versand-Datum Telegram', null=True)
+
     def __str__(self):
         return '%s - %s' % (self.pub_date.strftime('%d.%m.%Y'), self.headline)
 
@@ -78,7 +87,9 @@ class Push(Attachment):
             pushes = pushes.exclude(timing='breaking')
 
         if not delivered:
-            pushes = pushes.filter(delivered_fb=Push.DeliveryStatus.NOT_SENT.value)
+            pushes = pushes.filter(
+                delivered_fb=Push.DeliveryStatus.NOT_SENT.value,
+                delivered_tg=Push.DeliveryStatus.NOT_SENT.value)
 
         if by_date:
             pushes = pushes.order_by('-pub_date', 'timing')
