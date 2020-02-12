@@ -99,7 +99,6 @@ class ReportModelForm(NewsBaseModelForm):
 
     summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
 
-
     delivered = forms.BooleanField(
         label='Breaking erfolgreich versendet',
         help_text='Dieses Feld wird nur markiert, '
@@ -143,7 +142,6 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
-
 
     def display_object_actions_list(self, obj=None):
         return self.display_object_actions(obj, list_only=True)
