@@ -39,10 +39,6 @@ class PushModelForm(forms.ModelForm):
     outro = forms.CharField(
         required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
-    delivered = forms.BooleanField(
-        label='Versendet', help_text="Wurde dieser Push bereits versendet?", disabled=True,
-        required=False)
-
     class Meta:
         model = Push
         exclude = ()
@@ -90,13 +86,13 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'reports', 'outro', 'media', 'media_original', 'media_alt', 'media_note', 'delivered',
+        'intro', 'reports', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
     search_fields = ['headline']
     list_display = (
-        'published', 'pub_date', 'timing', 'headline', 'delivered', 'display_object_actions_list',
+        'published', 'pub_date', 'timing', 'headline', 'delivered_fb', 'display_object_actions_list',
     )
     readonly_fields = (
         'display_object_actions_detail',
@@ -153,7 +149,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     def has_send_manual_permission(self, request, obj=None):
         return (
             obj.published and
-            not obj.delivered and
+            not obj.delivered_fb == Push.DeliveryStatus.NOT_SENT.value and
             obj.pub_date == date.today() and
             (
                 request.user.is_superuser or

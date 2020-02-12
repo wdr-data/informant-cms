@@ -99,12 +99,6 @@ class ReportModelForm(NewsBaseModelForm):
 
     summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
 
-    delivered = forms.BooleanField(
-        label='Breaking erfolgreich versendet',
-        help_text='Dieses Feld wird nur markiert, '
-                  'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
-        required=False)
-
     media_alt = forms.CharField(
         label='Alternativ-Text',
         help_text='Beschreibung des Bildes/Gifs für Blinde.',
@@ -125,8 +119,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     search_fields = ['headline']
     list_display = (
         'typ_status',
+        'delivered_fb',
         'headline',
-        'short_headline',
         'created',
         'assets',
         'display_object_actions_list',
@@ -191,10 +185,14 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             raise Exception('Nicht erfolgreich')
 
     def has_send_breaking_permission(self, request, obj=None):
-        return Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered
+        return (
+            Report.Type(obj.type) is Report.Type.BREAKING
+            and obj.published
+            and Report.DeliveryStatus(obj.delivered_fb) is Report.DeliveryStatus.NOT_SENT
+        )
 
     def send_breaking(self, obj, form):
-        if Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered:
+        if self.has_send_breaking_permission(None, obj=obj):
             failed = []
             for breaking_trigger_url in BREAKING_TRIGGER_URLS:
                 r = requests.post(
@@ -222,9 +220,6 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display += '✏️'
         else:
             display += '✅'
-
-        if obj.delivered:
-            display += '📤'
 
         return display
 

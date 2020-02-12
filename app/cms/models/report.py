@@ -26,6 +26,11 @@ class Report(NewsBaseModel):
         REGULAR = 'regular'
         BREAKING = 'breaking'
 
+    class DeliveryStatus(Enum):
+        NOT_SENT = 'not_sent'
+        SENDING = 'sending'
+        SENT = 'sent'
+
     type = models.CharField(
         'Meldungstyp', null=False, blank=False, max_length=20,
         choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
@@ -61,9 +66,12 @@ class Report(NewsBaseModel):
                   'Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking"'
                   ' an alle Breaking-Abonnenten senden zu können.')
 
-    delivered = models.BooleanField(
-        'Breaking Versendet', null=False, default=False,
-        help_text='Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.')
+    delivered_fb = models.CharField(
+        'Breaking: Facebook', null=False, blank=False, max_length=20,
+        choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
+                 (DeliveryStatus.SENDING.value, 'wird gesendet'),
+                 (DeliveryStatus.SENT.value, 'gesendet')],
+        default=DeliveryStatus.NOT_SENT.value)
 
     author = models.CharField('Autor', max_length=200, null=False)
 
@@ -88,24 +96,6 @@ class Report(NewsBaseModel):
 
         return f'{emoji} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
-
-    @classmethod
-    def last(cls, *, count=1, offset=0, only_published=True, delivered=False, by_date=True):
-        reports = cls.objects.all()
-
-        if only_published:
-            reports = reports.filter(published=True)
-
-        if not delivered:
-            reports = reports.filter(delivered=False)
-
-        if by_date:
-            reports = reports.order_by('-created')
-        else:
-            reports = reports.order_by('-id')
-
-        return reports[offset:count]
-
 
 class ReportFragment(Fragment):
 

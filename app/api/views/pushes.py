@@ -22,7 +22,7 @@ def make_serializer(reqire_published=False):
         class Meta:
             model = Push
             fields = (
-                'id', 'pub_date', 'timing', 'published', 'delivered', 'delivered_date',
+                'id', 'pub_date', 'timing', 'published', 'delivered_fb', 'delivered_date_fb',
                 'headline', 'intro', 'reports', 'outro',
                 'media', 'media_original', 'media_alt', 'media_note',
             )
@@ -35,7 +35,7 @@ PushSerializerAny = make_serializer(reqire_published=False)
 
 
 class PushViewSet(viewsets.ModelViewSet):
-    filter_fields = ('published', 'delivered', 'pub_date', 'timing')
+    filter_fields = ('published', 'delivered_fb', 'pub_date', 'timing')
 
     def get_serializer_class(self):
         if self.request.user and self.request.user.is_authenticated:
@@ -45,6 +45,6 @@ class PushViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user and self.request.user.is_authenticated:
-            return Push.objects.order_by('-pub_date', '-delivered_date')
+            return Push.objects.order_by('-pub_date')
         else:
-            return Push.objects.filter(published=True).order_by('-pub_date', '-delivered_date')
+            return Push.objects.filter(published=True).order_by('-pub_date')

@@ -23,6 +23,11 @@ class Push(Attachment):
         BREAKING = 'breaking'
         TESTING = 'testing'
 
+    class DeliveryStatus(Enum):
+        NOT_SENT = 'not_sent'
+        SENDING = 'sending'
+        SENT = 'sent'
+
     pub_date = models.DateField(
         'Push Datum',
         default=date.today)
@@ -50,8 +55,14 @@ class Push(Attachment):
         'Report', related_name='pushes', verbose_name='Meldungen',
         help_text='Bitte maximal 4 Meldungen auswählen.')
 
-    delivered = models.BooleanField('Versendet', null=False, default=False)
-    delivered_date = models.DateTimeField('Versand-Datum', null=True)
+    delivered_fb = models.CharField(
+        'Facebook', null=False, blank=False, max_length=20,
+        choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
+                 (DeliveryStatus.SENDING.value, 'wird gesendet'),
+                 (DeliveryStatus.SENT.value, 'gesendet')],
+        default=DeliveryStatus.NOT_SENT.value)
+
+    delivered_date_fb = models.DateTimeField('Versand-Datum Facebook', null=True)
 
     def __str__(self):
         return '%s - %s' % (self.pub_date.strftime('%d.%m.%Y'), self.headline)
@@ -67,7 +78,7 @@ class Push(Attachment):
             pushes = pushes.exclude(timing='breaking')
 
         if not delivered:
-            pushes = pushes.filter(delivered=False)
+            pushes = pushes.filter(delivered_fb=Push.DeliveryStatus.NOT_SENT.value)
 
         if by_date:
             pushes = pushes.order_by('-pub_date', 'timing')
