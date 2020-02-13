@@ -152,13 +152,15 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
 
     def has_send_manual_permission(self, request, obj=None):
         return (
-            obj.published and
-            (not obj.delivered_fb == Push.DeliveryStatus.NOT_SENT.value or
-            not obj.delivered_tg == Push.DeliveryStatus.NOT_SENT.value) and
-            obj.pub_date == date.today() and
-            (
-                request.user.is_superuser or
-                any(group.name == MANUAL_PUSH_GROUP for group in request.user.groups.all())
+            obj.published
+            and (
+                Push.DeliveryStatus(obj.delivered_fb) is Push.DeliveryStatus.NOT_SENT
+                or Push.DeliveryStatus(obj.delivered_tg) is Push.DeliveryStatus.NOT_SENT
+            )
+            and obj.pub_date == date.today()
+            and (
+                request.user.is_superuser
+                or any(group.name == MANUAL_PUSH_GROUP for group in request.user.groups.all())
             )
         )
 
