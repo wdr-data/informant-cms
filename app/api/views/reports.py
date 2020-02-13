@@ -18,7 +18,7 @@ class ReportSerializer(ModelSerializerWithFragments):
         fields = (
             'id', 'type', 'created', 'published_date', 'modified', 'is_quiz', 'genres',
             'tags', 'headline', 'summary', 'short_headline', 'audio', 'text', 'media', 'media_original',
-            'media_alt', 'media_note', 'link', 'published', 'delivered', 'author',
+            'media_alt', 'media_note', 'link', 'published', 'delivered_fb', 'delivered_tg', 'author',
         )
 
 
