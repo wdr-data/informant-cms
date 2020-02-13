@@ -40,6 +40,12 @@ class PushModelForm(forms.ModelForm):
     outro = forms.CharField(
         required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
+    report_0 = forms.ModelChoiceField(Report.objects.filter(type='regular'), label='Meldung 1', required=False, help_text='Hier die erste Meldung auswählen.')
+
+    report_1 = forms.ModelChoiceField(Report.objects.filter(type='regular'), label='Meldung 2', required=False, help_text='Hier die zweite Meldung auswählen.')
+
+    report_2 = forms.ModelChoiceField(Report.objects.filter(type='regular'), label='Meldung 3', required=False, help_text='Hier die dritte Meldung auswählen.')
+
     last_report = forms.ModelChoiceField(Report.objects.filter(type='last'), label='Zum Schluss', required=False, help_text='Hier für den Abend-Push die bunte Meldung auswählen.')
 
     class Meta:
@@ -93,7 +99,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'reports', 'last_report', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
+        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
