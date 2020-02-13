@@ -67,7 +67,7 @@ class SendManualForm(AdminObjectActionForm):
     def do_object_action(self):
         failed = []
         for service, push_trigger_url in PUSH_TRIGGER_URLS.items():
-            if Push.DeliveryStatus(self.instance[f'delivered_{service}']) is not Push.DeliveryStatus.NOT_SENT:
+            if Push.DeliveryStatus(getattr(self.instance, f'delivered_{service}')) is not Push.DeliveryStatus.NOT_SENT:
                 continue
 
             r = requests.post(
