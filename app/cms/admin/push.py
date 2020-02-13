@@ -132,14 +132,14 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     def send_status(self, obj):
 
         if Push.DeliveryStatus(obj.delivered_fb) == Push.DeliveryStatus.NOT_SENT:
-            display = 'FB: ⭕️'
+            display = 'FB: ❌'
         elif Push.DeliveryStatus(obj.delivered_fb) == Push.DeliveryStatus.SENDING:
             display = 'FB: 💬'
         else:
             display = 'FB: ✅'
 
         if Push.DeliveryStatus(obj.delivered_tg) == Push.DeliveryStatus.NOT_SENT:
-            display += '  TG: ⭕️'
+            display += '  TG: ❌️'
         elif Push.DeliveryStatus(obj.delivered_tg) == Push.DeliveryStatus.SENDING:
             display += '  TG: 💬'
         else:

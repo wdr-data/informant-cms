@@ -231,14 +231,14 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def send_status(self, obj):
 
         if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
-            display = 'FB: ⭕️'
+            display = 'FB: ❌️'
         elif Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING:
             display = 'FB: 💬'
         else:
             display = 'FB: ✅'
 
         if Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.NOT_SENT:
-            display += '  TG: ⭕️'
+            display += '  TG: ❌'
         elif Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.SENDING:
             display += '  TG: 💬'
         else:
