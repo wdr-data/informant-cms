@@ -119,11 +119,10 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     search_fields = ['headline']
     list_display = (
         'typ_status',
-        'delivered_fb',
-        'delivered_tg',
         'headline',
         'created',
         'assets',
+        'send_status',
         'display_object_actions_list',
     )
     fields = (
@@ -224,6 +223,29 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display += '✅'
 
         return display
+
+    typ_status.short_description = 'Status'
+
+
+    def send_status(self, obj):
+
+        if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
+            display = 'FB: ⭕️'
+        elif Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING:
+            display = 'FB: 💬'
+        else:
+            display = 'FB: ✅'
+
+        if Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.NOT_SENT:
+            display += '  TG: ⭕️'
+        elif Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.SENDING:
+            display += '  TG: 💬'
+        else:
+            display += '  TG: ✅'
+
+        return display
+
+    send_status.short_description = 'Sende-Status'
 
     def assets(self, obj):
         assets = ''
