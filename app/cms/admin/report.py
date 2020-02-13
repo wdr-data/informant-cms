@@ -229,6 +229,9 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         return display
 
     def send_status(self, obj):
+        if not Report.Type(obj.type) == Report.Type.BREAKING:
+            return ''
+
         if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
             display = 'FB: ❌️'
         elif Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING:
@@ -242,9 +245,6 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display += '  TG: 💬'
         else:
             display += '  TG: ✅'
-
-        if not Report.Type(obj.type) == Report.Type.BREAKING:
-            display = ''
 
         return display
 
