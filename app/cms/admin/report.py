@@ -118,12 +118,12 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     list_filter = ['published', 'type']
     search_fields = ['headline']
     list_display = (
-        'typ_status',
-        'delivered_fb',
-        'delivered_tg',
+        'report_type',
+        'status',
         'headline',
         'created',
         'assets',
+        'send_status',
         'display_object_actions_list',
     )
     fields = (
@@ -212,18 +212,45 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         else:
             raise Exception('Nicht erlaubt')
 
-    def typ_status(self, obj):
+    def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
             display = '🚨'
         else:
             display = '📰'
 
+        return display
+
+    def status(self, obj):
         if not obj.published:
-            display += '✏️'
+            display = '✏️'
         else:
-            display += '✅'
+            display = '✅'
 
         return display
+
+    def send_status(self, obj):
+        if not Report.Type(obj.type) == Report.Type.BREAKING:
+            return ''
+
+        if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
+            display = 'FB: ❌️'
+        elif Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING:
+            display = 'FB: 💬'
+        else:
+            display = 'FB: ✅'
+
+        if Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.NOT_SENT:
+            display += '  TG: ❌'
+        elif Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.SENDING:
+            display += '  TG: 💬'
+        else:
+            display += '  TG: ✅'
+
+        return display
+
+    send_status.short_description = 'Sende-Status'
+    report_type.short_description = 'Typ'
+    status.short_description = 'Status'
 
     def assets(self, obj):
         assets = ''

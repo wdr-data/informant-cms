@@ -96,7 +96,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     list_filter = ['published', 'timing']
     search_fields = ['headline']
     list_display = (
-        'published', 'pub_date', 'timing', 'headline', 'delivered_fb', 'delivered_tg', 'display_object_actions_list',
+        'published', 'pub_date', 'timing', 'headline', 'send_status', 'display_object_actions_list',
     )
     readonly_fields = (
         'display_object_actions_detail',
@@ -128,6 +128,26 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             'permission': 'send_manual',
         },
     ]
+
+    def send_status(self, obj):
+
+        if Push.DeliveryStatus(obj.delivered_fb) == Push.DeliveryStatus.NOT_SENT:
+            display = 'FB: ❌'
+        elif Push.DeliveryStatus(obj.delivered_fb) == Push.DeliveryStatus.SENDING:
+            display = 'FB: 💬'
+        else:
+            display = 'FB: ✅'
+
+        if Push.DeliveryStatus(obj.delivered_tg) == Push.DeliveryStatus.NOT_SENT:
+            display += '  TG: ❌️'
+        elif Push.DeliveryStatus(obj.delivered_tg) == Push.DeliveryStatus.SENDING:
+            display += '  TG: 💬'
+        else:
+            display += '  TG: ✅'
+
+        return display
+
+    send_status.short_description = 'Sende-Status'
 
     def preview(self, obj, form):
         request = get_current_request()
