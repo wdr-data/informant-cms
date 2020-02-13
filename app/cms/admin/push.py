@@ -116,14 +116,14 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
         {
             'slug': 'preview-push',
             'verbose_name': 'Testen',
-            'verbose_name_past': 'getestet',
+            'verbose_name_past': 'tested',
             'form_method': 'GET',
             'function': 'preview',
         },
         {
             'slug': 'manual-push',
             'verbose_name': 'Manuell senden',
-            'verbose_name_past': 'gesendet',
+            'verbose_name_past': 'sent',
             'form_class': SendManualForm,
             'permission': 'send_manual',
         },
