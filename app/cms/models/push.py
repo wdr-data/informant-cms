@@ -55,6 +55,9 @@ class Push(Attachment):
         'Report', related_name='pushes', verbose_name='Meldungen',
         help_text='Bitte maximal 4 Meldungen auswählen.')
 
+    last_report = models.ForeignKey('Report', models.SET_NULL, verbose_name='Zum Schluss',
+        related_name='+', related_query_name='+', null=True, blank=True)
+
     delivered_fb = models.CharField(
         'Facebook', null=False, blank=False, max_length=20,
         choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),

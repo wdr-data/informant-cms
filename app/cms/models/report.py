@@ -25,6 +25,7 @@ class Report(NewsBaseModel):
     class Type(Enum):
         REGULAR = 'regular'
         BREAKING = 'breaking'
+        LAST = 'last'
 
     class DeliveryStatus(Enum):
         NOT_SENT = 'not_sent'
@@ -34,6 +35,7 @@ class Report(NewsBaseModel):
     type = models.CharField(
         'Meldungstyp', null=False, blank=False, max_length=20,
         choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
+                 (Type.LAST.value, '🙈 Zum Schluss'),
                  (Type.BREAKING.value, '🚨 Breaking')],
         help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, '
                   'kann sie als Breaking versendet werden.',
