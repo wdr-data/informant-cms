@@ -118,7 +118,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     list_filter = ['published', 'type']
     search_fields = ['headline']
     list_display = (
-        'typ_status',
+        'report_type',
+        'status',
         'headline',
         'created',
         'assets',
@@ -211,21 +212,21 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         else:
             raise Exception('Nicht erlaubt')
 
-    def typ_status(self, obj):
+    def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
             display = '🚨'
         else:
             display = '📰'
 
-        if not obj.published:
-            display += '✏️'
-        else:
-            display += '✅'
-
         return display
 
-    typ_status.short_description = 'Status'
+    def status(self, obj):
+        if not obj.published:
+            display = '✏️'
+        else:
+            display = '✅'
 
+        return display
 
     def send_status(self, obj):
 
@@ -246,6 +247,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         return display
 
     send_status.short_description = 'Sende-Status'
+    report_type.short_description = 'Typ'
+    status.short_description = 'Status'
 
     def assets(self, obj):
         assets = ''
