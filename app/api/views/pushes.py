@@ -8,7 +8,6 @@ from rest_framework import serializers, viewsets
 def make_serializer(reqire_published=False):
     class PushSerializer(serializers.ModelSerializer):
         reports = SerializerMethodField()
-        last_report = SerializerMethodField()
 
         def get_reports(self, obj):
             if reqire_published:
@@ -16,28 +15,25 @@ def make_serializer(reqire_published=False):
             else:
                 reports_queryset = obj.reports.all()
 
-            serializer = ReportSerializer(
-                instance=reports_queryset, many=True, read_only=True, context=self.context)
-            return serializer.data
-
-        def get_last_report(self, obj):
             if reqire_published:
                 last_report = obj.last_report if obj.last_report.published else None
             else:
                 last_report = obj.last_report
 
-            if not last_report:
-                return None
+            reports = list(reports_queryset)
+
+            if last_report:
+                reports.append(last_report)
 
             serializer = ReportSerializer(
-                instance=last_report, many=False, read_only=True, context=self.context)
+                instance=reports, many=True, read_only=True, context=self.context)
             return serializer.data
 
         class Meta:
             model = Push
             fields = (
                 'id', 'pub_date', 'timing', 'published', 'delivered_fb', 'delivered_date_fb', 'delivered_tg', 'delivered_date_tg',
-                'headline', 'intro', 'reports', 'last_report', 'outro',
+                'headline', 'intro', 'reports', 'outro',
                 'media', 'media_original', 'media_alt', 'media_note',
             )
 
