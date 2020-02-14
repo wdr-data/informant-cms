@@ -215,8 +215,10 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
             display = '🚨'
-        else:
+        elif Report.Type(obj.type) == Report.Type.REGULAR:
             display = '📰'
+        elif Report.Type(obj.type) == Report.Type.LAST:
+            display = '🙈'
 
         return display
 
