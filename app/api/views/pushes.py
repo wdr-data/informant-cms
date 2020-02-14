@@ -12,7 +12,7 @@ def make_serializer(reqire_published=False):
         def get_reports(self, obj):
             if reqire_published:
                 reports_queryset = obj.reports.filter(published=True)
-                last_report = obj.last_report if obj.last_report.published else None
+                last_report = obj.last_report if obj.last_report and obj.last_report.published else None
             else:
                 reports_queryset = obj.reports.all()
                 last_report = obj.last_report
