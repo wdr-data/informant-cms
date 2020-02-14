@@ -42,32 +42,32 @@ class PushModelForm(forms.ModelForm):
         required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
     report_0 = forms.ModelChoiceField(
-        Report.objects.filter(type='regular'), 
-        label='Meldung 1', 
+        Report.objects.filter(type='regular'),
+        label='Meldung 1',
         required=True, help_text='Hier die erste Meldung auswählen.')
 
     report_1 = forms.ModelChoiceField(
-        Report.objects.filter(type='regular'), 
-        label='Meldung 2', 
-        required=True, 
+        Report.objects.filter(type='regular'),
+        label='Meldung 2',
+        required=True,
         help_text='Hier die zweite Meldung auswählen.')
 
     report_2 = forms.ModelChoiceField(
-        Report.objects.filter(type='regular'), 
-        label='Meldung 3', 
-        required=True, 
+        Report.objects.filter(type='regular'),
+        label='Meldung 3',
+        required=True,
         help_text='Hier die dritte Meldung auswählen.')
 
     last_report = forms.ModelChoiceField(
-        Report.objects.filter(type='last'), 
-        label='Zum Schluss', 
-        required=False, 
+        Report.objects.filter(type='last'),
+        label='Zum Schluss',
+        required=False,
         help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.')
 
     class Meta:
         model = Push
         exclude = ()
-    
+
     def get_initial_for_field(self, field, field_name):
         # Fill report_n fields from m2m
         pattern = r'report_(\d)'
@@ -76,7 +76,7 @@ class PushModelForm(forms.ModelForm):
         if match:
             try:
                 return self.instance.reports.all()[int(match.group(1))]
-            except IndexError:
+            except (ValueError, IndexError):
                 return None
 
         return super().get_initial_for_field(field, field_name)
