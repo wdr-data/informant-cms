@@ -26,6 +26,9 @@ def make_serializer(reqire_published=False):
             else:
                 last_report = obj.last_report
 
+            if not last_report:
+                return None
+
             serializer = ReportSerializer(
                 instance=last_report, many=False, read_only=True, context=self.context)
             return serializer.data
