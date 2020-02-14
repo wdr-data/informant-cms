@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.defaults import permission_denied
 
 # Create your views here.
 import json
@@ -22,3 +23,10 @@ class OAuthUserInfo(ScopedProtectedResourceView):
             'email': user.email,
         }
         return HttpResponse(json.dumps(openid_user), content_type='application/json')
+
+
+def error_403(request, exception):
+    if request.path.startswith('/admin/cms'):
+        return render(request, 'admin/cms/403.html', status=403)
+
+    return permission_denied(request, exception)

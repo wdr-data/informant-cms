@@ -25,20 +25,32 @@ class Report(NewsBaseModel):
     class Type(Enum):
         REGULAR = 'regular'
         BREAKING = 'breaking'
+        LAST = 'last'
+
+    class DeliveryStatus(Enum):
+        NOT_SENT = 'not_sent'
+        SENDING = 'sending'
+        SENT = 'sent'
 
     type = models.CharField(
         'Meldungstyp', null=False, blank=False, max_length=20,
         choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
+                 (Type.LAST.value, '🙈 Zum Schluss'),
                  (Type.BREAKING.value, '🚨 Breaking')],
         help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, '
                   'kann sie als Breaking versendet werden.',
         default=Type.REGULAR.value)
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
+
+    summary = models.CharField(
+        'Telegram-Text', max_length=900, null=False,
+        help_text='Dieser Text wird bei Telegram als Meldungstext zusammen mit der Überschrift ausgespielt.')
+
     short_headline = models.CharField(
-        'Button-Text', max_length=17, null=False,
-        help_text='Dies ist der Text, der auf dem Auswahl-Button für diese Nachricht angezeigt '
-                  'wird. Bitte möglichst kurzes Schlagwort eintragen.')
+        'Schlagwort-Button', max_length=17, null=False,
+        help_text='Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text,'
+                  ' der auf dem Auswahl-Button für diese Nachricht angezeigt in FB angezeigt wird.')
 
     created = models.DateTimeField(
         'Erstellt',
@@ -56,14 +68,25 @@ class Report(NewsBaseModel):
                   'Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking"'
                   ' an alle Breaking-Abonnenten senden zu können.')
 
-    delivered = models.BooleanField(
-        'Breaking Versendet', null=False, default=False,
-        help_text='Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.')
+    delivered_fb = models.CharField(
+        'Breaking: Facebook', null=False, blank=False, max_length=20,
+        choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
+                 (DeliveryStatus.SENDING.value, 'wird gesendet'),
+                 (DeliveryStatus.SENT.value, 'gesendet')],
+        default=DeliveryStatus.NOT_SENT.value)
+
+    delivered_tg = models.CharField(
+        'Breaking: Telegram', null=False, blank=False, max_length=20,
+        choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
+                 (DeliveryStatus.SENDING.value, 'wird gesendet'),
+                 (DeliveryStatus.SENT.value, 'gesendet')],
+        default=DeliveryStatus.NOT_SENT.value)
 
     author = models.CharField('Autor', max_length=200, null=False)
 
     link = models.URLField('DeepLink', blank=True, null=True, max_length=500, default=None,
-                           help_text= 'Der Link wird am Ende einer Meldung angehangen.'
+                           help_text= 'Der Link wird am Ende einer Meldung angehangen und '
+                                      'liefert dem Nutzer mehr Infos zur Meldung.'
                                       ' Der Button-Text lautet "MEHR 🌍".'
                            )
 
@@ -83,24 +106,6 @@ class Report(NewsBaseModel):
         return f'{emoji} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'
 
-    @classmethod
-    def last(cls, *, count=1, offset=0, only_published=True, delivered=False, by_date=True):
-        reports = cls.objects.all()
-
-        if only_published:
-            reports = reports.filter(published=True)
-
-        if not delivered:
-            reports = reports.filter(delivered=False)
-
-        if by_date:
-            reports = reports.order_by('-created')
-        else:
-            reports = reports.order_by('-id')
-
-        return reports[offset:count]
-
-
 class ReportFragment(Fragment):
 
     class Meta:
@@ -117,6 +122,7 @@ class ReportFragment(Fragment):
     def __str__(self):
         return f'{self.report.headline} - {self.question}'
 
+
 class ReportQuiz(Quiz):
 
     class Meta:
@@ -126,5 +132,6 @@ class ReportQuiz(Quiz):
 
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='quiz_options',
                                related_query_name='quiz_options')
+
     def __str__(self):
         return f'{self.report.headline} - {self.quiz_option}'

@@ -7,7 +7,7 @@ from time import sleep
 from django.contrib import admin, messages
 from django.utils import timezone
 from django import forms
-from emoji_picker.widgets import EmojiPickerTextInputAdmin
+from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 import requests
 from django.db import transaction
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
@@ -97,11 +97,7 @@ class ReportModelForm(NewsBaseModelForm):
 
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
-    delivered = forms.BooleanField(
-        label='Breaking erfolgreich versendet',
-        help_text='Dieses Feld wird nur markiert, '
-                  'wenn eine Meldung vom Meldungstyp "Breaking" erfolgreich versendet wurde.',
-        required=False)
+    summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
 
     media_alt = forms.CharField(
         label='Alternativ-Text',
@@ -122,15 +118,16 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     list_filter = ['published', 'type']
     search_fields = ['headline']
     list_display = (
-        'typ_status',
+        'report_type',
+        'status',
         'headline',
-        'short_headline',
         'created',
         'assets',
+        'send_status',
         'display_object_actions_list',
     )
     fields = (
-        'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline',
+        'display_object_actions_detail', 'type', 'published', 'headline', 'summary', 'short_headline',
         'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text',
         'link',
     )
@@ -140,7 +137,6 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     list_display_links = ('headline', )
     inlines = (ReportFragmentAdminInline, ReportQuizAdminInline, )
-
 
     def display_object_actions_list(self, obj=None):
         return self.display_object_actions(obj, list_only=True)
@@ -190,10 +186,15 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             raise Exception('Nicht erfolgreich')
 
     def has_send_breaking_permission(self, request, obj=None):
-        return Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered
+        return (
+            Report.Type(obj.type) is Report.Type.BREAKING
+            and obj.published
+            and Report.DeliveryStatus(obj.delivered_fb) is Report.DeliveryStatus.NOT_SENT
+            and Report.DeliveryStatus(obj.delivered_tg) is Report.DeliveryStatus.NOT_SENT
+        )
 
     def send_breaking(self, obj, form):
-        if Report.Type(obj.type) is Report.Type.BREAKING and obj.published and not obj.delivered:
+        if self.has_send_breaking_permission(None, obj=obj):
             failed = []
             for breaking_trigger_url in BREAKING_TRIGGER_URLS:
                 r = requests.post(
@@ -211,21 +212,47 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         else:
             raise Exception('Nicht erlaubt')
 
-    def typ_status(self, obj):
+    def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
             display = '🚨'
-        else:
+        elif Report.Type(obj.type) == Report.Type.REGULAR:
             display = '📰'
-
-        if not obj.published:
-            display += '✏️'
-        else:
-            display += '✅'
-
-        if obj.delivered:
-            display += '📤'
+        elif Report.Type(obj.type) == Report.Type.LAST:
+            display = '🙈'
 
         return display
+
+    def status(self, obj):
+        if not obj.published:
+            display = '✏️'
+        else:
+            display = '✅'
+
+        return display
+
+    def send_status(self, obj):
+        if not Report.Type(obj.type) == Report.Type.BREAKING:
+            return ''
+
+        if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
+            display = 'FB: ❌️'
+        elif Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING:
+            display = 'FB: 💬'
+        else:
+            display = 'FB: ✅'
+
+        if Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.NOT_SENT:
+            display += '  TG: ❌'
+        elif Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.SENDING:
+            display += '  TG: 💬'
+        else:
+            display += '  TG: ✅'
+
+        return display
+
+    send_status.short_description = 'Sende-Status'
+    report_type.short_description = 'Typ'
+    status.short_description = 'Status'
 
     def assets(self, obj):
         assets = ''
