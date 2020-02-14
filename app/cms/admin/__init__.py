@@ -8,6 +8,6 @@ from .wiki import *
 from .tag import *
 from .profile import *
 
-admin.site.site_header = 'STAGING | Django WDR aktuell'
-admin.site.site_title = 'STAGING | Django WDR aktuell'
+admin.site.site_header = 'Django WDR aktuell'
+admin.site.site_title = 'Django WDR aktuell'
 admin.site.index_title = 'Home'
