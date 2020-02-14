@@ -12,11 +12,18 @@ def make_serializer(reqire_published=False):
         def get_reports(self, obj):
             if reqire_published:
                 reports_queryset = obj.reports.filter(published=True)
+                last_report = obj.last_report if obj.last_report.published else None
             else:
                 reports_queryset = obj.reports.all()
+                last_report = obj.last_report
+
+            reports = list(reports_queryset)
+
+            if last_report:
+                reports.append(last_report)
 
             serializer = ReportSerializer(
-                instance=reports_queryset, many=True, read_only=True, context=self.context)
+                instance=reports, many=True, read_only=True, context=self.context)
             return serializer.data
 
         class Meta:

@@ -16,6 +16,7 @@ from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 
 from ..models.push import Push
+from ..models.report import Report
 from .attachment import AttachmentAdmin
 
 PUSH_TRIGGER_URLS = {
@@ -38,6 +39,8 @@ class PushModelForm(forms.ModelForm):
         required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
     outro = forms.CharField(
         required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
+
+    last_report = forms.ModelChoiceField(Report.objects.filter(type='last'), label='Zum Schluss', required=False, help_text='Hier für den Abend-Push die bunte Meldung auswählen.')
 
     class Meta:
         model = Push
@@ -90,7 +93,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'reports', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
+        'intro', 'reports', 'last_report', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
