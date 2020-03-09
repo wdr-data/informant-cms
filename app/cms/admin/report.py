@@ -286,7 +286,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             if not (filename.lower().endswith('.mp3')):
                 messages.error(
                     request,
-                    f'Das Audio hat das Falsche Format. Aktzeptierte Formate: *.mp3'
+                    f'Das Audio hat das falsche Format. Akzeptierte Formate: *.mp3'
                 )
                 obj.audio = None
 
