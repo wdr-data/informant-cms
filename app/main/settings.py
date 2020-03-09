@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'storages',
     'cms.apps.CmsConfig',
     'sortedm2m',
-    'sortedm2m_filter_horizontal_widget',
     'tags_input',
     'rest_framework',
     'django_filters',

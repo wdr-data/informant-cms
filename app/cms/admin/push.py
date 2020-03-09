@@ -8,7 +8,6 @@ import re
 from django.contrib import admin, messages
 from django.db import transaction
 from django import forms
-from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
