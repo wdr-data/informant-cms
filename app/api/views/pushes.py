@@ -52,6 +52,6 @@ class PushViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user and self.request.user.is_authenticated:
-            return Push.objects.order_by('-pub_date')
+            return Push.objects.order_by('-pub_date', '-delivered_date_fb')
         else:
-            return Push.objects.filter(published=True).order_by('-pub_date')
+            return Push.objects.filter(published=True).order_by('-pub_date', '-delivered_date_fb')
