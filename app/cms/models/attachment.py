@@ -28,8 +28,8 @@ class Attachment(models.Model):
 
     original = S3DirectField(
         'Medien-Anhang',
-        null=True,
-        blank=True,
+        null=False,
+        blank=False,
         dest='default',
         help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif',
     )

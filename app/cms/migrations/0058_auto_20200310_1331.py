@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=125, verbose_name='Titel')),
-                ('original', s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif', null=True, verbose_name='Medien-Anhang')),
+                ('original', s3direct.fields.S3DirectField(blank=False, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif', null=False, verbose_name='Medien-Anhang')),
                 ('credit', models.CharField(blank=True, max_length=100, null=True, verbose_name='Credit')),
                 ('processed', models.FileField(blank=True, null=True, upload_to='', verbose_name='Verarbeitet')),
                 ('upload_date', models.DateTimeField(auto_now_add=True, verbose_name='Hochgeladen am')),
