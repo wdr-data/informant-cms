@@ -1,13 +1,15 @@
 from cms.models.push import Push
 from rest_framework.fields import SerializerMethodField
+from rest_framework import serializers, viewsets
 
 from .reports import ReportSerializer
-from rest_framework import serializers, viewsets
+from .attachments import AttachmentSerializer
 
 
 def make_serializer(reqire_published=False):
     class PushSerializer(serializers.ModelSerializer):
         reports = SerializerMethodField()
+        attachment = AttachmentSerializer(read_only=True)
 
         def get_reports(self, obj):
             if reqire_published:
@@ -31,7 +33,7 @@ def make_serializer(reqire_published=False):
             fields = (
                 'id', 'pub_date', 'timing', 'published', 'delivered_fb', 'delivered_date_fb', 'delivered_tg', 'delivered_date_tg',
                 'headline', 'intro', 'reports', 'outro',
-                'media', 'media_original', 'media_alt', 'media_note',
+                'attachment',
             )
 
     return PushSerializer

@@ -1,14 +1,16 @@
 from cms.models.faq import FAQ
 from .fragments import ModelSerializerWithFragments, FAQFragmentSerializer, \
     ModelViewSetWithFragments
+from .attachments import AttachmentSerializer
 
 
 class FAQSerializer(ModelSerializerWithFragments):
     fragment_serializer_class = FAQFragmentSerializer
+    attachment = AttachmentSerializer(read_only=True)
 
     class Meta:
         model = FAQ
-        fields = ('id', 'name', 'slug', 'text', 'media', 'media_original', 'media_alt', 'media_note')
+        fields = ('id', 'name', 'slug', 'text', 'attachment')
 
 
 class FAQViewSet(ModelViewSetWithFragments):
