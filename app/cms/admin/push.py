@@ -18,7 +18,7 @@ import pytz
 
 from ..models.push import Push
 from ..models.report import Report
-from .attachment import AttachmentAdmin
+from .attachment import HasAttachmentAdmin, HasAttachmentModelForm
 
 PUSH_TRIGGER_URLS = {
     service: urljoin(os.environ[var_name], 'push')
@@ -29,7 +29,7 @@ AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIn
 MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
 
-class PushModelForm(forms.ModelForm):
+class PushModelForm(HasAttachmentModelForm):
     timing = forms.ChoiceField(
         required=True,
         label="Zeitpunkt",
@@ -139,12 +139,12 @@ class SendManualForm(AdminObjectActionForm):
             raise Exception(f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
 
 
-class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
+class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     form = PushModelForm
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
+        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 'attachment',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
@@ -245,7 +245,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
                 request,
                 'Das Push-Datum für diesen Push liegt in der Vergangenheit. '
                 'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
-            )  
+            )
         elif (obj.pub_date == local_time.date()
                 and local_time.time() > time(10, 00)
                 and Push.Timing(obj.timing) is Push.Timing.MORNING):
@@ -255,71 +255,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
                 'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
             )
 
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        was_last_push = last_push and last_push.id == obj.id
-
         super().save_model(request, obj, form, change)
-
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        is_last_push = last_push and last_push.id == obj.id
-
-        def update_index():
-            if not last_push:
-                return
-
-            sleep(1)  # Wait for DB
-            r = requests.post(
-                url=AMP_UPDATE_INDEX,
-                json={'id': last_push.id})
-
-            if not r.ok:
-                logging.error('Index-Site update trigger failed: ' + r.reason)
-
-        if is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            transaction.on_commit(update_index)
-
-        elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            transaction.on_commit(update_index)
-
-    def delete_model(self, request, obj):
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        was_last_push = last_push and last_push.id == obj.id
-
-        super().delete_model(request, obj)
-
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        is_last_push = last_push and last_push.id == obj.id
-
-        if was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            def update_index():
-                if not last_push:
-                    return
-
-                sleep(1)  # Wait for DB
-                r = requests.post(
-                    url=AMP_UPDATE_INDEX,
-                    json={'id': last_push.id})
-
-                if not r.ok:
-                    logging.error('Index-Site update trigger failed: ' + r.reason)
-
-            transaction.on_commit(update_index)
 
     def response_change(self, request, obj):
         if "_publish-save" in request.POST:

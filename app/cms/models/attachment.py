@@ -17,31 +17,37 @@ from s3direct.fields import S3DirectField
 ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / 'assets'
 
 
+
 class Attachment(models.Model):
-    """
-    Zu einem Fragment kann ein Medien-Anhang
-    """
 
     class Meta:
-        abstract = True
+        abstract = False
+        verbose_name = 'Medien-Anhang'
+        verbose_name_plural = 'Medien-Anhänge'
 
-    media_original = S3DirectField(
+    title = models.CharField('Titel', max_length=125, null=False, blank=False)
+
+    original = S3DirectField(
         'Medien-Anhang',
         null=True,
         blank=True,
         dest='default',
-        help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4',
+        help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif',
     )
-    media_alt = models.CharField('Alternativ-Text', max_length=125, null=True, blank=True)
-    media_note = models.CharField('Credit', max_length=100, null=True, blank=True)
+    credit = models.CharField('Credit', max_length=100, null=True, blank=True)
 
-    media = models.FileField('Verarbeitet', null=True, blank=True)
+    processed = models.FileField('Verarbeitet', null=True, blank=True)
+
+    upload_date = models.DateTimeField('Hochgeladen am', auto_now_add=True)
+
+    def __str__(self):
+        return str(self.title)
 
     def process_attachment(self):
-        if not self.media_original:
+        if not self.original:
             return None, None
 
-        original_url = str(self.media_original)
+        original_url = str(self.original)
 
         filename = unquote(original_url.split('/')[-1])
 
@@ -71,14 +77,14 @@ class Attachment(models.Model):
             image_changed = True
 
         # Draw credit onto image
-        if self.media_note:
+        if self.credit:
             # Create initial image objects for text drawing
             img = img.convert('RGBA')
             alpha = Image.new('RGBA', img.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(alpha)
 
             # Configuration for text drawing
-            the_text = 'FOTO: ' + str(self.media_note).upper()
+            the_text = 'FOTO: ' + str(self.credit).upper()
             fontsize = max((img.size[0] + img.size[1]) / 2 / 50, 10)
             shadow_radius = fontsize / 3
             shadow_mult = 0.75
@@ -128,3 +134,17 @@ class Attachment(models.Model):
         path = default_storage.save(new_filename, ContentFile(bio.read(), name=new_filename))
         url = default_storage.url(path)
         return path, url
+
+class HasAttachment(models.Model):
+    class Meta():
+        abstract = True
+
+    attachment = models.ForeignKey(
+        Attachment,
+        on_delete=models.deletion.SET_NULL,
+        related_name='+',
+        related_query_name='+',
+        null=True,
+        blank=True,
+        verbose_name='Medien-Anhang',
+    )

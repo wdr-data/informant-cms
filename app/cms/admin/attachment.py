@@ -5,10 +5,13 @@ import requests
 from posixpath import join as urljoin
 
 import httpx
+from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
 from raven.contrib.django.raven_compat.models import client
+
+from ..models.attachment import Attachment
 
 ATTACHMENT_TRIGGER_URLS = [
     urljoin(os.environ[var_name], 'attachment')
@@ -84,25 +87,25 @@ class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInli
 
 
 class AttachmentAdmin(DisplayImageWidgetAdmin):
-    image_display_fields = ['media']
+    image_display_fields = ['processed']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 
-        if ('media_original' in form.changed_data
-                or 'media_note' in form.changed_data
-                or obj.media_original and not obj.media):
+        if ('original' in form.changed_data
+                or 'credit' in form.changed_data
+                or obj.original and not obj.processed):
             try:
                 path, url = obj.process_attachment()
 
             except:
-                logging.exception('%s', obj.media_original)
-                messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.media_original}')
+                logging.exception('%s', obj.original)
+                messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.original}')
 
             else:
                 if path is None:
-                    obj.media = None
-                    form.changed_data = ['media']
+                    obj.processed = None
+                    form.changed_data = ['processed']
                     super().save_model(request, obj, form, change)
                     return
 
@@ -110,51 +113,21 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
 
                 if success:
                     messages.success(
-                        request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
+                        request, f'Anhang {obj.original} wurde zu Facebook hochgeladen 👌')
 
-                    obj.media = path
-                    form.changed_data = ['media']
+                    obj.processed = path
+                    form.changed_data = ['processed']
                     super().save_model(request, obj, form, change)
 
                 else:
                     messages.error(
                         request,
-                        f'Anhang {obj.media_original} konnte nicht zu Facebook hochgeladen werden')
+                        f'Anhang {obj.original} konnte nicht zu Facebook hochgeladen werden')
 
-    def save_formset(self, request, form, formset, change):
-        super().save_formset(request, form, formset, change)
+class HasAttachmentAdmin(admin.ModelAdmin):
+    pass
 
-        for form_ in formset.forms:
-            if 'media_original' in form_.changed_data or 'media_note' in form_.changed_data:
-                try:
-                    path, url = form_.instance.process_attachment()
+class HasAttachmentModelForm(forms.ModelForm):
+    pass
 
-                except:
-                    logging.exception('%s', form_.instance.media_original)
-                    messages.error(request, f'{IMAGE_PROCESSING_FAILED}: '
-                                            f'{form_.instance.media_original}')
-
-                else:
-                    if path is None:
-                        form_.instance.media = None
-                        form_.changed_data = ['media']
-                        super().save_formset(request, form, formset, change)
-                        return
-
-                    success = trigger_attachments(url)
-
-                    if success:
-                        messages.success(
-                            request,
-                            f'Anhang {form_.instance.media_original} wurde zu Facebook '
-                            f'hochgeladen 👌')
-
-                        form_.instance.media = path
-                        form_.changed_data = ['media']
-                        super().save_formset(request, form, formset, change)
-
-                    else:
-                        messages.error(
-                            request,
-                            f'Anhang {form_.instance.media_original} konnte nicht zu Facebook '
-                            f'hochgeladen werden')
+admin.site.register(Attachment, AttachmentAdmin)
