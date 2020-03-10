@@ -2,7 +2,7 @@ import os
 import logging
 from posixpath import join as urljoin
 from time import sleep
-from datetime import date
+from datetime import date, datetime
 import re
 
 from django.contrib import admin, messages
@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
+import pytz
 
 from ..models.push import Push
 from ..models.report import Report
@@ -238,6 +239,14 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
         )
 
     def save_model(self, request, obj, form, change):
+        local_time = datetime.now(tz=pytz.timezone('Europe/Berlin'))
+        if obj.pub_date < local_time.date():
+            messages.warning(
+                request,
+                'Das Push-Datum für diesen Push liegt in der Vergangenheit. '
+                'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
+            )
+
         try:
             last_push = obj.__class__.last(delivered=True, breaking=False)[0]
         except:
