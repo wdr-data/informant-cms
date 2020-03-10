@@ -2,7 +2,7 @@ import os
 import logging
 from posixpath import join as urljoin
 from time import sleep
-from datetime import date, datetime
+from datetime import date, time, datetime
 import re
 
 from django.contrib import admin, messages
@@ -244,6 +244,14 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
             messages.warning(
                 request,
                 'Das Push-Datum für diesen Push liegt in der Vergangenheit. '
+                'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
+            )  
+        elif (obj.pub_date == local_time.date()
+                and local_time.time() > time(10, 00)
+                and Push.Timing(obj.timing) is Push.Timing.MORNING):
+            messages.warning(
+                request,
+                'Der Push hat das Datum von heute, ist aber ein Morgen-Push. '
                 'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
             )
 
