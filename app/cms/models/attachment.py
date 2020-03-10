@@ -17,7 +17,6 @@ from s3direct.fields import S3DirectField
 ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / 'assets'
 
 
-
 class Attachment(models.Model):
 
     class Meta:
@@ -43,18 +42,18 @@ class Attachment(models.Model):
     def __str__(self):
         return str(self.title)
 
-    def process_attachment(self):
-        if not self.original:
+    @classmethod
+    def process_attachment(cls, original, credit):
+        if not original:
             return None, None
 
-        original_url = str(self.original)
-
-        filename = unquote(original_url.split('/')[-1])
+        filename = original
+        original_url = default_storage.url(original)
 
         if not (filename.lower().endswith('.png')
                 or filename.lower().endswith('.jpg')
                 or filename.lower().endswith('.jpeg')):
-            return filename, default_storage.url(filename)
+            return filename, original_url
 
         file_content = requests.get(original_url).content
 
@@ -62,7 +61,7 @@ class Attachment(models.Model):
             img = Image.open(BytesIO(file_content))
         except:
             logging.exception('Loading attachment for processing failed')
-            return filename, default_storage.url(filename)
+            return filename, original_url
 
         image_changed = False
         orig_mode = img.mode
@@ -77,14 +76,14 @@ class Attachment(models.Model):
             image_changed = True
 
         # Draw credit onto image
-        if self.credit:
+        if credit:
             # Create initial image objects for text drawing
             img = img.convert('RGBA')
             alpha = Image.new('RGBA', img.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(alpha)
 
             # Configuration for text drawing
-            the_text = 'FOTO: ' + str(self.credit).upper()
+            the_text = 'FOTO: ' + str(credit).upper()
             fontsize = max((img.size[0] + img.size[1]) / 2 / 50, 10)
             shadow_radius = fontsize / 3
             shadow_mult = 0.75
@@ -121,7 +120,7 @@ class Attachment(models.Model):
             image_changed = True
 
         if not image_changed:
-            return filename, default_storage.url(filename)
+            return filename, original_url
 
         # Save result
         bio = BytesIO()

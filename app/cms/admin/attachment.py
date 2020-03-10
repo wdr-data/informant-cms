@@ -6,6 +6,7 @@ from posixpath import join as urljoin
 
 import httpx
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
@@ -85,53 +86,57 @@ class DisplayImageWidgetStackedInline(DisplayImageWidgetMixin, admin.StackedInli
 class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInline):
     pass
 
+class AttachmentModelForm(forms.ModelForm):
 
-class AttachmentAdmin(DisplayImageWidgetAdmin):
-    image_display_fields = ['processed']
-    search_fields = ['title']
+    class Meta:
+        model = Attachment
+        exclude = ['upload_date']
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-
-        if ('original' in form.changed_data
-                or 'credit' in form.changed_data
+    def clean(self):
+        obj = self.instance
+        if ('original' in self.changed_data
+                or 'credit' in self.changed_data
+                or not obj
                 or obj.original and not obj.processed):
             try:
-                path, url = obj.process_attachment()
+                path, url = Attachment.process_attachment(
+                    self.cleaned_data.get('original'),
+                    self.cleaned_data.get('credit'),
+                )
 
             except:
                 logging.exception('%s', obj.original)
-                messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.original}')
+                raise ValidationError({f'original': 'Bildverarbeitung fehlgeschlagen!'})
 
             else:
-                if path is None:
-                    obj.processed = None
-                    form.changed_data = ['processed']
-                    super().save_model(request, obj, form, change)
-                    return
 
                 success = trigger_attachments(url)
 
                 if success:
-                    messages.success(
-                        request, f'Anhang {obj.original} wurde zu Facebook und Telegram hochgeladen 👌')
-
-                    obj.processed = path
-                    form.changed_data = ['processed']
-                    super().save_model(request, obj, form, change)
+                    self.cleaned_data['processed'] = path
+                    self.changed_data = ['processed']
 
                 else:
-                    messages.error(
-                        request,
-                        f'Anhang {obj.original} konnte nicht zu Facebook oder Telegram hochgeladen werden')
+                    raise ValidationError({f'original': 'Upload fehlgeschlagen!'})
+        return self.cleaned_data
+
+
+class AttachmentAdmin(DisplayImageWidgetAdmin):
+    form = AttachmentModelForm
+    image_display_fields = ['processed']
+    search_fields = ['title']
+
 
 class HasAttachmentAdmin(admin.ModelAdmin):
     autocomplete_fields = ['attachment']
 
+
 class HasAttachmentAdminInline(admin.StackedInline):
     autocomplete_fields = ['attachment']
 
+
 class HasAttachmentModelForm(forms.ModelForm):
     pass
+
 
 admin.site.register(Attachment, AttachmentAdmin)
