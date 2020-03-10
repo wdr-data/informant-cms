@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 
-from .attachment import HasAttachmentModelForm
+from .attachment import HasAttachmentModelForm, HasAttachmentAdminInline
 
 
 class QuizModelForm(HasAttachmentModelForm):
@@ -18,5 +18,5 @@ class QuizModelForm(HasAttachmentModelForm):
         help_text='Hier kannst du einen individuellen Text für diese Antwortmöglichkeit eintragen')
 
 
-class QuizAdminInline(admin.StackedInline):
+class QuizAdminInline(HasAttachmentAdminInline):
     extra = 0

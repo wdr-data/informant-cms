@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 
-from .attachment import DisplayImageWidgetStackedInline, HasAttachmentModelForm
+from .attachment import DisplayImageWidgetStackedInline, HasAttachmentModelForm, HasAttachmentAdminInline
 
 
 class FragmentModelForm(HasAttachmentModelForm):
@@ -13,5 +13,5 @@ class FragmentModelForm(HasAttachmentModelForm):
         required=True, label="Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
 
-class FragmentAdminInline(admin.StackedInline):
+class FragmentAdminInline(HasAttachmentAdminInline):
     extra = 1

@@ -88,6 +88,7 @@ class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInli
 
 class AttachmentAdmin(DisplayImageWidgetAdmin):
     image_display_fields = ['processed']
+    search_fields = ['title']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -113,7 +114,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
 
                 if success:
                     messages.success(
-                        request, f'Anhang {obj.original} wurde zu Facebook hochgeladen 👌')
+                        request, f'Anhang {obj.original} wurde zu Facebook und Telegram hochgeladen 👌')
 
                     obj.processed = path
                     form.changed_data = ['processed']
@@ -122,10 +123,13 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
                 else:
                     messages.error(
                         request,
-                        f'Anhang {obj.original} konnte nicht zu Facebook hochgeladen werden')
+                        f'Anhang {obj.original} konnte nicht zu Facebook oder Telegram hochgeladen werden')
 
 class HasAttachmentAdmin(admin.ModelAdmin):
-    pass
+    autocomplete_fields = ['attachment']
+
+class HasAttachmentAdminInline(admin.StackedInline):
+    autocomplete_fields = ['attachment']
 
 class HasAttachmentModelForm(forms.ModelForm):
     pass
