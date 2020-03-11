@@ -9,7 +9,7 @@ class WikiFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = WikiFragment
-        fields = ['question', 'text', 'attachment', 'link_wiki']
+        fields = ['question', 'text', 'attachment', 'attachment_preview', 'link_wiki']
 
 
 class WikiFragmentAdminInline(FragmentAdminInline):
@@ -23,7 +23,7 @@ class WikiModelForm(NewsBaseModelForm):
     class Meta:
         model = Wiki
         fields = ['name', 'follow_up_at', 'genres',
-                  'tags', 'text', 'attachment']
+                  'tags', 'text', 'attachment', 'attachment_preview']
 
 
 class WikiAdmin(NewsBaseAdmin):

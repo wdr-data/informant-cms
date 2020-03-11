@@ -32,13 +32,13 @@ class ReportFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = ['question', 'text', 'attachment', 'link_wiki']
+        fields = ['question', 'text', 'attachment', 'attachment_preview', 'link_wiki']
 
 
 class ReportFragmentAdminInline(FragmentAdminInline):
     model = ReportFragment
     form = ReportFragmentModelForm
-    fields = ['question', 'attachment', 'text']
+    fields = ['question', 'attachment', 'attachment_preview', 'text']
     extra = 1
 
 
@@ -46,7 +46,7 @@ class ReportQuizModelForm(QuizModelForm):
 
     class Meta:
         model = ReportQuiz
-        fields = ['correct_option', 'quiz_option', 'quiz_text', 'attachment']
+        fields = ['correct_option', 'quiz_option', 'quiz_text', 'attachment', 'attachment_preview']
 
 
 class ReportQuizInlineFormset(forms.models.BaseInlineFormSet):
@@ -118,7 +118,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     fields = (
         'display_object_actions_detail', 'type', 'published', 'headline', 'summary', 'short_headline',
-        'genres', 'tags', 'attachment', 'text',
+        'genres', 'tags', 'attachment', 'attachment_preview', 'text',
         'link',
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated

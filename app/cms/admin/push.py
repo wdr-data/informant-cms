@@ -187,7 +187,8 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 'attachment',
+        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 
+        'attachment', 'attachment_preview',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']

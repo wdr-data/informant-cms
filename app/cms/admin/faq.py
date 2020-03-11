@@ -11,13 +11,13 @@ class FAQFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = FAQFragment
-        fields = ['attachment', 'text']
+        fields = ['attachment', 'attachment_preview', 'text']
 
 
 class FAQFragmentAdminInline(FragmentAdminInline):
     model = FAQFragment
     form = FAQFragmentModelForm
-    fields = ['attachment', 'text']
+    fields = ['attachment', 'attachment_preview', 'text']
     fk_name = 'faq'
 
 
@@ -31,7 +31,7 @@ class FAQModelForm(HasAttachmentModelForm):
 
     class Meta:
         model = FAQ
-        fields = ['name', 'slug', 'attachment', 'text']
+        fields = ['name', 'slug', 'attachment', 'attachment_preview', 'text']
 
 
 class FAQAdmin(HasAttachmentAdmin):

@@ -136,7 +136,21 @@ class HasAttachmentAdminInline(admin.StackedInline):
 
 
 class HasAttachmentModelForm(forms.ModelForm):
-    pass
+    attachment_preview = forms.FileField(
+        label='Vorschau',
+        widget=AdminDisplayImageWidget(),
+        required=False,
+        help_text='Wird erst nach dem Speichern der Meldung aktualisiert.'
+    )
+
+    def get_initial_for_field(self, field, field_name):
+        if field_name == 'attachment_preview':
+            try:
+                return self.instance.attachment.processed
+            except AttributeError:
+                return None
+
+        return super().get_initial_for_field(field, field_name)
 
 
 admin.site.register(Attachment, AttachmentAdmin)
