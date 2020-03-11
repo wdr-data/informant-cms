@@ -10,5 +10,5 @@ class NewsBaseModel(HasAttachment):
         abstract = True
 
     genres = models.ManyToManyField(Genre, related_name='%(class)s', verbose_name='Genre')
-    tags = models.ManyToManyField(ReportTag, verbose_name='Tags', related_name='%(class)s', blank=True)
+    tags = models.ManyToManyField(ReportTag, verbose_name='Tags', related_name='%(class)s', blank=True, help_text='Nach diesen Worten können Nutzer:innen im Bot fragen.')
     text = models.CharField('Intro-Text', max_length=2000, null=False)

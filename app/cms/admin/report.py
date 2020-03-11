@@ -117,7 +117,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         'display_object_actions_list',
     )
     fields = (
-        'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline', 'summary', 
+        'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline', 'summary',
         'link', 'genres', 'tags', 'attachment', 'attachment_preview', 'text',
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated
@@ -139,7 +139,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         {
             'slug': 'preview-report',
             'verbose_name': 'Testen',
-            'verbose_name_past': 'getestet',
+            'verbose_name_past': 'tested',
             'form_method': 'GET',
             'function': 'preview',
         },
@@ -301,7 +301,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             obj.save()
             self.message_user(request, "Die Meldung ist freigegeben.")
         return super().response_change(request, obj)
-    
+
     def get_search_results(self, request, queryset, search_term):
         '''
         Custom search results function that allows the custom autocomplete field in the PushModelForm
