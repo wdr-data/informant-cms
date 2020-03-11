@@ -302,6 +302,15 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             obj.save()
             self.message_user(request, "Die Meldung ist freigegeben.")
         return super().response_change(request, obj)
+    
+    def get_search_results(self, request, queryset, search_term):
+        '''
+        Custom search results function that allows the custom autocomplete field in the PushModelForm
+        to filter for specific reports.
+        '''
+        if 'report_type' in request.GET:
+            queryset = queryset.filter(type=request.GET['report_type'])
+        return super().get_search_results(request, queryset, search_term)
 
 
 # Register your models here.

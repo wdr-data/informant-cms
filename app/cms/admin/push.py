@@ -8,6 +8,7 @@ import re
 from django.contrib import admin, messages
 from django.db import transaction
 from django import forms
+from django.utils.http import urlencode
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
@@ -29,6 +30,27 @@ AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIn
 MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
 
+class AutocompleteSelectCustom(admin.widgets.AutocompleteSelect):
+    """
+    Improved version of django's autocomplete select that sends an extra query parameter with the model and field name
+    it is editing, allowing the search function to apply the appropriate filter.
+    
+    This is a modified version from the solution at https://stackoverflow.com/a/55476825 to work specifically 
+    to filter by report type. Requires an overridden get_search_results on the target ModelAdmin (Report).
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.report_type = kwargs.pop('report_type')
+        super().__init__(*args, **kwargs)
+
+    def get_url(self):
+        url = super().get_url()
+        url += '?' + urlencode({
+            'report_type': self.report_type.value,
+        })
+        return url
+
+
 class PushModelForm(HasAttachmentModelForm):
     timing = forms.ChoiceField(
         required=True,
@@ -46,9 +68,10 @@ class PushModelForm(HasAttachmentModelForm):
         label='Meldung 1',
         required=True, 
         help_text='Hier die erste Meldung auswählen.',
-        widget=admin.widgets.AutocompleteSelect(
+        widget=AutocompleteSelectCustom(
             Push.reports.field.remote_field, 
             admin.site,
+            report_type=Report.Type.REGULAR,
         ))
 
     report_1 = forms.ModelChoiceField(
@@ -56,9 +79,10 @@ class PushModelForm(HasAttachmentModelForm):
         label='Meldung 2',
         required=True,
         help_text='Hier die zweite Meldung auswählen.',
-        widget=admin.widgets.AutocompleteSelect(
+        widget=AutocompleteSelectCustom(
             Push.reports.field.remote_field, 
             admin.site,
+            report_type=Report.Type.REGULAR,
         ))
 
     report_2 = forms.ModelChoiceField(
@@ -66,9 +90,10 @@ class PushModelForm(HasAttachmentModelForm):
         label='Meldung 3',
         required=True,
         help_text='Hier die dritte Meldung auswählen.',
-        widget=admin.widgets.AutocompleteSelect(
+        widget=AutocompleteSelectCustom(
             Push.reports.field.remote_field, 
             admin.site,
+            report_type=Report.Type.REGULAR,
         ))
 
     last_report = forms.ModelChoiceField(
@@ -76,9 +101,10 @@ class PushModelForm(HasAttachmentModelForm):
         label='Zum Schluss',
         required=False,
         help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.',
-        widget=admin.widgets.AutocompleteSelect(
+        widget=AutocompleteSelectCustom(
             Push.reports.field.remote_field, 
             admin.site,
+            report_type=Report.Type.LAST,
         ))
 
     class Meta:
