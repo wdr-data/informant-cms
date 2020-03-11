@@ -44,25 +44,42 @@ class PushModelForm(HasAttachmentModelForm):
     report_0 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 1',
-        required=True, help_text='Hier die erste Meldung auswählen.')
+        required=True, 
+        help_text='Hier die erste Meldung auswählen.',
+        widget=admin.widgets.AutocompleteSelect(
+            Push.reports.field.remote_field, 
+            admin.site,
+        ))
 
     report_1 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 2',
         required=True,
-        help_text='Hier die zweite Meldung auswählen.')
+        help_text='Hier die zweite Meldung auswählen.',
+        widget=admin.widgets.AutocompleteSelect(
+            Push.reports.field.remote_field, 
+            admin.site,
+        ))
 
     report_2 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 3',
         required=True,
-        help_text='Hier die dritte Meldung auswählen.')
+        help_text='Hier die dritte Meldung auswählen.',
+        widget=admin.widgets.AutocompleteSelect(
+            Push.reports.field.remote_field, 
+            admin.site,
+        ))
 
     last_report = forms.ModelChoiceField(
         Report.objects.filter(type='last'),
         label='Zum Schluss',
         required=False,
-        help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.')
+        help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.',
+        widget=admin.widgets.AutocompleteSelect(
+            Push.reports.field.remote_field, 
+            admin.site,
+        ))
 
     class Meta:
         model = Push
