@@ -3,6 +3,7 @@ import logging
 import os
 import requests
 from posixpath import join as urljoin
+from os.path import splitext
 
 import httpx
 from django import forms
@@ -125,6 +126,17 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
     form = AttachmentModelForm
     image_display_fields = ['processed']
     search_fields = ['title']
+    ordering = ['-upload_date']
+    date_hierarchy = 'upload_date'
+    list_display = (
+        'title',
+        'extension',
+        'upload_date',
+    )
+
+    def extension(self, obj):
+        return splitext(str(obj.original))[-1]
+    extension.short_description = 'Typ'
 
 
 class HasAttachmentAdmin(admin.ModelAdmin):

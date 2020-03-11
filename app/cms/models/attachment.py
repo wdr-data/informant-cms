@@ -1,7 +1,8 @@
 import logging
 
 from io import BytesIO
-from os.path import dirname, abspath
+from os.path import dirname, abspath, splitext
+
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -40,7 +41,8 @@ class Attachment(models.Model):
     upload_date = models.DateTimeField('Hochgeladen am', auto_now_add=True)
 
     def __str__(self):
-        return str(self.title)
+        extension = splitext(str(self.original))[-1]
+        return f'{self.title}{extension}, {self.upload_date.strftime("%d.%m.%Y")}'
 
     @classmethod
     def process_attachment(cls, original, credit):
