@@ -125,6 +125,7 @@ class AttachmentAdmin(DisplayImageWidgetAdmin):
     form = AttachmentModelForm
     image_display_fields = ['processed']
     search_fields = ['title']
+    ordering = ['-upload_date']
 
 
 class HasAttachmentAdmin(admin.ModelAdmin):
