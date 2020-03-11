@@ -161,6 +161,8 @@ class HasAttachmentModelForm(forms.ModelForm):
                 return self.instance.attachment.processed
             except AttributeError:
                 return None
+        elif field_name == 'attachment':
+            field.widget.can_delete_related = False
 
         return super().get_initial_for_field(field, field_name)
 
