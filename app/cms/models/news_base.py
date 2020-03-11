@@ -1,11 +1,11 @@
 from django.db import models
 
-from .attachment import Attachment
+from .attachment import HasAttachment
 from .genre import Genre
 from .tag import ReportTag
 
 
-class NewsBaseModel(Attachment):
+class NewsBaseModel(HasAttachment):
     class Meta:
         abstract = True
 

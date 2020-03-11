@@ -1,9 +1,9 @@
 from django.db import models
 
-from .attachment import Attachment
+from .attachment import HasAttachment
 
 
-class Fragment(Attachment):
+class Fragment(HasAttachment):
 
     class Meta:
         verbose_name = 'Fragment'

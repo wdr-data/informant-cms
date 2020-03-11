@@ -1,9 +1,9 @@
 from django.db import models
 
-from .attachment import Attachment
+from .attachment import HasAttachment
 
 
-class Quiz(Attachment):
+class Quiz(HasAttachment):
 
     class Meta:
         verbose_name = 'Quiz'

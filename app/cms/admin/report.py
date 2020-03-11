@@ -32,14 +32,13 @@ class ReportFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = ReportFragment
-        fields = ['question', 'text', 'media', 'media_original', 'media_alt', 'media_note',
-                  'link_wiki']
+        fields = ['question', 'text', 'attachment', 'link_wiki']
 
 
 class ReportFragmentAdminInline(FragmentAdminInline):
     model = ReportFragment
     form = ReportFragmentModelForm
-    fields = ['question', 'media', 'media_original', 'media_alt', 'media_note', 'text']
+    fields = ['question', 'attachment', 'text']
     extra = 1
 
 
@@ -47,8 +46,7 @@ class ReportQuizModelForm(QuizModelForm):
 
     class Meta:
         model = ReportQuiz
-        fields = ['correct_option', 'quiz_option', 'quiz_text', 'media', 'media_original',
-                  'media_alt', 'media_note']
+        fields = ['correct_option', 'quiz_option', 'quiz_text', 'attachment']
 
 
 class ReportQuizInlineFormset(forms.models.BaseInlineFormSet):
@@ -99,17 +97,9 @@ class ReportModelForm(NewsBaseModelForm):
 
     summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
 
-    media_alt = forms.CharField(
-        label='Alternativ-Text',
-        help_text='Beschreibung des Bildes/Gifs für Blinde.',
-        max_length=125,
-        required=False
-    )
-
     class Meta:
         model = Report
         exclude = ()
-
 
 class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
@@ -128,7 +118,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     fields = (
         'display_object_actions_detail', 'type', 'published', 'headline', 'summary', 'short_headline',
-        'genres', 'tags', 'media', 'media_original', 'media_alt', 'media_note', 'text',
+        'genres', 'tags', 'attachment', 'text',
         'link',
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated
@@ -256,7 +246,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
     def assets(self, obj):
         assets = ''
-        if obj.media and str(obj.media) != '':
+        if obj.attachment and str(obj.attachment) != '':
             assets = '🖼️'
 
         if obj.link and str(obj.link) != '':
@@ -305,56 +295,6 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                     obj.audio = None
 
         super().save_model(request, obj, form, change)
-
-        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
-
-            def commit_hook():
-                sleep(1)  # Wait for DB
-                r = requests.post(
-                    url=AMP_UPDATE_REPORT,
-                    json={'id': obj.id},
-                )
-
-                if not r.ok:
-                    logging.error('AMP update trigger failed: ' + r.reason)
-
-            transaction.on_commit(commit_hook)
-        elif original and not obj.published and original.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            def commit_hook():
-                sleep(1)  # Wait for DB
-                r = requests.post(
-                    url=AMP_DELETE_REPORT,
-                    json={
-                        'id': obj.id,
-                        'created': obj.created.isoformat(),
-                    },
-                )
-
-                if not r.ok:
-                    logging.error('AMP delete trigger failed: ' + r.reason)
-
-            transaction.on_commit(commit_hook)
-
-    def delete_model(self, request, obj):
-        id = obj.id
-        super().delete_model(request, obj)
-
-        if obj.published and os.environ.get('AMP_SERVICE_ENDPOINT'):
-
-            def commit_hook():
-                sleep(1)  # Wait for DB
-                r = requests.post(
-                    url=AMP_DELETE_REPORT,
-                    json={
-                        'id': id,
-                        'created': obj.created.isoformat(),
-                    },
-                )
-
-                if not r.ok:
-                    logging.error('AMP delete trigger failed: ' + r.reason)
-
-            transaction.on_commit(commit_hook)
 
     def response_change(self, request, obj):
         if "_publish-save" in request.POST:

@@ -5,10 +5,14 @@ import requests
 from posixpath import join as urljoin
 
 import httpx
+from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib import admin, messages
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.safestring import mark_safe
 from raven.contrib.django.raven_compat.models import client
+
+from ..models.attachment import Attachment
 
 ATTACHMENT_TRIGGER_URLS = [
     urljoin(os.environ[var_name], 'attachment')
@@ -82,79 +86,57 @@ class DisplayImageWidgetStackedInline(DisplayImageWidgetMixin, admin.StackedInli
 class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInline):
     pass
 
+class AttachmentModelForm(forms.ModelForm):
 
-class AttachmentAdmin(DisplayImageWidgetAdmin):
-    image_display_fields = ['media']
+    class Meta:
+        model = Attachment
+        exclude = ['upload_date']
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-
-        if ('media_original' in form.changed_data
-                or 'media_note' in form.changed_data
-                or obj.media_original and not obj.media):
+    def clean(self):
+        obj = self.instance
+        if ('original' in self.changed_data
+                or 'credit' in self.changed_data
+                or not obj
+                or obj.original and not obj.processed):
             try:
-                path, url = obj.process_attachment()
+                path, url = Attachment.process_attachment(
+                    self.cleaned_data.get('original'),
+                    self.cleaned_data.get('credit'),
+                )
 
             except:
-                logging.exception('%s', obj.media_original)
-                messages.error(request, f'{IMAGE_PROCESSING_FAILED}: {obj.media_original}')
+                logging.exception('%s', obj.original)
+                raise ValidationError({f'original': 'Bildverarbeitung fehlgeschlagen!'})
 
             else:
-                if path is None:
-                    obj.media = None
-                    form.changed_data = ['media']
-                    super().save_model(request, obj, form, change)
-                    return
 
                 success = trigger_attachments(url)
 
                 if success:
-                    messages.success(
-                        request, f'Anhang {obj.media_original} wurde zu Facebook hochgeladen 👌')
-
-                    obj.media = path
-                    form.changed_data = ['media']
-                    super().save_model(request, obj, form, change)
+                    self.cleaned_data['processed'] = path
+                    self.changed_data = ['processed']
 
                 else:
-                    messages.error(
-                        request,
-                        f'Anhang {obj.media_original} konnte nicht zu Facebook hochgeladen werden')
+                    raise ValidationError({f'original': 'Upload fehlgeschlagen!'})
+        return self.cleaned_data
 
-    def save_formset(self, request, form, formset, change):
-        super().save_formset(request, form, formset, change)
 
-        for form_ in formset.forms:
-            if 'media_original' in form_.changed_data or 'media_note' in form_.changed_data:
-                try:
-                    path, url = form_.instance.process_attachment()
+class AttachmentAdmin(DisplayImageWidgetAdmin):
+    form = AttachmentModelForm
+    image_display_fields = ['processed']
+    search_fields = ['title']
 
-                except:
-                    logging.exception('%s', form_.instance.media_original)
-                    messages.error(request, f'{IMAGE_PROCESSING_FAILED}: '
-                                            f'{form_.instance.media_original}')
 
-                else:
-                    if path is None:
-                        form_.instance.media = None
-                        form_.changed_data = ['media']
-                        super().save_formset(request, form, formset, change)
-                        return
+class HasAttachmentAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['attachment']
 
-                    success = trigger_attachments(url)
 
-                    if success:
-                        messages.success(
-                            request,
-                            f'Anhang {form_.instance.media_original} wurde zu Facebook '
-                            f'hochgeladen 👌')
+class HasAttachmentAdminInline(admin.StackedInline):
+    autocomplete_fields = ['attachment']
 
-                        form_.instance.media = path
-                        form_.changed_data = ['media']
-                        super().save_formset(request, form, formset, change)
 
-                    else:
-                        messages.error(
-                            request,
-                            f'Anhang {form_.instance.media_original} konnte nicht zu Facebook '
-                            f'hochgeladen werden')
+class HasAttachmentModelForm(forms.ModelForm):
+    pass
+
+
+admin.site.register(Attachment, AttachmentAdmin)

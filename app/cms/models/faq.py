@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils.text import slugify
 
-from .attachment import Attachment
+from .attachment import HasAttachment
 from .fragment import Fragment
 
 
-class FAQ(Attachment):
+class FAQ(HasAttachment):
     """
     FAQs werden über Payloads ausgespielt.
     """

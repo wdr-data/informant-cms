@@ -4,7 +4,7 @@ from cms.models import WikiFragment
 
 from distutils.util import strtobool
 from rest_framework import serializers, viewsets
-
+from .attachments import AttachmentSerializer
 
 class BaseFragmentViewSet(viewsets.ModelViewSet):
     fragment_group_field = None
@@ -40,9 +40,11 @@ class BaseFragmentViewSet(viewsets.ModelViewSet):
 
 
 class ReportFragmentSerializer(serializers.ModelSerializer):
+    attachment = AttachmentSerializer(read_only=True)
+
     class Meta:
         model = ReportFragment
-        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_alt', 'media_note',
+        fields = ('id', 'question', 'text', 'attachment',
                   'link_wiki', 'report')
 
 
@@ -59,9 +61,11 @@ class ReportFragmentViewSet(BaseFragmentViewSet):
 
 
 class FAQFragmentSerializer(serializers.ModelSerializer):
+    attachment = AttachmentSerializer(read_only=True)
+
     class Meta:
         model = FAQFragment
-        fields = ('id', 'text', 'media_original', 'media', 'media_alt', 'media_note', 'faq')
+        fields = ('id', 'text', 'attachment', 'faq')
 
 
 class FAQFragmentViewSet(BaseFragmentViewSet):
@@ -72,9 +76,11 @@ class FAQFragmentViewSet(BaseFragmentViewSet):
 
 
 class WikiFragmentSerializer(serializers.ModelSerializer):
+    attachment = AttachmentSerializer(read_only=True)
+
     class Meta:
         model = WikiFragment
-        fields = ('id', 'question', 'text', 'media_original', 'media', 'media_alt', 'media_note',
+        fields = ('id', 'question', 'text', 'attachment',
                   'link_wiki', 'wiki')
 
 
