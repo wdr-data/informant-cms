@@ -155,24 +155,55 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
     def preview(self, obj, form):
         request = get_current_request()
+        profile = request.user.profile
 
-        error_message = 'Bitte trage deine Facebook-PSID in deinem Profil ein'
-        try:
-            if not request.user.profile.psid:
-                raise Exception(error_message)
-        except:
+        if not profile:
+            error_message = 'Bitte trage deine Nutzer-ID für Facebook und/oder Telegram in deinem Profil ein.'
             raise Exception(error_message)
 
-        r = requests.post(
-            url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'breaking'),
-            json={
-                'report': obj.id,
-                'preview': request.user.profile.psid,
-            }
-        )
+        failed = False
 
-        if not r.ok:
-            raise Exception('Nicht erfolgreich')
+        if profile.psid:
+            r = requests.post(
+                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'breaking'),
+                json={
+                    'report': obj.id,
+                    'preview': profile.psid,
+                }
+            )
+
+            if not r.ok:
+                messages.error(request, 'Testen bei Facebook ist fehlgeschlagen.')
+                failed = True
+
+        else:
+            messages.warning(
+                request, 
+                'Bitte trage deine Facebook-ID in deinem Profil ein, um in Facebook testen zu können.'
+            )
+
+        if profile.tgid:
+            r = requests.post(
+                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_TG'], 'breaking'),
+                json={
+                    'report': obj.id,
+                    'preview': profile.tgid,
+                }
+            )
+
+            if not r.ok:
+                messages.error(request, 'Testen bei Telegram ist fehlgeschlagen.')
+                failed = True
+
+        else:
+            messages.warning(
+                request, 
+                'Bitte trage deine Telegram-ID in deinem Profil ein, um in Telegram testen zu können.'
+            )
+
+        if failed:
+            raise Exception('Es ist ein Fehler aufgetreten.')
+
 
     def has_send_breaking_permission(self, request, obj=None):
         return (
