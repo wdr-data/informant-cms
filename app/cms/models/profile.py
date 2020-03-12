@@ -13,8 +13,16 @@ class Profile(models.Model):
         max_length=256,
         blank=True,
         null=True,
-        verbose_name='PSID',
-        help_text='Sende #psid an den Bot, und trage die Zahl hier ein, '
+        verbose_name='Facebook-ID',
+        help_text='Sende #ich an den Bot, und trage die Zahl hier ein, '
+            'um Meldungen und Pushes testen zu können.',
+    )
+    tgid = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+        verbose_name='Telegram-ID',
+        help_text='Sende #ich an den Bot, und trage die Zahl hier ein, '
             'um Meldungen und Pushes testen zu können.',
     )
 

@@ -1,0 +1,7 @@
+{% extends "./change_form.html" %}
+{% load static %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static "cms/js/disable_submit_after_click.js" %}"></script>
+{% endblock %}

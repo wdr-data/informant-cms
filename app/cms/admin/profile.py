@@ -33,8 +33,8 @@ class ProfileModelForm(forms.ModelForm):
 class ProfileAdmin(admin.ModelAdmin):
     form = ProfileModelForm
 
-    list_display = ('user', 'psid')
-    fields = ('user', 'psid', )
+    list_display = ('user', 'psid', 'tgid')
+    fields = ('user', 'psid', 'tgid')
 
     def get_changeform_initial_data(self, request):
         initial_data = super(ProfileAdmin, self).get_changeform_initial_data(request)
