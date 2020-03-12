@@ -2,22 +2,24 @@ import os
 import logging
 from posixpath import join as urljoin
 from time import sleep
-from datetime import date
+from datetime import date, time, datetime
 import re
 
 from django.contrib import admin, messages
 from django.db import transaction
 from django import forms
+from django.utils.http import urlencode
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 import requests
 from django.core.exceptions import ValidationError
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
+import pytz
 
 from ..models.push import Push
 from ..models.report import Report
-from .attachment import AttachmentAdmin
+from .attachment import HasAttachmentAdmin, HasAttachmentModelForm
 
 PUSH_TRIGGER_URLS = {
     service: urljoin(os.environ[var_name], 'push')
@@ -28,7 +30,28 @@ AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIn
 MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
 
-class PushModelForm(forms.ModelForm):
+class AutocompleteSelectCustom(admin.widgets.AutocompleteSelect):
+    """
+    Improved version of django's autocomplete select that sends an extra query parameter with the model and field name
+    it is editing, allowing the search function to apply the appropriate filter.
+    
+    This is a modified version from the solution at https://stackoverflow.com/a/55476825 to work specifically 
+    to filter by report type. Requires an overridden get_search_results on the target ModelAdmin (Report).
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.report_type = kwargs.pop('report_type')
+        super().__init__(*args, **kwargs)
+
+    def get_url(self):
+        url = super().get_url()
+        url += '?' + urlencode({
+            'report_type': self.report_type.value,
+        })
+        return url
+
+
+class PushModelForm(HasAttachmentModelForm):
     timing = forms.ChoiceField(
         required=True,
         label="Zeitpunkt",
@@ -43,25 +66,46 @@ class PushModelForm(forms.ModelForm):
     report_0 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 1',
-        required=True, help_text='Hier die erste Meldung auswählen.')
+        required=True, 
+        help_text='Hier die erste Meldung auswählen.',
+        widget=AutocompleteSelectCustom(
+            Push.reports.field.remote_field, 
+            admin.site,
+            report_type=Report.Type.REGULAR,
+        ))
 
     report_1 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 2',
         required=True,
-        help_text='Hier die zweite Meldung auswählen.')
+        help_text='Hier die zweite Meldung auswählen.',
+        widget=AutocompleteSelectCustom(
+            Push.reports.field.remote_field, 
+            admin.site,
+            report_type=Report.Type.REGULAR,
+        ))
 
     report_2 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 3',
         required=True,
-        help_text='Hier die dritte Meldung auswählen.')
+        help_text='Hier die dritte Meldung auswählen.',
+        widget=AutocompleteSelectCustom(
+            Push.reports.field.remote_field, 
+            admin.site,
+            report_type=Report.Type.REGULAR,
+        ))
 
     last_report = forms.ModelChoiceField(
         Report.objects.filter(type='last'),
         label='Zum Schluss',
         required=False,
-        help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.')
+        help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.',
+        widget=AutocompleteSelectCustom(
+            Push.reports.field.remote_field, 
+            admin.site,
+            report_type=Report.Type.LAST,
+        ))
 
     class Meta:
         model = Push
@@ -138,12 +182,13 @@ class SendManualForm(AdminObjectActionForm):
             raise Exception(f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
 
 
-class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
+class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     form = PushModelForm
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 'media', 'media_original', 'media_alt', 'media_note',
+        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 
+        'attachment', 'attachment_preview',
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
@@ -238,71 +283,23 @@ class PushAdmin(ModelAdminObjectActionsMixin, AttachmentAdmin):
         )
 
     def save_model(self, request, obj, form, change):
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        was_last_push = last_push and last_push.id == obj.id
+        local_time = datetime.now(tz=pytz.timezone('Europe/Berlin'))
+        if obj.pub_date < local_time.date():
+            messages.warning(
+                request,
+                'Das Push-Datum für diesen Push liegt in der Vergangenheit. '
+                'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
+            )
+        elif (obj.pub_date == local_time.date()
+                and local_time.time() > time(10, 00)
+                and Push.Timing(obj.timing) is Push.Timing.MORNING):
+            messages.warning(
+                request,
+                'Der Push hat das Datum von heute, ist aber ein Morgen-Push. '
+                'Dieser Push wird daher nicht gesendet. Bitte Datum prüfen!'
+            )
 
         super().save_model(request, obj, form, change)
-
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        is_last_push = last_push and last_push.id == obj.id
-
-        def update_index():
-            if not last_push:
-                return
-
-            sleep(1)  # Wait for DB
-            r = requests.post(
-                url=AMP_UPDATE_INDEX,
-                json={'id': last_push.id})
-
-            if not r.ok:
-                logging.error('Index-Site update trigger failed: ' + r.reason)
-
-        if is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            transaction.on_commit(update_index)
-
-        elif was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            transaction.on_commit(update_index)
-
-    def delete_model(self, request, obj):
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        was_last_push = last_push and last_push.id == obj.id
-
-        super().delete_model(request, obj)
-
-        try:
-            last_push = obj.__class__.last(delivered=True, breaking=False)[0]
-        except:
-            last_push = None
-
-        is_last_push = last_push and last_push.id == obj.id
-
-        if was_last_push and not is_last_push and os.environ.get('AMP_SERVICE_ENDPOINT'):
-            def update_index():
-                if not last_push:
-                    return
-
-                sleep(1)  # Wait for DB
-                r = requests.post(
-                    url=AMP_UPDATE_INDEX,
-                    json={'id': last_push.id})
-
-                if not r.ok:
-                    logging.error('Index-Site update trigger failed: ' + r.reason)
-
-            transaction.on_commit(update_index)
 
     def response_change(self, request, obj):
         if "_publish-save" in request.POST:

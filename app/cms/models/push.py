@@ -4,10 +4,10 @@ from django.db import models
 from datetime import date
 from sortedm2m.fields import SortedManyToManyField
 
-from .attachment import Attachment
+from .attachment import HasAttachment
 
 
-class Push(Attachment):
+class Push(HasAttachment):
     """
     Pushes fassen Meldungen zusammen. Diese Meldungen werden zum jeweils festgelegten Zeitpunkt
     an alle Abonnenten versandt.

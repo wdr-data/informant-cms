@@ -6,19 +6,21 @@ from .tags import TagSerializer
 from .fragments import ModelViewSetWithFragments, ModelSerializerWithFragments, \
     ReportFragmentSerializer
 from .genres import GenreSerializer
+from .attachments import AttachmentSerializer
 
 
 class ReportSerializer(ModelSerializerWithFragments):
     tags = TagSerializer(many=True, read_only=True)
     genres = GenreSerializer(many=True, read_only=True)
     fragment_serializer_class = ReportFragmentSerializer
+    attachment = AttachmentSerializer(read_only=True)
 
     class Meta:
         model = Report
         fields = (
             'id', 'type', 'created', 'published_date', 'modified', 'is_quiz', 'genres',
-            'tags', 'headline', 'summary', 'short_headline', 'audio', 'text', 'media', 'media_original',
-            'media_alt', 'media_note', 'link', 'published', 'delivered_fb', 'delivered_tg', 'author',
+            'tags', 'headline', 'summary', 'short_headline', 'audio', 'text', 'attachment',
+            'link', 'published', 'delivered_fb', 'delivered_tg', 'author',
         )
 
 

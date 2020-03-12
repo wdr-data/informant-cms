@@ -3,7 +3,7 @@ from django import forms
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
 
 from ..models.faq import FAQ, FAQFragment
-from .attachment import AttachmentAdmin
+from .attachment import HasAttachmentAdmin, HasAttachmentModelForm
 from .fragment import FragmentModelForm, FragmentAdminInline
 
 
@@ -11,17 +11,17 @@ class FAQFragmentModelForm(FragmentModelForm):
 
     class Meta:
         model = FAQFragment
-        fields = ['media', 'media_original', 'media_alt', 'media_note', 'text']
+        fields = ['attachment', 'attachment_preview', 'text']
 
 
 class FAQFragmentAdminInline(FragmentAdminInline):
     model = FAQFragment
     form = FAQFragmentModelForm
-    fields = ['media', 'media_original', 'media_alt', 'media_note', 'text']
+    fields = ['attachment', 'attachment_preview', 'text']
     fk_name = 'faq'
 
 
-class FAQModelForm(forms.ModelForm):
+class FAQModelForm(HasAttachmentModelForm):
     text = forms.CharField(
         required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
 
@@ -31,11 +31,10 @@ class FAQModelForm(forms.ModelForm):
 
     class Meta:
         model = FAQ
-        fields = ['name', 'slug', 'media', 'media_original', 'media_alt',
-                  'media_note', 'text']
+        fields = ['name', 'slug', 'attachment', 'attachment_preview', 'text']
 
 
-class FAQAdmin(AttachmentAdmin):
+class FAQAdmin(HasAttachmentAdmin):
     form = FAQModelForm
     ordering = ('name',)
     search_fields = ['name', 'slug']

@@ -1,11 +1,12 @@
 from django import forms
+from django.contrib import admin
 
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 
-from .attachment import DisplayImageWidgetStackedInline
+from .attachment import HasAttachmentModelForm, HasAttachmentAdminInline
 
 
-class QuizModelForm(forms.ModelForm):
+class QuizModelForm(HasAttachmentModelForm):
     correct_option = forms.BooleanField(required=False, label='Richtige Antwort',
         help_text='Setze hier einen Haken, wenn diese Antwort-Option die richtige ist.')
     quiz_option = forms.CharField(
@@ -17,6 +18,5 @@ class QuizModelForm(forms.ModelForm):
         help_text='Hier kannst du einen individuellen Text für diese Antwortmöglichkeit eintragen')
 
 
-class QuizAdminInline(DisplayImageWidgetStackedInline):
-    image_display_fields = ['media']
+class QuizAdminInline(HasAttachmentAdminInline):
     extra = 0
