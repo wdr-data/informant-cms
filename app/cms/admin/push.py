@@ -26,7 +26,7 @@ PUSH_TRIGGER_URLS = {
     for service, var_name in (('fb', 'BOT_SERVICE_ENDPOINT_FB'), ('tg', 'BOT_SERVICE_ENDPOINT_TG'))
     if var_name in os.environ
 }
-AMP_UPDATE_INDEX = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateIndex')
+
 MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
 
 
@@ -34,8 +34,8 @@ class AutocompleteSelectCustom(admin.widgets.AutocompleteSelect):
     """
     Improved version of django's autocomplete select that sends an extra query parameter with the model and field name
     it is editing, allowing the search function to apply the appropriate filter.
-    
-    This is a modified version from the solution at https://stackoverflow.com/a/55476825 to work specifically 
+
+    This is a modified version from the solution at https://stackoverflow.com/a/55476825 to work specifically
     to filter by report type. Requires an overridden get_search_results on the target ModelAdmin (Report).
     """
 
@@ -66,10 +66,10 @@ class PushModelForm(HasAttachmentModelForm):
     report_0 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
         label='Meldung 1',
-        required=True, 
+        required=True,
         help_text='Hier die erste Meldung auswählen.',
         widget=AutocompleteSelectCustom(
-            Push.reports.field.remote_field, 
+            Push.reports.field.remote_field,
             admin.site,
             report_type=Report.Type.REGULAR,
         ))
@@ -80,7 +80,7 @@ class PushModelForm(HasAttachmentModelForm):
         required=True,
         help_text='Hier die zweite Meldung auswählen.',
         widget=AutocompleteSelectCustom(
-            Push.reports.field.remote_field, 
+            Push.reports.field.remote_field,
             admin.site,
             report_type=Report.Type.REGULAR,
         ))
@@ -91,7 +91,7 @@ class PushModelForm(HasAttachmentModelForm):
         required=True,
         help_text='Hier die dritte Meldung auswählen.',
         widget=AutocompleteSelectCustom(
-            Push.reports.field.remote_field, 
+            Push.reports.field.remote_field,
             admin.site,
             report_type=Report.Type.REGULAR,
         ))
@@ -102,7 +102,7 @@ class PushModelForm(HasAttachmentModelForm):
         required=False,
         help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.',
         widget=AutocompleteSelectCustom(
-            Push.reports.field.remote_field, 
+            Push.reports.field.remote_field,
             admin.site,
             report_type=Report.Type.LAST,
         ))
@@ -187,7 +187,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
         'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro', 
+        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro',
         'attachment', 'attachment_preview',
     )
     date_hierarchy = 'pub_date'
@@ -249,24 +249,49 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
 
     def preview(self, obj, form):
         request = get_current_request()
+        profile = request.user.profile
 
-        error_message = 'Bitte trage deine Facebook-PSID in deinem Profil ein'
-        try:
-            if not request.user.profile.psid:
-                raise Exception(error_message)
-        except:
+        if not profile:
+            error_message = 'Bitte trage deine PSID (Facebook und Telegram) in deinem Profil ein'
             raise Exception(error_message)
 
-        r = requests.post(
-            url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'push'),
-            json={
-                'push': obj.id,
-                'preview': request.user.profile.psid,
-            }
-        )
+        failed = False
 
-        if not r.ok:
-            raise Exception('Nicht erfolgreich')
+        if profile.psid:
+            r = requests.post(
+                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'push'),
+                json={
+                    'push': obj.id,
+                    'preview': profile.psid,
+                }
+            )
+
+            if not r.ok:
+                messages.error(request, 'Testen bei Facebook ist fehlgeschlagen.')
+                failed = True
+
+        else:
+            messages.warning(request, 'Bitte trage deine Facebook-ID in deinem Profil ein.')
+
+        if profile.tgid:
+            r = requests.post(
+                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_TG'], 'push'),
+                json={
+                    'push': obj.id,
+                    'preview': profile.tgid,
+                }
+            )
+
+            if not r.ok:
+                messages.error(request, 'Testen bei Telegram ist fehlgeschlagen.')
+                failed = True
+
+        else:
+            messages.warning(request, 'Bitte trage deine Telegram-ID in deinem Profil ein.')
+
+        if failed:
+            raise Exception('Es ist ein Fehler aufgetreten.')
+
 
     def has_send_manual_permission(self, request, obj=None):
         return (
