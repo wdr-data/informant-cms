@@ -124,6 +124,7 @@ class AttachmentModelForm(forms.ModelForm):
 
 class AttachmentAdmin(DisplayImageWidgetAdmin):
     form = AttachmentModelForm
+    change_form_template = "admin/cms/change_form_disable_submit_after_click.html"
     image_display_fields = ['processed']
     search_fields = ['title']
     ordering = ['-upload_date']
