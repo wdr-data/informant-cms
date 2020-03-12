@@ -252,7 +252,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
         profile = request.user.profile
 
         if not profile:
-            error_message = 'Bitte trage deine PSID (Facebook und Telegram) in deinem Profil ein'
+            error_message = 'Bitte trage deine Nutzer-ID für Facebook und/oder Telegram in deinem Profil ein.'
             raise Exception(error_message)
 
         failed = False
@@ -271,7 +271,10 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
                 failed = True
 
         else:
-            messages.warning(request, 'Bitte trage deine Facebook-ID in deinem Profil ein.')
+            messages.warning(
+                request, 
+                'Bitte trage deine Facebook-ID in deinem Profil ein, um in Facebook testen zu können.'
+            )
 
         if profile.tgid:
             r = requests.post(
@@ -287,7 +290,10 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
                 failed = True
 
         else:
-            messages.warning(request, 'Bitte trage deine Telegram-ID in deinem Profil ein.')
+            messages.warning(
+                request, 
+                'Bitte trage deine Telegram-ID in deinem Profil ein, um in Telegram testen zu können.'
+            )
 
         if failed:
             raise Exception('Es ist ein Fehler aufgetreten.')
