@@ -272,7 +272,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
 
         else:
             messages.warning(
-                request, 
+                request,
                 'Bitte trage deine Facebook-ID in deinem Profil ein, um in Facebook testen zu können.'
             )
 
@@ -291,7 +291,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
 
         else:
             messages.warning(
-                request, 
+                request,
                 'Bitte trage deine Telegram-ID in deinem Profil ein, um in Telegram testen zu können.'
             )
 
