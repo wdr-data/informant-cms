@@ -129,7 +129,9 @@ class PushModelForm(HasAttachmentModelForm):
         reports = []
 
         if self.cleaned_data.get('link') and not self.cleaned_data.get('link_name'):
-            raise ValidationError('Bitte Schlagwort Deeplink einfügen')
+            raise ValidationError({
+                'link_name': 'Bitte Schlagwort PromoLink setzen.'
+            })
 
         for i in range(3):
             report = self.cleaned_data.get(f'report_{i}')
