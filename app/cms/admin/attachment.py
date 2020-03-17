@@ -87,6 +87,7 @@ class DisplayImageWidgetStackedInline(DisplayImageWidgetMixin, admin.StackedInli
 class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInline):
     pass
 
+
 class AttachmentModelForm(forms.ModelForm):
 
     class Meta:
