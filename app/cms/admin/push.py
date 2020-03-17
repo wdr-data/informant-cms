@@ -98,7 +98,7 @@ class PushModelForm(HasAttachmentModelForm):
 
     last_report = forms.ModelChoiceField(
         Report.objects.filter(type='last'),
-        label='Zum Schluss',
+        label='Letzte Meldung',
         required=False,
         help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.',
         widget=AutocompleteSelectCustom(
