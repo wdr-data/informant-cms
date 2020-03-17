@@ -193,7 +193,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     fields = (
         'display_object_actions_detail', 'published', ('pub_date', 'timing'), 'headline',
         'intro', 'report_0', 'report_1', 'report_2', 'last_report',
-        ('attachment_preview', 'attachment'), 'outro', ('link_name', 'link')
+        ('attachment', 'attachment_preview'), 'outro', ('link_name', 'link')
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']
