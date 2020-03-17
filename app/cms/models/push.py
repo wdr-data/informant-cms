@@ -51,6 +51,14 @@ class Push(HasAttachment):
     intro = models.CharField('Intro-Text', max_length=1000, null=False, blank=True)
     outro = models.CharField('Outro-Text', max_length=2000, null=False, blank=True)
 
+    link_name = models.CharField('Schlagwort-DeepLink', max_length=17, null=True, blank=True)
+
+    link = models.URLField('DeepLink', blank=True, null=True, max_length=500, default=None,
+                           help_text='Der Link wird am Ende am Ende des Push-Outro angehangen.'
+                                     ' Der Button-Text lautet: "🔗 {Schlagwort-Link}".'
+                                     'Dieser Link dient insbesondere der Cross-Promo von WDR-Inhalten.'
+                           )
+
     reports = SortedManyToManyField(
         'Report', related_name='pushes', verbose_name='Meldungen',
         help_text='Bitte maximal 4 Meldungen auswählen.')
