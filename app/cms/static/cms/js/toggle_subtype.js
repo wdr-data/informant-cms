@@ -7,7 +7,7 @@ django.jQuery(document).ready(function(){
     } else {
         django.jQuery(subtypeSelector).hide();
     }
-    django.jQuery(typeSelector).click(function(){
+    django.jQuery(typeSelector).change(function(){
         const visible = this.value === 'last';
         if (visible) {
             django.jQuery(subtypeSelector).show();
