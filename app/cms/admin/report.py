@@ -258,7 +258,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         elif Report.Type(obj.type) == Report.Type.REGULAR:
             display = '📰'
         elif Report.Type(obj.type) == Report.Type.LAST:
-            display = '🙈'
+            display = f'🎨{obj.subtype.emoji}'
 
         return display
 
