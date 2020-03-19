@@ -7,7 +7,6 @@ from s3direct.fields import S3DirectField
 from .news_base import NewsBaseModel
 from .fragment import Fragment
 from .quiz import Quiz
-from .subtype import Subtype
 
 
 class Report(NewsBaseModel):
@@ -43,14 +42,14 @@ class Report(NewsBaseModel):
         default=Type.REGULAR.value)
 
     subtype = models.ForeignKey(
-        Subtype,
+        'Subtype',
         models.CASCADE,
         null=True,
         blank=True,
         verbose_name='Subtyp',
         related_name='reports',
         related_query_name='report',
-        help_text='Derzeit nur relevant für Meldungen vom Typ "🎨 Letzte Meldung".',
+        help_text='Derzeit nur relevant für Meldungen vom Typ "🎨 Letzte Meldung" und "🚨 Breaking".',
     )
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
