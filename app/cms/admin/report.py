@@ -15,6 +15,7 @@ from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from crum import get_current_request
 
 from ..models.report import Report, ReportFragment, ReportQuiz
+from ..models.subtype import Subtype
 from .attachment import trigger_attachments
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .quiz import QuizModelForm, QuizAdminInline
@@ -112,12 +113,22 @@ class ReportModelForm(NewsBaseModelForm):
 
     def clean(self):
         # Check for subtype setting
-        if self.cleaned_data['type'] == 'last' and self.cleaned_data['subtype'] is None:
-            raise ValidationError({
-                'subtype': 'Wenn der Meldungstyp auf "🎨 Letzte Meldung" gesetzt ist, '
-                           'muss der Subtyp ausgefüllt werden.',
-            })
-        elif self.cleaned_data['type'] != 'last' and self.cleaned_data['subtype'] is not None:
+        has_subtypes = ['last', 'breaking']
+        the_type = self.cleaned_data['type']
+        the_subtype = self.cleaned_data.get('subtype')
+
+        if the_type in has_subtypes:
+            if the_subtype is None:
+                raise ValidationError({
+                    'subtype': 'Wenn der Meldungstyp auf "🎨 Letzte Meldung" gesetzt ist, '
+                            'muss der Subtyp ausgefüllt werden.',
+                })
+            else:
+                if the_subtype.type != the_type:
+                    raise ValidationError({
+                        'subtype': 'Ungültiger Subtyp für den gewählten Meldungstyp',
+                    })
+        elif the_subtype is not None:
             self.cleaned_data['subtype'] = None
 
         return self.cleaned_data
@@ -126,8 +137,9 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
     change_form_template = "admin/cms/change_form_report.html"
     date_hierarchy = 'created'
-    list_filter = ['published', 'type']
+    list_filter = ['published', 'type', 'subtype']
     search_fields = ['headline']
+    autocomplete_fields = NewsBaseAdmin.autocomplete_fields + ['subtype']
     list_display = (
         'report_type',
         'status',
@@ -254,7 +266,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
     def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
-            display = '🚨'
+            display = f'🚨{obj.subtype.emoji}'
         elif Report.Type(obj.type) == Report.Type.REGULAR:
             display = '📰'
         elif Report.Type(obj.type) == Report.Type.LAST:
