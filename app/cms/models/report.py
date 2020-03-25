@@ -7,6 +7,7 @@ from s3direct.fields import S3DirectField
 from .news_base import NewsBaseModel
 from .fragment import Fragment
 from .quiz import Quiz
+from .subtype import Subtype
 
 
 class Report(NewsBaseModel):
@@ -35,11 +36,22 @@ class Report(NewsBaseModel):
     type = models.CharField(
         'Meldungstyp', null=False, blank=False, max_length=20,
         choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
-                 (Type.LAST.value, '🙈 Zum Schluss'),
+                 (Type.LAST.value, '🎨 Letzte Meldung'),
                  (Type.BREAKING.value, '🚨 Breaking')],
         help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, '
                   'kann sie als Breaking versendet werden.',
         default=Type.REGULAR.value)
+
+    subtype = models.ForeignKey(
+        Subtype,
+        models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name='Subtyp',
+        related_name='reports',
+        related_query_name='report',
+        help_text='Derzeit nur relevant für Meldungen vom Typ "🎨 Letzte Meldung".',
+    )
 
     headline = models.CharField('Überschrift', max_length=200, null=False)
 

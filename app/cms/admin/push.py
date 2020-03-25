@@ -98,7 +98,7 @@ class PushModelForm(HasAttachmentModelForm):
 
     last_report = forms.ModelChoiceField(
         Report.objects.filter(type='last'),
-        label='Zum Schluss',
+        label='Letzte Meldung',
         required=False,
         help_text='Optional: Hier für den Abend-Push die bunte Meldung auswählen.',
         widget=AutocompleteSelectCustom(
@@ -127,6 +127,11 @@ class PushModelForm(HasAttachmentModelForm):
     def clean(self):
         # Merge reports from separate fields into list
         reports = []
+
+        if self.cleaned_data.get('link') and not self.cleaned_data.get('link_name'):
+            raise ValidationError({
+                'link_name': 'Bitte Schlagwort PromoLink setzen.'
+            })
 
         for i in range(3):
             report = self.cleaned_data.get(f'report_{i}')
@@ -186,9 +191,9 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     form = PushModelForm
     change_form_template = "admin/cms/change_form_publish_direct.html"
     fields = (
-        'display_object_actions_detail', 'published', 'timing', 'pub_date', 'headline',
-        'intro', 'report_0', 'report_1', 'report_2', 'last_report', 'outro',
-        'attachment', 'attachment_preview',
+        'display_object_actions_detail', 'published', ('pub_date', 'timing'), 'headline',
+        'intro', 'report_0', 'report_1', 'report_2', 'last_report',
+        'attachment', 'attachment_preview', 'outro', ('link_name', 'link')
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']

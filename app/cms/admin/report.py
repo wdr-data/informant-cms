@@ -7,6 +7,7 @@ from time import sleep
 from django.contrib import admin, messages
 from django.utils import timezone
 from django import forms
+from django.core.exceptions import ValidationError
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 import requests
 from django.db import transaction
@@ -101,9 +102,29 @@ class ReportModelForm(NewsBaseModelForm):
         model = Report
         exclude = ()
 
+    def get_initial_for_field(self, field, field_name):
+        if field_name == 'subtype':
+            field.widget.can_delete_related = False
+            field.widget.can_add_related = False
+            field.widget.can_change_related = False
+
+        return super().get_initial_for_field(field, field_name)
+
+    def clean(self):
+        # Check for subtype setting
+        if self.cleaned_data['type'] == 'last' and self.cleaned_data['subtype'] is None:
+            raise ValidationError({
+                'subtype': 'Wenn der Meldungstyp auf "🎨 Letzte Meldung" gesetzt ist, '
+                           'muss der Subtyp ausgefüllt werden.',
+            })
+        elif self.cleaned_data['type'] != 'last' and self.cleaned_data['subtype'] is not None:
+            self.cleaned_data['subtype'] = None
+
+        return self.cleaned_data
+
 class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
-    change_form_template = "admin/cms/change_form_publish_direct.html"
+    change_form_template = "admin/cms/change_form_report.html"
     date_hierarchy = 'created'
     list_filter = ['published', 'type']
     search_fields = ['headline']
@@ -117,8 +138,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         'display_object_actions_list',
     )
     fields = (
-        'display_object_actions_detail', 'type', 'published', 'headline', 'short_headline', 'summary',
-        'link', 'genres', 'tags', 'attachment', 'attachment_preview', 'text',
+        'display_object_actions_detail', 'type', 'subtype', 'published', 'headline', 'short_headline',
+        'summary', 'link', 'genres', 'tags', 'attachment', 'attachment_preview', 'text',
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated
     readonly_fields = (
@@ -178,7 +199,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         else:
             messages.warning(
-                request, 
+                request,
                 'Bitte trage deine Facebook-ID in deinem Profil ein, um in Facebook testen zu können.'
             )
 
@@ -197,13 +218,12 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         else:
             messages.warning(
-                request, 
+                request,
                 'Bitte trage deine Telegram-ID in deinem Profil ein, um in Telegram testen zu können.'
             )
 
         if failed:
             raise Exception('Es ist ein Fehler aufgetreten.')
-
 
     def has_send_breaking_permission(self, request, obj=None):
         return (
@@ -238,7 +258,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         elif Report.Type(obj.type) == Report.Type.REGULAR:
             display = '📰'
         elif Report.Type(obj.type) == Report.Type.LAST:
-            display = '🙈'
+            display = f'🎨{obj.subtype.emoji}'
 
         return display
 

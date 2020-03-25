@@ -31,8 +31,8 @@ def make_serializer(reqire_published=False):
         class Meta:
             model = Push
             fields = (
-                'id', 'pub_date', 'timing', 'published', 'delivered_fb', 'delivered_date_fb', 'delivered_tg', 'delivered_date_tg',
-                'headline', 'intro', 'reports', 'outro',
+                'id', 'pub_date', 'timing', 'published', 'delivered_fb', 'delivered_date_fb', 'delivered_tg',
+                'delivered_date_tg', 'headline', 'intro', 'reports', 'outro', 'link_name', 'link',
                 'attachment',
             )
 

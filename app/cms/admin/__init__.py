@@ -7,6 +7,7 @@ from .faq import *
 from .wiki import *
 from .tag import *
 from .profile import *
+from .subtype import *
 
 admin.site.site_header = 'Django WDR aktuell'
 admin.site.site_title = 'Django WDR aktuell'
