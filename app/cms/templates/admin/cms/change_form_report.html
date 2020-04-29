@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block admin_change_form_document_ready %}
-    {{ block.super }}
-    <script type="text/javascript" src="{% static "cms/js/toggle_subtype.js" %}"></script>
+{{ block.super }}
+<script type="text/javascript" src="{% static "cms/js/toggle_subtype.js" %}"></script>
+<script type="text/javascript" src="{% static "cms/js/toggle_summary.js" %}"></script>
 {% endblock %}
