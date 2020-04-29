@@ -41,7 +41,7 @@ class Push(HasAttachment):
 
     timing = models.CharField(
         'Zeitpunkt', null=False, blank=False, max_length=20,
-        choices=timing_choices.items(),
+        choices=list(timing_choices.items()),
         default=Timing.MORNING.value)
 
     published = models.BooleanField(
