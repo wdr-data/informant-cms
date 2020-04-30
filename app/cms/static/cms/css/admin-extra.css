@@ -31,3 +31,10 @@ div.maxlength {
     color: red;
     font-size: x-large;
 }
+
+body.model-report .field-summary label,
+body.model-report .field-subtype label
+{
+    font-weight: bold;
+    color: #333;
+}

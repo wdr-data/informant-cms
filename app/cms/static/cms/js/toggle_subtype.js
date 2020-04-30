@@ -1,18 +1,18 @@
 const typeSelector = '#id_type';
 const subtypeSelector = '.field-subtype';
 
-django.jQuery(document).ready(function(){
-    if (django.jQuery(typeSelector)[0].value === 'last') {
+const toggleSubtype = (type) => {
+    if (type === 'last') {
         django.jQuery(subtypeSelector).show();
     } else {
         django.jQuery(subtypeSelector).hide();
     }
-    django.jQuery(typeSelector).change(function(){
-        const visible = this.value === 'last';
-        if (visible) {
-            django.jQuery(subtypeSelector).show();
-        } else {
-            django.jQuery(subtypeSelector).hide();
-        }
+}
+
+django.jQuery(document).ready(function () {
+    toggleSubtype(django.jQuery(typeSelector)[0].value);
+
+    django.jQuery(typeSelector).change(function () {
+        toggleSubtype(this.value);
     })
 });

@@ -96,7 +96,7 @@ class ReportModelForm(NewsBaseModelForm):
 
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=200)
 
-    summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900)
+    summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=900, required=False)
 
     class Meta:
         model = Report
@@ -119,6 +119,13 @@ class ReportModelForm(NewsBaseModelForm):
             })
         elif self.cleaned_data['type'] != 'last' and self.cleaned_data['subtype'] is not None:
             self.cleaned_data['subtype'] = None
+
+        if self.cleaned_data['type'] == 'regular' and not self.cleaned_data['summary']:
+            raise ValidationError({
+                'summary': 'Der Telegram-Text muss für reguläre Meldungen ausgefüllt werden!',
+            })
+        elif self.cleaned_data['type'] != 'regular':
+            self.cleaned_data['summary'] = None
 
         return self.cleaned_data
 

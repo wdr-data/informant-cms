@@ -32,21 +32,22 @@ class Push(HasAttachment):
         'Push Datum',
         default=date.today)
 
+    timing_choices = {
+        Timing.MORNING.value: '☕ Morgen',
+        Timing.EVENING.value: '🌙 Abend',
+        Timing.BREAKING.value: '🚨 Breaking',
+        Timing.TESTING.value: '⚗️ Test',
+    }
+
     timing = models.CharField(
         'Zeitpunkt', null=False, blank=False, max_length=20,
-        choices=[(Timing.MORNING.value, '☕ Morgen'),
-                 (Timing.EVENING.value, '🌙 Abend'),
-                 (Timing.BREAKING.value, '🚨 Breaking'),
-                 (Timing.TESTING.value, '⚗️ Test')],
+        choices=list(timing_choices.items()),
         default=Timing.MORNING.value)
 
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
         help_text='Solange dieser Haken nicht gesetzt ist, wird dieser Push nicht versendet, '
                   'auch wenn der konfigurierte Zeitpunkt erreicht wird.')
-
-    headline = models.CharField('Arbeitstitel', max_length=200, null=False,
-                                help_text='Dieser Titel wird nicht ausgespielt')
 
     intro = models.CharField('Intro-Text', max_length=1000, null=False, blank=True)
     outro = models.CharField('Outro-Text', max_length=2000, null=False, blank=True)
@@ -85,7 +86,11 @@ class Push(HasAttachment):
     delivered_date_tg = models.DateTimeField('Versand-Datum Telegram', null=True)
 
     def __str__(self):
-        return '%s - %s' % (self.pub_date.strftime('%d.%m.%Y'), self.headline)
+        return f"""{
+            self.timing_choices.get(self.timing, '')
+        } - {
+            self.pub_date.strftime('%d.%m.%Y')
+        }"""
 
     @classmethod
     def last(cls, *, count=1, offset=0, only_published=True, delivered=False, by_date=True, breaking=True):
