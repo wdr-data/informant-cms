@@ -59,9 +59,9 @@ class PushModelForm(HasAttachmentModelForm):
                  (Push.Timing.EVENING.value, '🌙 Abend')],
         help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
+        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=550)
     outro = forms.CharField(
-        required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=950)
+        required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=550)
 
     report_0 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
