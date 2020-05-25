@@ -357,6 +357,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def response_change(self, request, obj):
         if "_publish-save" in request.POST:
             obj.published = True
+            if obj.published_date is None:
+                obj.published_date = timezone.now()
             obj.save()
             self.message_user(request, "Die Meldung ist freigegeben.")
         return super().response_change(request, obj)
