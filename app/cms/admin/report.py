@@ -145,9 +145,14 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         'send_status',
         'display_object_actions_list',
     )
-    fields = (
-        'display_object_actions_detail', 'type', 'subtype', 'published', 'headline', 'short_headline',
-        'summary', 'link', 'genres', 'tags', 'attachment', 'attachment_preview', 'text',
+    fieldsets = (
+        (None, {
+            'fields': ('display_object_actions_detail', 'type', 'subtype', 'published')
+            }),
+        ('Meldungsbody', {
+            'classes': ('extrapretty',),
+            'fields': ('headline', 'short_headline', 'summary', 'link', 'genres', 'tags','attachment', 'attachment_preview', 'text',)
+            }),
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated
     readonly_fields = (
