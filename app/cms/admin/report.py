@@ -147,12 +147,20 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     )
     fieldsets = (
         (None, {
-            'fields': ('display_object_actions_detail', 'type', 'subtype', 'published')
+            'fields': ('display_object_actions_detail', 'type', 'subtype', 'published','genres', 'tags',)
             }),
-        ('Meldungsbody', {
-            'classes': ('extrapretty',),
-            'fields': ('headline', 'short_headline', 'summary', 'link', 'genres', 'tags','attachment', 'attachment_preview', 'text',)
+        ('Telegram & Facebook', {
+            'classes': ('extrapretty', 'all'),
+            'fields': ('headline', 'short_headline', 'link', )
             }),
+        ('Telegram', {
+            'classes': ('extrapretty', 'telegram'),
+            'fields': ('summary',),
+        }),
+        ('Facebook', {
+            'classes': ('extrapretty', 'facebook'),
+            'fields': ( 'attachment', 'attachment_preview', 'text', )
+        })
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated
     readonly_fields = (

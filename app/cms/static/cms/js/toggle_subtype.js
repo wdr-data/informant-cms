@@ -1,6 +1,7 @@
 const typeSelector = '#id_type';
 const subtypeSelector = '.field-subtype';
 
+
 const toggleSubtype = (type) => {
     if (type === 'last') {
         django.jQuery(subtypeSelector).show();
