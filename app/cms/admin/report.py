@@ -97,7 +97,7 @@ class ReportModelForm(NewsBaseModelForm):
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=50)
 
     summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=850, required=False)
-    text = forms.CharField(label='Facebook-Text', widget=EmojiPickerTextareaAdmin, max_length=550, required=False)
+    text = forms.CharField(label='Facebook-Text', widget=EmojiPickerTextareaAdmin, max_length=550, required=True)
 
     class Meta:
         model = Report
