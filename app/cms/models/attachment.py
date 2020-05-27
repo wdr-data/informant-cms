@@ -33,11 +33,10 @@ class Attachment(models.Model):
         blank=False,
         dest='default',
         help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif',
-        max_length=512,
     )
     credit = models.CharField('Credit', max_length=100, null=True, blank=True)
 
-    processed = models.FileField('Verarbeitet', null=True, blank=True)
+    processed = models.FileField('Verarbeitet', max_length=512, null=True, blank=True)
 
     upload_date = models.DateTimeField('Hochgeladen am', auto_now_add=True)
 
