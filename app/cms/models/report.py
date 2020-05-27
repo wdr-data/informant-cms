@@ -62,7 +62,7 @@ class Report(NewsBaseModel):
     short_headline = models.CharField(
         'Link-/Button-Text', max_length=17, null=False,
         help_text='Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text,'
-                  ' der auf dem Auswahl-Button für diese Nachricht angezeigt in FB angezeigt wird.')
+                  ' der auf dem Auswahl-Button für diese Nachricht in FB angezeigt wird.')
 
     created = models.DateTimeField(
         'Erstellt',
