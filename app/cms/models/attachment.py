@@ -25,7 +25,7 @@ class Attachment(models.Model):
         verbose_name = 'Medien-Anhang'
         verbose_name_plural = 'Medien-Anhänge'
 
-    title = models.CharField('Titel', max_length=125, null=False, blank=False)
+    title = models.CharField('Titel', max_length=124, null=False, blank=False)
 
     original = S3DirectField(
         'Medien-Anhang',
@@ -36,7 +36,7 @@ class Attachment(models.Model):
     )
     credit = models.CharField('Credit', max_length=100, null=True, blank=True)
 
-    processed = models.FileField('Verarbeitet', null=True, blank=True)
+    processed = models.FileField('Verarbeitet', max_length=512, null=True, blank=True)
 
     upload_date = models.DateTimeField('Hochgeladen am', auto_now_add=True)
 

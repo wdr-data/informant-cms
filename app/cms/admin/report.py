@@ -97,7 +97,7 @@ class ReportModelForm(NewsBaseModelForm):
     headline = forms.CharField(label='Überschrift', widget=EmojiPickerTextInputAdmin, max_length=50)
 
     summary = forms.CharField(label='Telegram-Text', widget=EmojiPickerTextareaAdmin, max_length=850, required=False)
-    text = forms.CharField(label='Facebook-Text', widget=EmojiPickerTextareaAdmin, max_length=550, required=False)
+    text = forms.CharField(label='Facebook-Text', widget=EmojiPickerTextareaAdmin, max_length=550, required=True)
 
     class Meta:
         model = Report
@@ -145,9 +145,22 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         'send_status',
         'display_object_actions_list',
     )
-    fields = (
-        'display_object_actions_detail', 'type', 'subtype', 'published', 'headline', 'short_headline',
-        'summary', 'link', 'genres', 'tags', 'attachment', 'attachment_preview', 'text',
+    fieldsets = (
+        (None, {
+            'fields': ('display_object_actions_detail', 'type', 'subtype', 'published','genres', 'tags',)
+            }),
+        ('Telegram & Facebook', {
+            'classes': ('extrapretty', 'all'),
+            'fields': ('headline', 'short_headline', 'link', )
+            }),
+        ('Telegram', {
+            'classes': ('extrapretty', 'telegram'),
+            'fields': ('summary',),
+        }),
+        ('Facebook', {
+            'classes': ('extrapretty', 'facebook'),
+            'fields': ( 'attachment', 'attachment_preview', 'text', )
+        })
     )
     # value 'audio' is supposed to be added to fields again, once the feature is communicated
     readonly_fields = (
@@ -357,6 +370,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def response_change(self, request, obj):
         if "_publish-save" in request.POST:
             obj.published = True
+            if obj.published_date is None:
+                obj.published_date = timezone.now()
             obj.save()
             self.message_user(request, "Die Meldung ist freigegeben.")
         return super().response_change(request, obj)

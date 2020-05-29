@@ -59,9 +59,9 @@ class PushModelForm(HasAttachmentModelForm):
                  (Push.Timing.EVENING.value, '🌙 Abend')],
         help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
-        required=True, label="Intro-Text", widget=EmojiPickerTextareaAdmin, max_length=550)
+        required=True, label="Text", widget=EmojiPickerTextareaAdmin, max_length=550)
     outro = forms.CharField(
-        required=True, label="Outro-Text", widget=EmojiPickerTextareaAdmin, max_length=550)
+        required=True, label="Text", widget=EmojiPickerTextareaAdmin, max_length=550)
 
     report_0 = forms.ModelChoiceField(
         Report.objects.filter(type='regular'),
@@ -190,10 +190,19 @@ class SendManualForm(AdminObjectActionForm):
 class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     form = PushModelForm
     change_form_template = "admin/cms/change_form_publish_direct.html"
-    fields = (
-        'display_object_actions_detail', 'published', ('pub_date', 'timing'),
-        'intro', 'report_0', 'report_1', 'report_2', 'last_report',
-        'attachment', 'attachment_preview', 'outro', ('link_name', 'link')
+    fieldsets = (
+        (None, {
+            'fields': ('display_object_actions_detail', 'published', ('pub_date', 'timing'))
+            }),
+        ('Push-Intro', {
+            'fields': ('intro',)
+            }),
+        ('Meldungen', {
+            'fields': ('report_0', 'report_1', 'report_2', 'last_report')
+            }),
+        ('Push-Outro', {
+            'fields': ('attachment', 'attachment_preview', 'outro', ('link_name', 'link'))
+            }),
     )
     date_hierarchy = 'pub_date'
     list_filter = ['published', 'timing']

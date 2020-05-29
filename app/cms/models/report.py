@@ -60,9 +60,9 @@ class Report(NewsBaseModel):
         help_text='Dieser Text wird bei Telegram als Meldungstext zusammen mit der Überschrift ausgespielt.')
 
     short_headline = models.CharField(
-        'Schlagwort-Button', max_length=17, null=False,
+        'Link-/Button-Text', max_length=17, null=False,
         help_text='Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text,'
-                  ' der auf dem Auswahl-Button für diese Nachricht angezeigt in FB angezeigt wird.')
+                  ' der auf dem Auswahl-Button für diese Nachricht in FB angezeigt wird.')
 
     created = models.DateTimeField(
         'Erstellt',
@@ -96,10 +96,10 @@ class Report(NewsBaseModel):
 
     author = models.CharField('Autor', max_length=200, null=False)
 
-    link = models.URLField('DeepLink', blank=True, null=True, max_length=500, default=None,
-                           help_text= 'Der Link wird am Ende einer Meldung angehangen und '
-                                      'liefert dem Nutzer mehr Infos zur Meldung.'
-                                      ' Der Button-Text lautet "MEHR 🌍".'
+    link = models.URLField('Link', blank=True, null=True, max_length=500, default=None,
+                           help_text= 'Der Link wird am Ende einer Meldung (FB-Messenger und Letzte Meldung) '
+                                    'mit dem Button-Text "MEHR 🌍" ausgespielt, '
+                                    'respektive als Hyperlink hinter dem Schlagwort-Text nach dem Telegram-Text.'
                            )
 
     audio = S3DirectField('Audio-Feature', null=True, blank=True, dest='default',
