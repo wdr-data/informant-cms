@@ -25,7 +25,7 @@ class Attachment(models.Model):
         verbose_name = 'Medien-Anhang'
         verbose_name_plural = 'Medien-Anhänge'
 
-    title = models.CharField('Titel', max_length=124, null=False, blank=False)
+    title = models.CharField('Titel', max_length=125, null=False, blank=False)
 
     original = S3DirectField(
         'Medien-Anhang',

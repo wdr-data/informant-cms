@@ -19,6 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attachment',
             name='title',
-            field=models.CharField(max_length=124, verbose_name='Titel'),
+            field=models.CharField(max_length=125, verbose_name='Titel'),
         ),
     ]
