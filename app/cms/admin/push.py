@@ -135,12 +135,14 @@ class PushModelForm(HasAttachmentModelForm):
 
         for i in range(3):
             report = self.cleaned_data.get(f'report_{i}')
-
             if not report:
                 continue
 
             if report in reports:
                 raise ValidationError({f'report_{i}': 'Meldungen dürfen nicht doppelt vorkommen!'})
+            if not report.published:
+                self.published = False
+                raise ValidationError({f'report_{i}': f'Meldung ist noch nicht freigegeben.'})
 
             reports.append(report)
 
