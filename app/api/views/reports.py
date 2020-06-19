@@ -20,7 +20,6 @@ class ReportSerializer(ModelSerializerWithFragments):
     question_count = serializers.SerializerMethodField()
 
     def get_question_count(self, obj):
-        print(obj.fragments)
         return len([frag for frag in obj.fragments.all() if frag.question])
 
     class Meta:
@@ -28,7 +27,7 @@ class ReportSerializer(ModelSerializerWithFragments):
         fields = (
             'id', 'type', 'subtype', 'created', 'published_date', 'modified', 'is_quiz', 'genres',
             'tags', 'headline', 'summary', 'short_headline', 'audio', 'text', 'attachment',
-            'link', 'published', 'delivered_fb', 'delivered_tg', 'author','question_count',
+            'link', 'published', 'delivered_fb', 'delivered_tg', 'author', 'question_count',
         )
 
 

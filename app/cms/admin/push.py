@@ -146,6 +146,8 @@ class PushModelForm(HasAttachmentModelForm):
 
             reports.append(report)
 
+        self.cleaned_data['reports'] = reports
+
         last_report = self.cleaned_data.get('last_report')
         if last_report and not last_report.published:
             not_published_reports['last_report'] = 'Meldung is noch nicht freigegeben.'
@@ -154,7 +156,6 @@ class PushModelForm(HasAttachmentModelForm):
             not_published_reports['published'] = 'Freigeben des Push erst möglich, wenn alle Meldungen freigeben sind.'
             raise ValidationError(not_published_reports)
 
-        self.cleaned_data['reports'] = reports
         return self.cleaned_data
 
     def _save_m2m(self, *args, **kwargs):
