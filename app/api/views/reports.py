@@ -1,4 +1,5 @@
 from distutils.util import strtobool
+from rest_framework import serializers
 
 from cms.models.report import Report, ReportFragment
 
@@ -16,13 +17,17 @@ class ReportSerializer(ModelSerializerWithFragments):
     fragment_serializer_class = ReportFragmentSerializer
     attachment = AttachmentSerializer(read_only=True)
     subtype = SubtypeSerializer(read_only=True)
+    question_count = serializers.SerializerMethodField()
+
+    def get_question_count(self, obj):
+        return len([frag for frag in obj.fragments.all() if frag.question])
 
     class Meta:
         model = Report
         fields = (
             'id', 'type', 'subtype', 'created', 'published_date', 'modified', 'is_quiz', 'genres',
             'tags', 'headline', 'summary', 'short_headline', 'audio', 'text', 'attachment',
-            'link', 'published', 'delivered_fb', 'delivered_tg', 'author',
+            'link', 'published', 'delivered_fb', 'delivered_tg', 'author', 'question_count',
         )
 
 

@@ -127,24 +127,35 @@ class PushModelForm(HasAttachmentModelForm):
     def clean(self):
         # Merge reports from separate fields into list
         reports = []
+        not_published_reports = {}
 
         if self.cleaned_data.get('link') and not self.cleaned_data.get('link_name'):
             raise ValidationError({
-                'link_name': 'Bitte Schlagwort PromoLink setzen.'
+                'link_name': 'Bitte Schlagwort Link-Button-Text setzen.'
             })
 
         for i in range(3):
             report = self.cleaned_data.get(f'report_{i}')
-
             if not report:
                 continue
 
             if report in reports:
                 raise ValidationError({f'report_{i}': 'Meldungen dürfen nicht doppelt vorkommen!'})
+            if not report.published:
+                not_published_reports[f'report_{i}'] = 'Meldung ist noch nicht freigegeben.'
 
             reports.append(report)
 
         self.cleaned_data['reports'] = reports
+
+        last_report = self.cleaned_data.get('last_report')
+        if last_report and not last_report.published:
+            not_published_reports['last_report'] = 'Meldung is noch nicht freigegeben.'
+
+        if self.cleaned_data.get('published') and not_published_reports:
+            not_published_reports['published'] = 'Freigeben des Push erst möglich, wenn alle Meldungen freigeben sind.'
+            raise ValidationError(not_published_reports)
+
         return self.cleaned_data
 
     def _save_m2m(self, *args, **kwargs):
