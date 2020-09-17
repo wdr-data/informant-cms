@@ -27,6 +27,7 @@ class Report(NewsBaseModel):
         REGULAR = 'regular'
         BREAKING = 'breaking'
         LAST = 'last'
+        EVENING = 'evening'
 
     class DeliveryStatus(Enum):
         NOT_SENT = 'not_sent'
@@ -37,9 +38,10 @@ class Report(NewsBaseModel):
         'Meldungstyp', null=False, blank=False, max_length=20,
         choices=[(Type.REGULAR.value, '📰 Reguläre Meldung'),
                  (Type.LAST.value, '🎨 Letzte Meldung'),
-                 (Type.BREAKING.value, '🚨 Breaking')],
-        help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, '
-                  'kann sie als Breaking versendet werden.',
+                 (Type.BREAKING.value, '🚨 Breaking'),
+                 (Type.EVENING.value, '🌙 Abend-Push')],
+        help_text='Wird dieser Wert auf "Breaking" oder "Abend-Push" gesetzt und die Meldung freigegeben, '
+                  'kann sie direkt versendet werden.',
         default=Type.REGULAR.value)
 
     subtype = models.ForeignKey(
@@ -77,18 +79,18 @@ class Report(NewsBaseModel):
     published = models.BooleanField(
         'Freigegeben', null=False, default=False,
         help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. '
-                  'Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking"'
-                  ' an alle Breaking-Abonnenten senden zu können.')
+                  'Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking" oder "Abend-Push"'
+                  ' senden zu können.')
 
     delivered_fb = models.CharField(
-        'Breaking: Facebook', null=False, blank=False, max_length=20,
+        'Breaking/Abend-Push: Facebook', null=False, blank=False, max_length=20,
         choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
                  (DeliveryStatus.SENDING.value, 'wird gesendet'),
                  (DeliveryStatus.SENT.value, 'gesendet')],
         default=DeliveryStatus.NOT_SENT.value)
 
     delivered_tg = models.CharField(
-        'Breaking: Telegram', null=False, blank=False, max_length=20,
+        'Breaking/Abend-Push: Telegram', null=False, blank=False, max_length=20,
         choices=[(DeliveryStatus.NOT_SENT.value, 'nicht gesendet'),
                  (DeliveryStatus.SENDING.value, 'wird gesendet'),
                  (DeliveryStatus.SENT.value, 'gesendet')],
@@ -114,6 +116,8 @@ class Report(NewsBaseModel):
 
         if Report.Type(self.type) is Report.Type.BREAKING:
             emoji = '🚨'
+        if Report.Type(self.type) is Report.Type.EVENING:
+            emoji = '🌙'
 
         return f'{emoji} {self.created.strftime("%d.%m.%Y")} - ' \
                f' {self.headline}'

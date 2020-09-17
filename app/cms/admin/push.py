@@ -57,7 +57,7 @@ class PushModelForm(HasAttachmentModelForm):
         label="Zeitpunkt",
         choices=[(Push.Timing.MORNING.value, '☕ Morgen'),
                  (Push.Timing.EVENING.value, '🌙 Abend')],
-        help_text='Um Breaking News zu senden, bitte direkt in der Meldung auswählen.')
+        help_text='Um Breaking News oder Abend-Conten-Push zu senden, bitte direkt in der Meldung auswählen.')
     intro = forms.CharField(
         required=True, label="Text", widget=EmojiPickerTextareaAdmin, max_length=550)
     outro = forms.CharField(
