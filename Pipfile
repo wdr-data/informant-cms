@@ -3,6 +3,9 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[scripts]
+manage = "python app/manage.py"
+
 [packages]
 django = "*"
 django-tags-input = {git = "https://github.com/wdr-data/django-tags-input.git",ref = "c7c486e09754b98f3583f581957cfdf9e4e461a8"}
