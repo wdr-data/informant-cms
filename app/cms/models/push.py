@@ -15,7 +15,7 @@ class Push(HasAttachment):
 
     class Meta:
         verbose_name = 'Push'
-        verbose_name_plural = 'Pushes'
+        verbose_name_plural = 'Morgen-Pushes'
 
     class Timing(Enum):
         MORNING = 'morning'
