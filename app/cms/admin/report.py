@@ -193,6 +193,14 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             'function': 'send_breaking',
             'permission': 'send_breaking',
         },
+        {
+            'slug': 'evening-push-report',
+            'verbose_name': '🌙 Abend-Push jetzt senden',
+            'verbose_name_past': '🌙 Abend-Push gesendet',
+            'form_method': 'GET',
+            'function': 'send_evening_push',
+            'permission': 'send_evening_push',
+        },
     ]
 
     def preview(self, obj, form):
@@ -273,6 +281,33 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         else:
             raise Exception('Nicht erlaubt')
 
+    def has_send_evening_push_permission(self, request, obj=None):
+        return (
+            Report.Type(obj.type) is Report.Type.EVENING
+            and obj.published
+            and Report.DeliveryStatus(obj.delivered_fb) is Report.DeliveryStatus.NOT_SENT
+            and Report.DeliveryStatus(obj.delivered_tg) is Report.DeliveryStatus.NOT_SENT
+        )
+
+    def send_evening_push(self, obj, form):
+        if self.has_send_evening_push_permission(None, obj=obj):
+            failed = []
+            for breaking_trigger_url in BREAKING_TRIGGER_URLS:
+                r = requests.post(
+                    url=breaking_trigger_url,
+                    json={
+                        'report': obj.id,
+                    }
+                )
+
+                if not r.ok:
+                    failed.append(breaking_trigger_url)
+
+            if failed:
+                raise Exception(f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})')
+        else:
+            raise Exception('Nicht erlaubt')
+
     def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
             display = '🚨'
@@ -280,6 +315,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display = '📰'
         elif Report.Type(obj.type) == Report.Type.LAST:
             display = f'🎨{obj.subtype.emoji}'
+        elif Report.Type(obj.type) == Report.Type.EVENING:
+            display = '🌙'
 
         return display
 
@@ -292,7 +329,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         return display
 
     def send_status(self, obj):
-        if not Report.Type(obj.type) == Report.Type.BREAKING:
+        if Report.Type(obj.type) not in (Report.Type.BREAKING, Report.Type.EVENING):
             return ''
 
         if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
