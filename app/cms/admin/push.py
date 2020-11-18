@@ -202,7 +202,9 @@ class SendManualForm(AdminObjectActionForm):
                 url=push_trigger_url,
                 json={
                     "push": self.instance.id,
-                    "manual": True,
+                    "options": {
+                        "manual": True,
+                    },
                 },
             )
 
@@ -318,7 +320,9 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
                 url=urljoin(BOT_SERVICE_ENDPOINT_FB, "push"),
                 json={
                     "push": obj.id,
-                    "preview": profile.psid,
+                    "options": {
+                        "preview": profile.psid,
+                    },
                 },
             )
 
@@ -337,7 +341,9 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
                 url=urljoin(BOT_SERVICE_ENDPOINT_TG, "push"),
                 json={
                     "push": obj.id,
-                    "preview": profile.tgid,
+                    "options": {
+                        "preview": profile.tgid,
+                    },
                 },
             )
 

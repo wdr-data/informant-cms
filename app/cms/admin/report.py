@@ -263,7 +263,9 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                 url=urljoin(BOT_SERVICE_ENDPOINT_FB, "breaking"),
                 json={
                     "report": obj.id,
-                    "preview": profile.psid,
+                    "options": {
+                        "preview": profile.psid,
+                    },
                 },
             )
 
@@ -282,7 +284,9 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                 url=urljoin(BOT_SERVICE_ENDPOINT_TG, "breaking"),
                 json={
                     "report": obj.id,
-                    "preview": profile.tgid,
+                    "options": {
+                        "preview": profile.tgid,
+                    },
                 },
             )
 
