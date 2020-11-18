@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0048_auto_20190930_1432'),
+        ("cms", "0048_auto_20190930_1432"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='report',
-            name='delivered',
-            field=models.BooleanField(default=False, help_text='Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.', verbose_name='Breaking Versendet'),
+            model_name="report",
+            name="delivered",
+            field=models.BooleanField(
+                default=False,
+                help_text="Dieses Feld wird nur markiert, wenn eine Breaking Meldung erfolgreich versendet wurde.",
+                verbose_name="Breaking Versendet",
+            ),
         ),
     ]

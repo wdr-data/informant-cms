@@ -16,13 +16,13 @@ from raven.contrib.django.raven_compat.models import client
 from ..models.attachment import Attachment
 from ..env import ATTACHMENT_TRIGGER_URLS
 
-IMAGE_PROCESSING_FAILED = 'Automatische Bildverarbeitung fehlgeschlagen'
+IMAGE_PROCESSING_FAILED = "Automatische Bildverarbeitung fehlgeschlagen"
 
 
 async def _trigger_attachments(url):
     async with httpx.AsyncClient() as client:
         coroutines = [
-            client.post(trigger, json={'url': url}, timeout=26.0)
+            client.post(trigger, json={"url": url}, timeout=26.0)
             for trigger in ATTACHMENT_TRIGGER_URLS
         ]
         results = await asyncio.gather(*coroutines, return_exceptions=True)
@@ -53,11 +53,12 @@ class AdminDisplayImageWidget(AdminFileWidget):
             output.append(
                 f'<a href="{image_url}" target="_blank">'
                 f'<img style="max-height: 200px; max-width: 350px;" '
-                f'src="{image_url}" alt="{file_name}" /></a>')
+                f'src="{image_url}" alt="{file_name}" /></a>'
+            )
 
         # Don't add super() widget which would display the file upload field
 
-        return mark_safe(''.join(output))
+        return mark_safe("".join(output))
 
 
 class DisplayImageWidgetMixin(object):
@@ -66,7 +67,7 @@ class DisplayImageWidgetMixin(object):
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in self.image_display_fields:
             request = kwargs.pop("request", None)
-            kwargs['widget'] = AdminDisplayImageWidget
+            kwargs["widget"] = AdminDisplayImageWidget
             return db_field.formfield(**kwargs)
         return super().formfield_for_dbfield(db_field, **kwargs)
 
@@ -84,81 +85,84 @@ class DisplayImageWidgetTabularInline(DisplayImageWidgetMixin, admin.TabularInli
 
 
 class AttachmentModelForm(forms.ModelForm):
-
     class Meta:
         model = Attachment
-        exclude = ['upload_date']
+        exclude = ["upload_date"]
 
     def clean(self):
         obj = self.instance
-        if ('original' in self.changed_data
-                or 'credit' in self.changed_data
-                or not obj
-                or obj.original and not obj.processed):
+        if (
+            "original" in self.changed_data
+            or "credit" in self.changed_data
+            or not obj
+            or obj.original
+            and not obj.processed
+        ):
             try:
                 path, url = Attachment.process_attachment(
-                    self.cleaned_data.get('original'),
-                    self.cleaned_data.get('credit'),
+                    self.cleaned_data.get("original"),
+                    self.cleaned_data.get("credit"),
                 )
 
             except:
-                logging.exception('%s', obj.original)
-                raise ValidationError({f'original': 'Bildverarbeitung fehlgeschlagen!'})
+                logging.exception("%s", obj.original)
+                raise ValidationError({f"original": "Bildverarbeitung fehlgeschlagen!"})
 
             else:
 
                 success = trigger_attachments(url)
 
                 if success:
-                    self.cleaned_data['processed'] = path
-                    self.changed_data = ['processed']
+                    self.cleaned_data["processed"] = path
+                    self.changed_data = ["processed"]
 
                 else:
-                    raise ValidationError({f'original': 'Upload fehlgeschlagen!'})
+                    raise ValidationError({f"original": "Upload fehlgeschlagen!"})
         return self.cleaned_data
 
 
 class AttachmentAdmin(DisplayImageWidgetAdmin):
     form = AttachmentModelForm
     change_form_template = "admin/cms/change_form_disable_submit_after_click.html"
-    image_display_fields = ['processed']
-    search_fields = ['title']
-    ordering = ['-upload_date']
-    date_hierarchy = 'upload_date'
+    image_display_fields = ["processed"]
+    search_fields = ["title"]
+    ordering = ["-upload_date"]
+    date_hierarchy = "upload_date"
     list_display = (
-        'title',
-        'extension',
-        'upload_date',
+        "title",
+        "extension",
+        "upload_date",
     )
 
     def extension(self, obj):
         return splitext(str(obj.original))[-1]
-    extension.short_description = 'Typ'
+
+    extension.short_description = "Typ"
 
 
 class HasAttachmentAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['attachment']
+    autocomplete_fields = ["attachment"]
 
 
 class HasAttachmentAdminInline(admin.StackedInline):
-    autocomplete_fields = ['attachment']
+    autocomplete_fields = ["attachment"]
 
 
 class HasAttachmentModelForm(forms.ModelForm):
     attachment_preview = forms.FileField(
-        label='Vorschau',
+        label="Vorschau",
         widget=AdminDisplayImageWidget(),
         required=False,
-        help_text='Wird erst nach dem Speichern der Meldung aktualisiert.'
+        help_text="Wird erst nach dem Speichern der Meldung aktualisiert.",
     )
 
     def get_initial_for_field(self, field, field_name):
-        if field_name == 'attachment_preview':
+        if field_name == "attachment_preview":
             try:
                 return self.instance.attachment.processed
             except AttributeError:
                 return None
-        elif field_name == 'attachment':
+        elif field_name == "attachment":
             field.widget.can_delete_related = False
 
         return super().get_initial_for_field(field, field_name)

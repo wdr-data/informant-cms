@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0037_auto_20180906_1152'),
+        ("cms", "0037_auto_20180906_1152"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reportquiz',
-            name='correct_option',
-            field=models.BooleanField(blank=True, default=False, verbose_name='Richtige Antwort'),
+            model_name="reportquiz",
+            name="correct_option",
+            field=models.BooleanField(
+                blank=True, default=False, verbose_name="Richtige Antwort"
+            ),
         ),
     ]

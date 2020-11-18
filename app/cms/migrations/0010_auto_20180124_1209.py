@@ -6,28 +6,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0009_auto_20180124_0843'),
+        ("cms", "0009_auto_20180124_0843"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='media_original',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Medien-Anhang'),
+            model_name="report",
+            name="media_original",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Medien-Anhang"
+            ),
         ),
         migrations.AddField(
-            model_name='reportfragment',
-            name='media_original',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Medien-Anhang'),
+            model_name="reportfragment",
+            name="media_original",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Medien-Anhang"
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='media',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Verarbeitet'),
+            model_name="report",
+            name="media",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Verarbeitet"
+            ),
         ),
         migrations.AlterField(
-            model_name='reportfragment',
-            name='media',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Verarbeitet'),
+            model_name="reportfragment",
+            name="media",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Verarbeitet"
+            ),
         ),
     ]

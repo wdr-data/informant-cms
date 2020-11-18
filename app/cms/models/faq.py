@@ -11,22 +11,22 @@ class FAQ(HasAttachment):
     """
 
     class Meta:
-        verbose_name = 'FAQ'
-        verbose_name_plural = 'FAQs'
+        verbose_name = "FAQ"
+        verbose_name_plural = "FAQs"
 
-    name = models.CharField('Begriff', max_length=200, null=False)
-    slug = models.CharField('Slug', max_length=200, null=True, blank=True)
-    text = models.CharField('Intro-Text', max_length=2000, null=False)
+    name = models.CharField("Begriff", max_length=200, null=False)
+    slug = models.CharField("Slug", max_length=200, null=True, blank=True)
+    text = models.CharField("Intro-Text", max_length=2000, null=False)
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
     def _get_unique_slug(self):
         slug = slugify(self.name)
         unique_slug = slug
         num = 1
         while FAQ.objects.filter(slug=unique_slug).exists():
-            unique_slug = '{}-{}'.format(slug, num)
+            unique_slug = "{}-{}".format(slug, num)
             num += 1
         return unique_slug
 
@@ -37,16 +37,25 @@ class FAQ(HasAttachment):
 
 
 class FAQFragment(Fragment):
-
     class Meta:
-        verbose_name = 'FAQ-Fragment'
-        verbose_name_plural = 'FAQ-Fragmente'
-        ordering = ('id', )
+        verbose_name = "FAQ-Fragment"
+        verbose_name_plural = "FAQ-Fragmente"
+        ordering = ("id",)
 
-    faq = models.ForeignKey('FAQ', on_delete=models.CASCADE, related_name='fragments',
-                            related_query_name='fragment')
-    link_faq = models.ForeignKey('FAQ', on_delete=models.SET_NULL,
-                                 related_name='+', related_query_name='+', null=True, blank=True)
+    faq = models.ForeignKey(
+        "FAQ",
+        on_delete=models.CASCADE,
+        related_name="fragments",
+        related_query_name="fragment",
+    )
+    link_faq = models.ForeignKey(
+        "FAQ",
+        on_delete=models.SET_NULL,
+        related_name="+",
+        related_query_name="+",
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
-        return f'{self.faq.name} - {self.question}'
+        return f"{self.faq.name} - {self.question}"

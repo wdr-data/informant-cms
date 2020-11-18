@@ -3,7 +3,11 @@ from django.contrib import admin
 
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 
-from .attachment import DisplayImageWidgetStackedInline, HasAttachmentModelForm, HasAttachmentAdminInline
+from .attachment import (
+    DisplayImageWidgetStackedInline,
+    HasAttachmentModelForm,
+    HasAttachmentAdminInline,
+)
 
 
 class FragmentModelForm(HasAttachmentModelForm):
@@ -12,9 +16,11 @@ class FragmentModelForm(HasAttachmentModelForm):
         label="Frage",
         widget=EmojiPickerTextInputAdmin,
         max_length=20,
-        help_text='Nicht ausfüllen einer Frage führt zum direkten Senden des Fragments.')
+        help_text="Nicht ausfüllen einer Frage führt zum direkten Senden des Fragments.",
+    )
     text = forms.CharField(
-        required=True, label="Text", widget=EmojiPickerTextareaAdmin, max_length=550)
+        required=True, label="Text", widget=EmojiPickerTextareaAdmin, max_length=550
+    )
 
 
 class FragmentAdminInline(HasAttachmentAdminInline):

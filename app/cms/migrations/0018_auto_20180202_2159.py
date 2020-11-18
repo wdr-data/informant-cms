@@ -6,21 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0017_auto_20180126_0826'),
+        ("cms", "0017_auto_20180126_0826"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='wiki',
-            options={'verbose_name': 'Wiki', 'verbose_name_plural': 'Wikis'},
+            name="wiki",
+            options={"verbose_name": "Wiki", "verbose_name_plural": "Wikis"},
         ),
         migrations.AlterModelOptions(
-            name='wikifragment',
-            options={'ordering': ('id',), 'verbose_name': 'Wiki-Fragment', 'verbose_name_plural': 'Wiki-Fragmente'},
+            name="wikifragment",
+            options={
+                "ordering": ("id",),
+                "verbose_name": "Wiki-Fragment",
+                "verbose_name_plural": "Wiki-Fragmente",
+            },
         ),
         migrations.AlterField(
-            model_name='wiki',
-            name='name',
-            field=models.CharField(max_length=200, verbose_name='Titel'),
+            model_name="wiki",
+            name="name",
+            field=models.CharField(max_length=200, verbose_name="Titel"),
         ),
     ]

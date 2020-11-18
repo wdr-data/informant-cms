@@ -3,7 +3,7 @@ from rest_framework.pagination import LimitOffsetPagination
 
 
 class ApiConfig(AppConfig):
-    name = 'api'
+    name = "api"
 
 
 class StandardPagination(LimitOffsetPagination):

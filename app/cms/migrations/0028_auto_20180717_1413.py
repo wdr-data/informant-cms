@@ -3,6 +3,7 @@
 from django.db import migrations, models
 import django.utils.timezone
 
+
 def migrate_dates(apps, schema_editor):
     Report = apps.get_model("cms", "Report")
 
@@ -15,23 +16,26 @@ def migrate_dates(apps, schema_editor):
 
         report.save()
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0027_auto_20180627_1955'),
+        ("cms", "0027_auto_20180627_1955"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='modified',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='Bearbeitet'),
+            model_name="report",
+            name="modified",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="Bearbeitet"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='report',
-            name='published_date',
-            field=models.DateTimeField(null=True, verbose_name='Veröffentlicht'),
+            model_name="report",
+            name="published_date",
+            field=models.DateTimeField(null=True, verbose_name="Veröffentlicht"),
         ),
         migrations.RunPython(migrate_dates),
     ]

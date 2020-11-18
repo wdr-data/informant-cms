@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0025_auto_20180625_1433'),
+        ("cms", "0025_auto_20180625_1433"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='short_headline',
-            field=models.CharField(default='', max_length=20, verbose_name='Button-Titel'),
+            model_name="report",
+            name="short_headline",
+            field=models.CharField(
+                default="", max_length=20, verbose_name="Button-Titel"
+            ),
             preserve_default=False,
         ),
     ]

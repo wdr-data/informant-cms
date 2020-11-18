@@ -3,27 +3,28 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 class Profile(models.Model):
     class Meta:
-        verbose_name = 'Profil'
-        verbose_name_plural = 'Profile'
+        verbose_name = "Profil"
+        verbose_name_plural = "Profile"
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     psid = models.CharField(
         max_length=256,
         blank=True,
         null=True,
-        verbose_name='Facebook-ID',
-        help_text='Sende #ich an den Bot, und trage die Zahl hier ein, '
-            'um Meldungen und Pushes testen zu können.',
+        verbose_name="Facebook-ID",
+        help_text="Sende #ich an den Bot, und trage die Zahl hier ein, "
+        "um Meldungen und Pushes testen zu können.",
     )
     tgid = models.CharField(
         max_length=256,
         blank=True,
         null=True,
-        verbose_name='Telegram-ID',
-        help_text='Sende #ich an den Bot, und trage die Zahl hier ein, '
-            'um Meldungen und Pushes testen zu können.',
+        verbose_name="Telegram-ID",
+        help_text="Sende #ich an den Bot, und trage die Zahl hier ein, "
+        "um Meldungen und Pushes testen zu können.",
     )
 
     def __str__(self):

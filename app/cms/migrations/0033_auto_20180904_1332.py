@@ -6,16 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0032_auto_20180904_1036'),
+        ("cms", "0032_auto_20180904_1036"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='reportquiz',
-            options={'ordering': ('id',), 'verbose_name': 'Quiz-Button', 'verbose_name_plural': 'Quiz-Buttons'},
+            name="reportquiz",
+            options={
+                "ordering": ("id",),
+                "verbose_name": "Quiz-Button",
+                "verbose_name_plural": "Quiz-Buttons",
+            },
         ),
         migrations.RemoveField(
-            model_name='report',
-            name='is_quiz',
+            model_name="report",
+            name="is_quiz",
         ),
     ]

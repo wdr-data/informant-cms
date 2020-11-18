@@ -5,4 +5,4 @@ from rest_framework import serializers
 class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
-        fields = ('title', 'original', 'credit', 'processed', 'upload_date')
+        fields = ("title", "original", "credit", "processed", "upload_date")

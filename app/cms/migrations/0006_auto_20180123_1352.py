@@ -6,17 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0005_merge_20180123_1334'),
+        ("cms", "0005_merge_20180123_1334"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='push',
-            name='follow_up_date',
+            model_name="push",
+            name="follow_up_date",
         ),
         migrations.AddField(
-            model_name='push',
-            name='breaking',
-            field=models.BooleanField(default=False, help_text='Wird dieser Haken gesetzt UND ist der Push freigegeben, so wird der Push mit dem sichern SOFORT gesendet!', verbose_name='Breaking'),
+            model_name="push",
+            name="breaking",
+            field=models.BooleanField(
+                default=False,
+                help_text="Wird dieser Haken gesetzt UND ist der Push freigegeben, so wird der Push mit dem sichern SOFORT gesendet!",
+                verbose_name="Breaking",
+            ),
         ),
     ]

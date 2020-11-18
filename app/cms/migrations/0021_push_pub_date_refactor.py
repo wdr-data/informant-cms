@@ -12,11 +12,11 @@ def migrate_dates(apps, schema_editor):
         push.pub_date_new = push.pub_date.date()
 
         if push.breaking:
-            push.timing = 'breaking'
+            push.timing = "breaking"
         elif push.pub_date.hour < 12:
-            push.timing = 'morning'
+            push.timing = "morning"
         else:
-            push.timing = 'evening'
+            push.timing = "evening"
 
         push.save()
 
@@ -24,35 +24,44 @@ def migrate_dates(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0020_merge_20180301_1034'),
+        ("cms", "0020_merge_20180301_1034"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='push',
-            name='pub_date_new',
-            field=models.DateField(default=datetime.date.today, verbose_name='Push Datum'),
+            model_name="push",
+            name="pub_date_new",
+            field=models.DateField(
+                default=datetime.date.today, verbose_name="Push Datum"
+            ),
         ),
         migrations.AddField(
-            model_name='push',
-            name='timing',
-            field=models.CharField(choices=[('morning', '🌇 Morgen'), ('evening', '🌆 Abend'),
-                                            ('breaking', '🚨 Breaking')], default='morning',
-                                   help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist der Push freigegeben, so wird der Push mit dem Sichern SOFORT als Breaking-Push gesendet!',
-                                   max_length=20, verbose_name='Zeitpunkt'),
+            model_name="push",
+            name="timing",
+            field=models.CharField(
+                choices=[
+                    ("morning", "🌇 Morgen"),
+                    ("evening", "🌆 Abend"),
+                    ("breaking", "🚨 Breaking"),
+                ],
+                default="morning",
+                help_text='Wird dieser Wert auf "Breaking" gesetzt UND ist der Push freigegeben, so wird der Push mit dem Sichern SOFORT als Breaking-Push gesendet!',
+                max_length=20,
+                verbose_name="Zeitpunkt",
+            ),
         ),
         migrations.RunPython(migrate_dates),
         migrations.RemoveField(
-            model_name='push',
-            name='breaking',
+            model_name="push",
+            name="breaking",
         ),
         migrations.RemoveField(
-            model_name='push',
-            name='pub_date',
+            model_name="push",
+            name="pub_date",
         ),
         migrations.RenameField(
-            model_name='push',
-            old_name='pub_date_new',
-            new_name='pub_date',
-        )
+            model_name="push",
+            old_name="pub_date_new",
+            new_name="pub_date",
+        ),
     ]

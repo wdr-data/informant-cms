@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0021_push_pub_date_refactor'),
+        ("cms", "0021_push_pub_date_refactor"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='push',
-            name='delivered_date',
-            field=models.DateTimeField(null=True, verbose_name='Versand-Datum'),
+            model_name="push",
+            name="delivered_date",
+            field=models.DateTimeField(null=True, verbose_name="Versand-Datum"),
         ),
     ]

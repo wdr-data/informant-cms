@@ -7,58 +7,67 @@ import s3direct.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0041_auto_20190923_0850'),
+        ("cms", "0041_auto_20190923_0850"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='faq',
-            name='text',
-            field=models.CharField(max_length=2000, verbose_name='Intro-Text'),
+            model_name="faq",
+            name="text",
+            field=models.CharField(max_length=2000, verbose_name="Intro-Text"),
         ),
         migrations.AlterField(
-            model_name='faqfragment',
-            name='text',
-            field=models.CharField(max_length=2000, verbose_name='Text'),
+            model_name="faqfragment",
+            name="text",
+            field=models.CharField(max_length=2000, verbose_name="Text"),
         ),
         migrations.AlterField(
-            model_name='push',
-            name='intro',
-            field=models.CharField(blank=True, max_length=1000, verbose_name='Intro-Text'),
+            model_name="push",
+            name="intro",
+            field=models.CharField(
+                blank=True, max_length=1000, verbose_name="Intro-Text"
+            ),
         ),
         migrations.AlterField(
-            model_name='push',
-            name='outro',
-            field=models.CharField(blank=True, max_length=2000, verbose_name='Outro-Text'),
+            model_name="push",
+            name="outro",
+            field=models.CharField(
+                blank=True, max_length=2000, verbose_name="Outro-Text"
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='audio',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Das Audio-Feature zu dieser Meldung ist nach dem Intro-Text optional abrufbar.', null=True, verbose_name='Audio-Feature'),
+            model_name="report",
+            name="audio",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Das Audio-Feature zu dieser Meldung ist nach dem Intro-Text optional abrufbar.",
+                null=True,
+                verbose_name="Audio-Feature",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='text',
-            field=models.CharField(max_length=2000, verbose_name='Intro-Text'),
+            model_name="report",
+            name="text",
+            field=models.CharField(max_length=2000, verbose_name="Intro-Text"),
         ),
         migrations.AlterField(
-            model_name='reportfragment',
-            name='text',
-            field=models.CharField(max_length=2000, verbose_name='Text'),
+            model_name="reportfragment",
+            name="text",
+            field=models.CharField(max_length=2000, verbose_name="Text"),
         ),
         migrations.AlterField(
-            model_name='reportquiz',
-            name='quiz_text',
-            field=models.CharField(max_length=2000, verbose_name='Quiz Antwort'),
+            model_name="reportquiz",
+            name="quiz_text",
+            field=models.CharField(max_length=2000, verbose_name="Quiz Antwort"),
         ),
         migrations.AlterField(
-            model_name='wiki',
-            name='text',
-            field=models.CharField(max_length=2000, verbose_name='Intro-Text'),
+            model_name="wiki",
+            name="text",
+            field=models.CharField(max_length=2000, verbose_name="Intro-Text"),
         ),
         migrations.AlterField(
-            model_name='wikifragment',
-            name='text',
-            field=models.CharField(max_length=2000, verbose_name='Text'),
+            model_name="wikifragment",
+            name="text",
+            field=models.CharField(max_length=2000, verbose_name="Text"),
         ),
     ]

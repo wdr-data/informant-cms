@@ -7,23 +7,32 @@ import s3direct.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0040_merge_20190920_1502'),
+        ("cms", "0040_merge_20190920_1502"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='audio',
-            field=s3direct.fields.S3DirectField(blank=True, null=True, verbose_name='Audio-Feature'),
+            model_name="report",
+            name="audio",
+            field=s3direct.fields.S3DirectField(
+                blank=True, null=True, verbose_name="Audio-Feature"
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='delivered',
-            field=models.BooleanField(default=True, verbose_name='Versendet'),
+            model_name="report",
+            name="delivered",
+            field=models.BooleanField(default=True, verbose_name="Versendet"),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='link',
-            field=models.URLField(blank=True, null=True, default=None, help_text='Der Link wird am Ende einer Meldung angehangen. Der Button-Text lautet "MEHR 🌍".', max_length=500, verbose_name='DeepLink'),
+            model_name="report",
+            name="link",
+            field=models.URLField(
+                blank=True,
+                null=True,
+                default=None,
+                help_text='Der Link wird am Ende einer Meldung angehangen. Der Button-Text lautet "MEHR 🌍".',
+                max_length=500,
+                verbose_name="DeepLink",
+            ),
         ),
     ]

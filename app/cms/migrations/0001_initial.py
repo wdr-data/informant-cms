@@ -9,43 +9,130 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Report',
+            name="Report",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('headline', models.CharField(max_length=200, verbose_name='Überschrift')),
-                ('genre', models.CharField(blank=True, max_length=200, null=True, verbose_name='Genre')),
-                ('topic', models.CharField(blank=True, max_length=200, null=True, verbose_name='Thema')),
-                ('tags', models.CharField(blank=True, max_length=50, null=True, verbose_name='Tags')),
-                ('text', models.CharField(max_length=640, verbose_name='Intro-Text')),
-                ('media', models.FileField(blank=True, null=True, upload_to='', verbose_name='Medien-Anhang Intro')),
-                ('media_note', models.CharField(blank=True, max_length=100, null=True, verbose_name='Credit')),
-                ('created', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Erstellt')),
-                ('published', models.BooleanField(default=False, help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht versendet, weder in terminierten Highlight-Pushes noch an Abonnenten von bestimmten Sportarten, Sportlern, Disziplinen etc.', verbose_name='Freigegeben')),
-                ('delivered', models.BooleanField(default=False, verbose_name='Versendet')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "headline",
+                    models.CharField(max_length=200, verbose_name="Überschrift"),
+                ),
+                (
+                    "genre",
+                    models.CharField(
+                        blank=True, max_length=200, null=True, verbose_name="Genre"
+                    ),
+                ),
+                (
+                    "topic",
+                    models.CharField(
+                        blank=True, max_length=200, null=True, verbose_name="Thema"
+                    ),
+                ),
+                (
+                    "tags",
+                    models.CharField(
+                        blank=True, max_length=50, null=True, verbose_name="Tags"
+                    ),
+                ),
+                ("text", models.CharField(max_length=640, verbose_name="Intro-Text")),
+                (
+                    "media",
+                    models.FileField(
+                        blank=True,
+                        null=True,
+                        upload_to="",
+                        verbose_name="Medien-Anhang Intro",
+                    ),
+                ),
+                (
+                    "media_note",
+                    models.CharField(
+                        blank=True, max_length=100, null=True, verbose_name="Credit"
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="Erstellt"
+                    ),
+                ),
+                (
+                    "published",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht versendet, weder in terminierten Highlight-Pushes noch an Abonnenten von bestimmten Sportarten, Sportlern, Disziplinen etc.",
+                        verbose_name="Freigegeben",
+                    ),
+                ),
+                (
+                    "delivered",
+                    models.BooleanField(default=False, verbose_name="Versendet"),
+                ),
             ],
             options={
-                'verbose_name': 'Meldung',
-                'verbose_name_plural': 'Meldungen',
+                "verbose_name": "Meldung",
+                "verbose_name_plural": "Meldungen",
             },
         ),
         migrations.CreateModel(
-            name='ReportFragment',
+            name="ReportFragment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('question', models.CharField(blank=True, max_length=20, null=True, verbose_name='Frage')),
-                ('text', models.CharField(max_length=640, verbose_name='Text')),
-                ('media', models.FileField(blank=True, null=True, upload_to='', verbose_name='Medien-Anhang')),
-                ('media_note', models.CharField(blank=True, max_length=100, null=True, verbose_name='Credit')),
-                ('report', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fragments', related_query_name='fragment', to='cms.Report')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "question",
+                    models.CharField(
+                        blank=True, max_length=20, null=True, verbose_name="Frage"
+                    ),
+                ),
+                ("text", models.CharField(max_length=640, verbose_name="Text")),
+                (
+                    "media",
+                    models.FileField(
+                        blank=True,
+                        null=True,
+                        upload_to="",
+                        verbose_name="Medien-Anhang",
+                    ),
+                ),
+                (
+                    "media_note",
+                    models.CharField(
+                        blank=True, max_length=100, null=True, verbose_name="Credit"
+                    ),
+                ),
+                (
+                    "report",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="fragments",
+                        related_query_name="fragment",
+                        to="cms.Report",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Meldungs-Fragment',
-                'verbose_name_plural': 'Meldungs-Fragmente',
+                "verbose_name": "Meldungs-Fragment",
+                "verbose_name_plural": "Meldungs-Fragmente",
             },
         ),
     ]

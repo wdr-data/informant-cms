@@ -6,21 +6,35 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0018_auto_20180202_2159'),
+        ("cms", "0018_auto_20180202_2159"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Subscription',
+            name="Subscription",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('psid', models.CharField(max_length=200, verbose_name='PSID')),
-                ('morning', models.BooleanField(default=False, verbose_name='Morgen-Push')),
-                ('evening', models.BooleanField(default=False, verbose_name='Abend-Push')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("psid", models.CharField(max_length=200, verbose_name="PSID")),
+                (
+                    "morning",
+                    models.BooleanField(default=False, verbose_name="Morgen-Push"),
+                ),
+                (
+                    "evening",
+                    models.BooleanField(default=False, verbose_name="Abend-Push"),
+                ),
             ],
             options={
-                'verbose_name': 'Anmeldung',
-                'verbose_name_plural': 'Anmeldungen',
+                "verbose_name": "Anmeldung",
+                "verbose_name_plural": "Anmeldungen",
             },
         ),
     ]

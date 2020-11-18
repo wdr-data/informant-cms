@@ -10,8 +10,8 @@ from ..env import DIALOGFLOW_AGENT
 
 
 class EntityType(Enum):
-    GENRES = 'genres'
-    TAGS = 'tags'
+    GENRES = "genres"
+    TAGS = "tags"
 
 
 @lru_cache()
@@ -21,7 +21,7 @@ def get_entity_type_uuid(entity_type):
     entity_types = entity_types_client.list_entity_types(parent)
     for e in entity_types:
         if e.display_name == entity_type.value:
-            uuid = e.name.split('/')[-1]
+            uuid = e.name.split("/")[-1]
             return uuid
 
 
@@ -54,9 +54,7 @@ def update_entity_type(uuid, db_objects):
     parent = entity_types_client.entity_type_path(DIALOGFLOW_AGENT, uuid)
 
     existing_entities = [
-        entity.value
-        for entity in
-        entity_types_client.get_entity_type(parent).entities
+        entity.value for entity in entity_types_client.get_entity_type(parent).entities
     ]
 
     new_entities = []
@@ -73,6 +71,7 @@ def update_entity_type(uuid, db_objects):
 
 def update_tags():
     from ..models.tag import ReportTag
+
     tags = ReportTag.objects.all()
     uuid = get_entity_type_uuid(EntityType.TAGS)
     return update_entity_type(uuid, tags)
@@ -80,6 +79,7 @@ def update_tags():
 
 def update_genres():
     from ..models.genre import Genre
+
     genres = Genre.objects.all()
     uuid = get_entity_type_uuid(EntityType.GENRES)
     return update_entity_type(uuid, genres)

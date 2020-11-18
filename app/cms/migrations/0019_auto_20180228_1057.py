@@ -6,23 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0018_auto_20180202_2159'),
+        ("cms", "0018_auto_20180202_2159"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='push',
-            name='media',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Verarbeitet'),
+            model_name="push",
+            name="media",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Verarbeitet"
+            ),
         ),
         migrations.AddField(
-            model_name='push',
-            name='media_note',
-            field=models.CharField(blank=True, max_length=100, null=True, verbose_name='Credit'),
+            model_name="push",
+            name="media_note",
+            field=models.CharField(
+                blank=True, max_length=100, null=True, verbose_name="Credit"
+            ),
         ),
         migrations.AddField(
-            model_name='push',
-            name='media_original',
-            field=models.FileField(blank=True, null=True, upload_to='', verbose_name='Medien-Anhang'),
+            model_name="push",
+            name="media_original",
+            field=models.FileField(
+                blank=True, null=True, upload_to="", verbose_name="Medien-Anhang"
+            ),
         ),
     ]

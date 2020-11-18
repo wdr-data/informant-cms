@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0049_auto_20190930_1617'),
+        ("cms", "0049_auto_20190930_1617"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='report',
-            name='published',
-            field=models.BooleanField(default=False, help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking" an alle Breaking-Abonnenten senden zu können.', verbose_name='Freigegeben'),
+            model_name="report",
+            name="published",
+            field=models.BooleanField(
+                default=False,
+                help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking" an alle Breaking-Abonnenten senden zu können.',
+                verbose_name="Freigegeben",
+            ),
         ),
     ]

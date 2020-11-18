@@ -6,17 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0031_reportquiz'),
+        ("cms", "0031_reportquiz"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='reportquiz',
-            name='quiz',
+            model_name="reportquiz",
+            name="quiz",
         ),
         migrations.AddField(
-            model_name='report',
-            name='is_quiz',
-            field=models.BooleanField(default=False, help_text='Diese Meldung ist ein Quiz Element.', verbose_name='Quiz Element'),
+            model_name="report",
+            name="is_quiz",
+            field=models.BooleanField(
+                default=False,
+                help_text="Diese Meldung ist ein Quiz Element.",
+                verbose_name="Quiz Element",
+            ),
         ),
     ]

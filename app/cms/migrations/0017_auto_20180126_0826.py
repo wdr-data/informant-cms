@@ -6,20 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0016_auto_20180125_1449'),
+        ("cms", "0016_auto_20180125_1449"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='faqfragment',
-            options={'ordering': ('id',), 'verbose_name': 'FAQ-Fragment', 'verbose_name_plural': 'FAQ-Fragmente'},
+            name="faqfragment",
+            options={
+                "ordering": ("id",),
+                "verbose_name": "FAQ-Fragment",
+                "verbose_name_plural": "FAQ-Fragmente",
+            },
         ),
         migrations.AlterModelOptions(
-            name='reportfragment',
-            options={'ordering': ('id',), 'verbose_name': 'Meldungs-Fragment', 'verbose_name_plural': 'Meldungs-Fragmente'},
+            name="reportfragment",
+            options={
+                "ordering": ("id",),
+                "verbose_name": "Meldungs-Fragment",
+                "verbose_name_plural": "Meldungs-Fragmente",
+            },
         ),
         migrations.AlterModelOptions(
-            name='wikifragment',
-            options={'ordering': ('id',), 'verbose_name': 'Einzelheiten-Fragment', 'verbose_name_plural': 'Einzelheiten-Fragmente'},
+            name="wikifragment",
+            options={
+                "ordering": ("id",),
+                "verbose_name": "Einzelheiten-Fragment",
+                "verbose_name_plural": "Einzelheiten-Fragmente",
+            },
         ),
     ]

@@ -5,6 +5,7 @@ name = "pypi"
 
 [scripts]
 manage = "python app/manage.py"
+format = "black app/"
 
 [packages]
 django = "*"

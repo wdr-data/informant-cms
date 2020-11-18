@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0047_auto_20190930_1318'),
+        ("cms", "0047_auto_20190930_1318"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='report',
-            name='type',
-            field=models.CharField(choices=[('regular', '📰 Reguläre Meldung'), ('breaking', '🚨 Breaking')], default='regular', help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, kann sie als Breaking versendet werden.', max_length=20, verbose_name='Meldungstyp'),
+            model_name="report",
+            name="type",
+            field=models.CharField(
+                choices=[("regular", "📰 Reguläre Meldung"), ("breaking", "🚨 Breaking")],
+                default="regular",
+                help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, kann sie als Breaking versendet werden.',
+                max_length=20,
+                verbose_name="Meldungstyp",
+            ),
         ),
     ]
