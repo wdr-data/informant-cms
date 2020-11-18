@@ -23,28 +23,23 @@ class Report(NewsBaseModel):
         verbose_name_plural = "Meldungen, Eilmeldungen und Abend-Content-Push"
         ordering = ["-created"]
 
-    class Type(Enum):
-        REGULAR = "regular"
-        BREAKING = "breaking"
-        LAST = "last"
-        EVENING = "evening"
+    class Type(models.TextChoices):
+        REGULAR = "regular", "📰 Reguläre Meldung"
+        LAST = "last", "🎨 Letzte Meldung"
+        BREAKING = "breaking", "🚨 Breaking"
+        EVENING = "evening", "🌙 Abend-Push"
 
-    class DeliveryStatus(Enum):
-        NOT_SENT = "not_sent"
-        SENDING = "sending"
-        SENT = "sent"
+    class DeliveryStatus(models.TextChoices):
+        NOT_SENT = "not_sent", "nicht gesendet"
+        SENDING = "sending", "wird gesendet"
+        SENT = "sent", "gesendet"
 
     type = models.CharField(
         "Meldungstyp",
         null=False,
         blank=False,
         max_length=20,
-        choices=[
-            (Type.REGULAR.value, "📰 Reguläre Meldung"),
-            (Type.LAST.value, "🎨 Letzte Meldung"),
-            (Type.BREAKING.value, "🚨 Breaking"),
-            (Type.EVENING.value, "🌙 Abend-Push"),
-        ],
+        choices=Type.choices,
         help_text='Wird dieser Wert auf "Breaking" oder "Abend-Push" gesetzt und die Meldung freigegeben, '
         "kann sie direkt versendet werden.",
         default=Type.REGULAR.value,
@@ -103,11 +98,7 @@ class Report(NewsBaseModel):
         null=False,
         blank=False,
         max_length=20,
-        choices=[
-            (DeliveryStatus.NOT_SENT.value, "nicht gesendet"),
-            (DeliveryStatus.SENDING.value, "wird gesendet"),
-            (DeliveryStatus.SENT.value, "gesendet"),
-        ],
+        choices=DeliveryStatus.choices,
         default=DeliveryStatus.NOT_SENT.value,
     )
 
@@ -116,11 +107,7 @@ class Report(NewsBaseModel):
         null=False,
         blank=False,
         max_length=20,
-        choices=[
-            (DeliveryStatus.NOT_SENT.value, "nicht gesendet"),
-            (DeliveryStatus.SENDING.value, "wird gesendet"),
-            (DeliveryStatus.SENT.value, "gesendet"),
-        ],
+        choices=DeliveryStatus.choices,
         default=DeliveryStatus.NOT_SENT.value,
     )
 
