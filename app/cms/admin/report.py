@@ -1,8 +1,4 @@
-import asyncio
-import os
-import logging
 from posixpath import join as urljoin
-from time import sleep
 
 from django.contrib import admin, messages
 from django.utils import timezone
@@ -10,7 +6,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 import requests
-from django.db import transaction
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from crum import get_current_request
 
@@ -19,14 +14,7 @@ from .attachment import trigger_attachments
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .quiz import QuizModelForm, QuizAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
-
-AMP_UPDATE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'updateReport')
-AMP_DELETE_REPORT = urljoin(os.environ.get('AMP_SERVICE_ENDPOINT', ''), 'deleteReport')
-BREAKING_TRIGGER_URLS = [
-    urljoin(os.environ[var_name], 'breaking')
-    for var_name in ('BOT_SERVICE_ENDPOINT_FB', 'BOT_SERVICE_ENDPOINT_TG')
-    if var_name in os.environ
-]
+from ..env import BREAKING_TRIGGER_URLS, BOT_SERVICE_ENDPOINT_FB, BOT_SERVICE_ENDPOINT_TG
 
 
 class ReportFragmentModelForm(FragmentModelForm):
@@ -215,7 +203,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if profile.psid:
             r = requests.post(
-                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'breaking'),
+                url=urljoin(BOT_SERVICE_ENDPOINT_FB, 'breaking'),
                 json={
                     'report': obj.id,
                     'preview': profile.psid,
@@ -234,7 +222,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if profile.tgid:
             r = requests.post(
-                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_TG'], 'breaking'),
+                url=urljoin(BOT_SERVICE_ENDPOINT_TG, 'breaking'),
                 json={
                     'report': obj.id,
                     'preview': profile.tgid,

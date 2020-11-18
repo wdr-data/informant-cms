@@ -6,8 +6,7 @@ import logging
 
 import dialogflow_v2 as dialogflow
 
-
-AGENT = os.environ['DIALOGFLOW_AGENT']
+from ..env import DIALOGFLOW_AGENT
 
 
 class EntityType(Enum):
@@ -18,7 +17,7 @@ class EntityType(Enum):
 @lru_cache()
 def get_entity_type_uuid(entity_type):
     entity_types_client = dialogflow.EntityTypesClient()
-    parent = entity_types_client.project_agent_path(AGENT)
+    parent = entity_types_client.project_agent_path(DIALOGFLOW_AGENT)
     entity_types = entity_types_client.list_entity_types(parent)
     for e in entity_types:
         if e.display_name == entity_type.value:
@@ -27,11 +26,11 @@ def get_entity_type_uuid(entity_type):
 
 
 def add_entity(entity, entity_type):
-    print(f'Adding Entity "{entity}" to {entity_type} in {AGENT}')
+    print(f'Adding Entity "{entity}" to {entity_type} in {DIALOGFLOW_AGENT}')
     uuid = get_entity_type_uuid(entity_type)
 
     entity_types_client = dialogflow.EntityTypesClient()
-    parent = entity_types_client.entity_type_path(AGENT, uuid)
+    parent = entity_types_client.entity_type_path(DIALOGFLOW_AGENT, uuid)
 
     new_entity = dialogflow.types.EntityType.Entity()
     new_entity.value = entity
@@ -41,18 +40,18 @@ def add_entity(entity, entity_type):
 
 
 def delete_entity(entity, entity_type):
-    print(f'Deleting Entity "{entity}" from {entity_type} in {AGENT}')
+    print(f'Deleting Entity "{entity}" from {entity_type} in {DIALOGFLOW_AGENT}')
     uuid = get_entity_type_uuid(entity_type)
 
     entity_types_client = dialogflow.EntityTypesClient()
-    parent = entity_types_client.entity_type_path(AGENT, uuid)
+    parent = entity_types_client.entity_type_path(DIALOGFLOW_AGENT, uuid)
 
     return entity_types_client.batch_delete_entities(parent, [entity])
 
 
 def update_entity_type(uuid, db_objects):
     entity_types_client = dialogflow.EntityTypesClient()
-    parent = entity_types_client.entity_type_path(AGENT, uuid)
+    parent = entity_types_client.entity_type_path(DIALOGFLOW_AGENT, uuid)
 
     existing_entities = [
         entity.value

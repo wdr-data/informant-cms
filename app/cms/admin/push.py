@@ -1,12 +1,9 @@
 import os
-import logging
 from posixpath import join as urljoin
-from time import sleep
 from datetime import date, time, datetime
 import re
 
 from django.contrib import admin, messages
-from django.db import transaction
 from django import forms
 from django.utils.http import urlencode
 from emoji_picker.widgets import EmojiPickerTextareaAdmin
@@ -20,14 +17,10 @@ import pytz
 from ..models.push import Push
 from ..models.report import Report
 from .attachment import HasAttachmentAdmin, HasAttachmentModelForm
-
-PUSH_TRIGGER_URLS = {
-    service: urljoin(os.environ[var_name], 'push')
-    for service, var_name in (('fb', 'BOT_SERVICE_ENDPOINT_FB'), ('tg', 'BOT_SERVICE_ENDPOINT_TG'))
-    if var_name in os.environ
-}
-
-MANUAL_PUSH_GROUP = os.environ.get('MANUAL_PUSH_GROUP')
+from ..env import (
+    PUSH_TRIGGER_URLS, BOT_SERVICE_ENDPOINT_FB, BOT_SERVICE_ENDPOINT_TG,
+    MANUAL_PUSH_GROUP,
+)
 
 
 class AutocompleteSelectCustom(admin.widgets.AutocompleteSelect):
@@ -283,7 +276,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
 
         if profile.psid:
             r = requests.post(
-                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_FB'], 'push'),
+                url=urljoin(BOT_SERVICE_ENDPOINT_FB, 'push'),
                 json={
                     'push': obj.id,
                     'preview': profile.psid,
@@ -302,7 +295,7 @@ class PushAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
 
         if profile.tgid:
             r = requests.post(
-                url=urljoin(os.environ['BOT_SERVICE_ENDPOINT_TG'], 'push'),
+                url=urljoin(BOT_SERVICE_ENDPOINT_TG, 'push'),
                 json={
                     'push': obj.id,
                     'preview': profile.tgid,
