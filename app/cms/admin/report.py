@@ -207,7 +207,7 @@ class SendNotificationForm(AdminObjectActionForm):
             r = requests.post(
                 url=report_trigger_url,
                 json={
-                    "push": self.instance.id,
+                    "report": self.instance.id,
                     "options": {
                         "timings": timings,
                     },
