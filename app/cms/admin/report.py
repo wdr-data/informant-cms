@@ -404,25 +404,26 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         )
 
     def send_breaking(self, obj, form):
-        if self.has_send_breaking_permission(None, obj=obj):
-            failed = []
-            for report_trigger_url in REPORT_TRIGGER_URLS.values():
-                r = requests.post(
-                    url=report_trigger_url,
-                    json={
-                        "report": obj.id,
-                    },
-                )
-
-                if not r.ok:
-                    failed.append(report_trigger_url)
-
-            if failed:
-                raise Exception(
-                    f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
-                )
-        else:
+        if not self.has_send_breaking_permission(None, obj=obj):
             raise Exception("Nicht erlaubt")
+
+        failed = []
+
+        for service, report_trigger_url in REPORT_TRIGGER_URLS.items():
+            r = requests.post(
+                url=report_trigger_url,
+                json={
+                    "report": obj.id,
+                },
+            )
+
+            if not r.ok:
+                failed.append(service.upper())
+
+        if failed:
+            raise Exception(
+                f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+            )
 
     def has_send_evening_push_permission(self, request, obj=None):
         return (
@@ -435,25 +436,25 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         )
 
     def send_evening_push(self, obj, form):
-        if self.has_send_evening_push_permission(None, obj=obj):
-            failed = []
-            for report_trigger_url in REPORT_TRIGGER_URLS.values():
-                r = requests.post(
-                    url=report_trigger_url,
-                    json={
-                        "report": obj.id,
-                    },
-                )
-
-                if not r.ok:
-                    failed.append(report_trigger_url)
-
-            if failed:
-                raise Exception(
-                    f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
-                )
-        else:
+        if not self.has_send_evening_push_permission(None, obj=obj):
             raise Exception("Nicht erlaubt")
+
+        failed = []
+        for service, report_trigger_url in REPORT_TRIGGER_URLS.items():
+            r = requests.post(
+                url=report_trigger_url,
+                json={
+                    "report": obj.id,
+                },
+            )
+
+            if not r.ok:
+                failed.append(service.upper())
+
+        if failed:
+            raise Exception(
+                f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+            )
 
     def has_send_notification_permission(self, request, obj=None):
 
