@@ -7,15 +7,16 @@ from django.core.exceptions import ValidationError
 from emoji_picker.widgets import EmojiPickerTextInputAdmin, EmojiPickerTextareaAdmin
 import requests
 from admin_object_actions.admin import ModelAdminObjectActionsMixin
+from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 
-from ..models.report import Report, ReportFragment, ReportQuiz
+from ..models.report import NotificationSent, Report, ReportFragment, ReportQuiz
 from .attachment import trigger_attachments
 from .fragment import FragmentModelForm, FragmentAdminInline
 from .quiz import QuizModelForm, QuizAdminInline
 from .news_base import NewsBaseAdmin, NewsBaseModelForm
 from ..env import (
-    BREAKING_TRIGGER_URLS,
+    REPORT_TRIGGER_URLS,
     BOT_SERVICE_ENDPOINT_FB,
     BOT_SERVICE_ENDPOINT_TG,
 )
@@ -145,6 +146,83 @@ class ReportModelForm(NewsBaseModelForm):
         return self.cleaned_data
 
 
+class SendNotificationForm(AdminObjectActionForm):
+
+    fb = forms.BooleanField(
+        required=False,
+        help_text="""Diese Benachrichtigung in Facebook senden?""",
+        label="Facebook",
+    )
+    tg = forms.BooleanField(
+        required=False,
+        help_text="""Diese Benachrichtigung in Telegram senden?""",
+        label="Telegram",
+    )
+
+    morning = forms.BooleanField(
+        required=False,
+        help_text="""Diese Benachrichtigung an Morgen-Abonnenten senden?""",
+        label="☕ Morgen",
+    )
+    evening = forms.BooleanField(
+        required=False,
+        help_text="""Diese Benachrichtigung an Abend-Abonnenten senden?""",
+        label="🌙 Abend",
+    )
+    breaking = forms.BooleanField(
+        required=False,
+        help_text="""Diese Benachrichtigung an Breaking-Abonnenten senden?""",
+        label="🚨 Breaking",
+    )
+
+    class Meta:
+        model = Report
+        fields = ()
+
+    def do_object_action(self):
+        try:
+            if self.instance.notification_sent:
+                raise Exception("Diese Benachrichtigung wurde bereits versendet!")
+        except NotificationSent.DoesNotExist:
+            pass
+
+        notification_sent = NotificationSent(report=self.instance)
+
+        for field, value in self.cleaned_data.items():
+            setattr(notification_sent, field, value)
+
+        notification_sent.save()
+
+        timings = [
+            t for t in ("morning", "evening", "breaking") if self.cleaned_data[t]
+        ]
+        failed = []
+
+        for service, report_trigger_url in REPORT_TRIGGER_URLS.items():
+            if not self.cleaned_data[service]:
+                continue
+
+            print("Triggering", service, "with", timings)
+
+            r = requests.post(
+                url=report_trigger_url,
+                json={
+                    "push": self.instance.id,
+                    "options": {
+                        "timings": timings,
+                    },
+                },
+            )
+
+            if not r.ok:
+                failed.append(service.upper())
+
+        if failed:
+            raise Exception(
+                f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+            )
+
+
 class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     form = ReportModelForm
     change_form_template = "admin/cms/change_form_report.html"
@@ -158,6 +236,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         "created",
         "assets",
         "send_status",
+        "notification_sent",
         "display_object_actions_list",
     )
     fieldsets = (
@@ -246,6 +325,17 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             "function": "send_evening_push",
             "permission": "send_evening_push",
         },
+        {
+            "slug": "notification",
+            "verbose_name": "📨 Benachrichtigung senden",
+            "verbose_name_past": "📨 Benachrichtigung gesendet",
+            "form_class": SendNotificationForm,
+            "permission": "send_notification",
+            "fieldsets": (
+                ("Produkte", {"fields": ("fb", "tg")}),
+                ("Zielgruppen", {"fields": ("morning", "evening", "breaking")}),
+            ),
+        },
     ]
 
     def preview(self, obj, form):
@@ -316,16 +406,16 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def send_breaking(self, obj, form):
         if self.has_send_breaking_permission(None, obj=obj):
             failed = []
-            for breaking_trigger_url in BREAKING_TRIGGER_URLS:
+            for report_trigger_url in REPORT_TRIGGER_URLS.values():
                 r = requests.post(
-                    url=breaking_trigger_url,
+                    url=report_trigger_url,
                     json={
                         "report": obj.id,
                     },
                 )
 
                 if not r.ok:
-                    failed.append(breaking_trigger_url)
+                    failed.append(report_trigger_url)
 
             if failed:
                 raise Exception(
@@ -347,16 +437,16 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
     def send_evening_push(self, obj, form):
         if self.has_send_evening_push_permission(None, obj=obj):
             failed = []
-            for breaking_trigger_url in BREAKING_TRIGGER_URLS:
+            for report_trigger_url in REPORT_TRIGGER_URLS.values():
                 r = requests.post(
-                    url=breaking_trigger_url,
+                    url=report_trigger_url,
                     json={
                         "report": obj.id,
                     },
                 )
 
                 if not r.ok:
-                    failed.append(breaking_trigger_url)
+                    failed.append(report_trigger_url)
 
             if failed:
                 raise Exception(
@@ -364,6 +454,18 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                 )
         else:
             raise Exception("Nicht erlaubt")
+
+    def has_send_notification_permission(self, request, obj=None):
+
+        return (
+            Report.Type(obj.type) is Report.Type.NOTIFICATION
+            and obj.published
+            and not getattr(obj, "notification_sent", False)
+            and Report.DeliveryStatus(obj.delivered_fb)
+            is Report.DeliveryStatus.NOT_SENT
+            and Report.DeliveryStatus(obj.delivered_tg)
+            is Report.DeliveryStatus.NOT_SENT
+        )
 
     def report_type(self, obj):
         if Report.Type(obj.type) == Report.Type.BREAKING:
@@ -374,6 +476,10 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             display = f"🎨{obj.subtype.emoji}"
         elif Report.Type(obj.type) == Report.Type.EVENING:
             display = "🌙"
+        elif Report.Type(obj.type) == Report.Type.NOTIFICATION:
+            display = "📨"
+        else:
+            display = "?"
 
         return display
 
@@ -386,22 +492,42 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         return display
 
     def send_status(self, obj):
-        if Report.Type(obj.type) not in (Report.Type.BREAKING, Report.Type.EVENING):
+        if Report.Type(obj.type) not in (
+            Report.Type.BREAKING,
+            Report.Type.EVENING,
+            Report.Type.NOTIFICATION,
+        ):
             return ""
 
-        if Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.NOT_SENT:
-            display = "FB: ❌️"
-        elif Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING:
-            display = "FB: 💬"
-        else:
-            display = "FB: ✅"
+        notification_sent = getattr(obj, "notification_sent", None)
 
-        if Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.NOT_SENT:
-            display += "  TG: ❌"
-        elif Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.SENDING:
-            display += "  TG: 💬"
-        else:
-            display += "  TG: ✅"
+        display = ""
+
+        if not notification_sent or notification_sent.fb:
+            if (
+                Report.DeliveryStatus(obj.delivered_fb)
+                == Report.DeliveryStatus.NOT_SENT
+            ):
+                display += "FB: ❌️"
+            elif (
+                Report.DeliveryStatus(obj.delivered_fb) == Report.DeliveryStatus.SENDING
+            ):
+                display += "FB: 💬"
+            else:
+                display += "FB: ✅"
+
+        if not notification_sent or notification_sent.tg:
+            if (
+                Report.DeliveryStatus(obj.delivered_tg)
+                == Report.DeliveryStatus.NOT_SENT
+            ):
+                display += "  TG: ❌"
+            elif (
+                Report.DeliveryStatus(obj.delivered_tg) == Report.DeliveryStatus.SENDING
+            ):
+                display += "  TG: 💬"
+            else:
+                display += "  TG: ✅"
 
         return display
 
