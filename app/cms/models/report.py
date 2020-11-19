@@ -18,7 +18,7 @@ class Report(NewsBaseModel):
 
     class Meta:
         verbose_name = "Meldung"
-        verbose_name_plural = "Meldungen, Eilmeldungen und Abend-Content-Push"
+        verbose_name_plural = "Meldungen und Push-Meldungen"
         ordering = ["-created"]
 
     class Type(models.TextChoices):

@@ -163,16 +163,19 @@ class SendNotificationForm(AdminObjectActionForm):
         required=False,
         help_text="""Diese Benachrichtigung an Morgen-Abonnenten senden?""",
         label="☕ Morgen",
+        initial=True,
     )
     evening = forms.BooleanField(
         required=False,
         help_text="""Diese Benachrichtigung an Abend-Abonnenten senden?""",
         label="🌙 Abend",
+        initial=True,
     )
     breaking = forms.BooleanField(
         required=False,
         help_text="""Diese Benachrichtigung an Breaking-Abonnenten senden?""",
         label="🚨 Breaking",
+        initial=True,
     )
 
     class Meta:
@@ -333,7 +336,12 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
             "permission": "send_notification",
             "fieldsets": (
                 ("Produkte", {"fields": ("fb", "tg")}),
-                ("Zielgruppen", {"fields": ("morning", "evening", "breaking")}),
+                (
+                    "Empfänger - Markiere alle Felder, um eine Benachrichtigung an ALLE NUTZER*INNEN zu senden",
+                    {
+                        "fields": ("morning", "evening", "breaking"),
+                    },
+                ),
             ),
         },
     ]
