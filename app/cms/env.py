@@ -13,18 +13,24 @@ PUSH_TRIGGER_URLS = {
     if var_name in os.environ
 }
 
-BREAKING_TRIGGER_URLS = [
-    urljoin(os.environ[var_name], "breaking")
-    for var_name in ("BOT_SERVICE_ENDPOINT_FB", "BOT_SERVICE_ENDPOINT_TG")
+REPORT_TRIGGER_URLS = {
+    service: urljoin(os.environ[var_name], "report")
+    for service, var_name in (
+        ("fb", "BOT_SERVICE_ENDPOINT_FB"),
+        ("tg", "BOT_SERVICE_ENDPOINT_TG"),
+    )
     if var_name in os.environ
-]
+}
 
-ATTACHMENT_TRIGGER_URLS = [
-    urljoin(os.environ[var_name], "attachment")
-    for var_name in ("BOT_SERVICE_ENDPOINT_FB", "BOT_SERVICE_ENDPOINT_TG")
+ATTACHMENT_TRIGGER_URLS = {
+    service: urljoin(os.environ[var_name], "attachment")
+    for service, var_name in (
+        ("fb", "BOT_SERVICE_ENDPOINT_FB"),
+        ("tg", "BOT_SERVICE_ENDPOINT_TG"),
+    )
     if var_name in os.environ
-]
+}
 
 MANUAL_PUSH_GROUP = os.environ.get("MANUAL_PUSH_GROUP")
 
-DIALOGFLOW_AGENT = os.environ["DIALOGFLOW_AGENT"]
+DIALOGFLOW_AGENT = os.environ.get("DIALOGFLOW_AGENT")

@@ -1,5 +1,3 @@
-from enum import Enum
-
 from django.utils import timezone
 from django.db import models
 from s3direct.fields import S3DirectField
@@ -23,30 +21,26 @@ class Report(NewsBaseModel):
         verbose_name_plural = "Meldungen, Eilmeldungen und Abend-Content-Push"
         ordering = ["-created"]
 
-    class Type(Enum):
-        REGULAR = "regular"
-        BREAKING = "breaking"
-        LAST = "last"
-        EVENING = "evening"
+    class Type(models.TextChoices):
+        REGULAR = "regular", "📰 Reguläre Meldung"
+        LAST = "last", "🎨 Letzte Meldung"
+        BREAKING = "breaking", "🚨 Breaking"
+        EVENING = "evening", "🌙 Abend-Push"
+        NOTIFICATION = "notification", "📨 Benachrichtigung"
 
-    class DeliveryStatus(Enum):
-        NOT_SENT = "not_sent"
-        SENDING = "sending"
-        SENT = "sent"
+    class DeliveryStatus(models.TextChoices):
+        NOT_SENT = "not_sent", "nicht gesendet"
+        SENDING = "sending", "wird gesendet"
+        SENT = "sent", "gesendet"
 
     type = models.CharField(
         "Meldungstyp",
         null=False,
         blank=False,
         max_length=20,
-        choices=[
-            (Type.REGULAR.value, "📰 Reguläre Meldung"),
-            (Type.LAST.value, "🎨 Letzte Meldung"),
-            (Type.BREAKING.value, "🚨 Breaking"),
-            (Type.EVENING.value, "🌙 Abend-Push"),
-        ],
-        help_text='Wird dieser Wert auf "Breaking" oder "Abend-Push" gesetzt und die Meldung freigegeben, '
-        "kann sie direkt versendet werden.",
+        choices=Type.choices,
+        help_text='Wird dieser Wert auf "Breaking", "Abend-Push" oder "Benachrichtigung" '
+        "gesetzt und die Meldung freigegeben, kann sie direkt versendet werden.",
         default=Type.REGULAR.value,
     )
 
@@ -103,11 +97,7 @@ class Report(NewsBaseModel):
         null=False,
         blank=False,
         max_length=20,
-        choices=[
-            (DeliveryStatus.NOT_SENT.value, "nicht gesendet"),
-            (DeliveryStatus.SENDING.value, "wird gesendet"),
-            (DeliveryStatus.SENT.value, "gesendet"),
-        ],
+        choices=DeliveryStatus.choices,
         default=DeliveryStatus.NOT_SENT.value,
     )
 
@@ -116,11 +106,7 @@ class Report(NewsBaseModel):
         null=False,
         blank=False,
         max_length=20,
-        choices=[
-            (DeliveryStatus.NOT_SENT.value, "nicht gesendet"),
-            (DeliveryStatus.SENDING.value, "wird gesendet"),
-            (DeliveryStatus.SENT.value, "gesendet"),
-        ],
+        choices=DeliveryStatus.choices,
         default=DeliveryStatus.NOT_SENT.value,
     )
 
@@ -158,6 +144,34 @@ class Report(NewsBaseModel):
             emoji = "🌙"
 
         return f'{emoji} {self.created.strftime("%d.%m.%Y")} - ' f" {self.headline}"
+
+
+class NotificationSent(models.Model):
+    class Meta:
+        verbose_name = "Empfänger"
+        verbose_name_plural = "Empfänger"
+
+    report = models.OneToOneField(
+        Report,
+        on_delete=models.CASCADE,
+        verbose_name="Meldung",
+        related_name="notification_sent",
+        related_query_name="notification_sent",
+        primary_key=True,
+    )
+
+    fb = models.BooleanField("Facebook")
+    tg = models.BooleanField("Telegram")
+
+    morning = models.BooleanField("☕ Morgen")
+    evening = models.BooleanField("🌙 Abend")
+    breaking = models.BooleanField("🚨 Breaking")
+
+    def __str__(self):
+        timings = {"☕": self.morning, "🌙": self.evening, "🚨": self.breaking}
+        timings = " ".join(emoji for emoji, status in timings.items() if status)
+
+        return f"{timings}"
 
 
 class ReportFragment(Fragment):

@@ -1,5 +1,3 @@
-from enum import Enum
-
 from django.db import models
 from datetime import date
 from sortedm2m.fields import SortedManyToManyField
@@ -17,32 +15,25 @@ class Push(HasAttachment):
         verbose_name = "Push"
         verbose_name_plural = "Morgen-Pushes"
 
-    class Timing(Enum):
-        MORNING = "morning"
-        EVENING = "evening"
-        BREAKING = "breaking"
-        TESTING = "testing"
+    class Timing(models.TextChoices):
+        MORNING = "morning", "☕ Morgen"
+        EVENING = "evening", "🌙 Abend"
+        BREAKING = "breaking", "🚨 Breaking"
+        TESTING = "testing", "⚗️ Test"
 
-    class DeliveryStatus(Enum):
-        NOT_SENT = "not_sent"
-        SENDING = "sending"
-        SENT = "sent"
+    class DeliveryStatus(models.TextChoices):
+        NOT_SENT = "not_sent", "nicht gesendet"
+        SENDING = "sending", "wird gesendet"
+        SENT = "sent", "gesendet"
 
     pub_date = models.DateField("Push Datum", default=date.today)
-
-    timing_choices = {
-        Timing.MORNING.value: "☕ Morgen",
-        Timing.EVENING.value: "🌙 Abend",
-        Timing.BREAKING.value: "🚨 Breaking",
-        Timing.TESTING.value: "⚗️ Test",
-    }
 
     timing = models.CharField(
         "Zeitpunkt",
         null=False,
         blank=False,
         max_length=20,
-        choices=list(timing_choices.items()),
+        choices=Timing.choices,
         default=Timing.MORNING.value,
     )
 
@@ -121,7 +112,7 @@ class Push(HasAttachment):
 
     def __str__(self):
         return f"""{
-            self.timing_choices.get(self.timing, '')
+            self.Timing(self.timing).label
         } - {
             self.pub_date.strftime('%d.%m.%Y')
         }"""

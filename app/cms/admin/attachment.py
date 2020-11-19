@@ -23,7 +23,7 @@ async def _trigger_attachments(url):
     async with httpx.AsyncClient() as client:
         coroutines = [
             client.post(trigger, json={"url": url}, timeout=26.0)
-            for trigger in ATTACHMENT_TRIGGER_URLS
+            for trigger in ATTACHMENT_TRIGGER_URLS.values()
         ]
         results = await asyncio.gather(*coroutines, return_exceptions=True)
     return results
