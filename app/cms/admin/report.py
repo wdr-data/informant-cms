@@ -350,7 +350,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if profile.psid:
             r = requests.post(
-                url=urljoin(BOT_SERVICE_ENDPOINT_FB, "breaking"),
+                url=urljoin(BOT_SERVICE_ENDPOINT_FB, "report"),
                 json={
                     "report": obj.id,
                     "options": {
@@ -371,7 +371,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if profile.tgid:
             r = requests.post(
-                url=urljoin(BOT_SERVICE_ENDPOINT_TG, "breaking"),
+                url=urljoin(BOT_SERVICE_ENDPOINT_TG, "report"),
                 json={
                     "report": obj.id,
                     "options": {
