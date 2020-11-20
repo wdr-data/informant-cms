@@ -8,7 +8,7 @@ def migrate_push_delivered(apps, schema_editor):
 
     for push in Push.objects.all():
         if push.delivered:
-            push.delivered_fb = 'sent'
+            push.delivered_fb = "sent"
             push.save()
 
 
@@ -17,45 +17,63 @@ def migrate_report_delivered(apps, schema_editor):
 
     for report in Report.objects.all():
         if report.delivered:
-            report.delivered_fb = 'sent'
+            report.delivered_fb = "sent"
             report.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0054_auto_20200212_1042'),
+        ("cms", "0054_auto_20200212_1042"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='push',
-            old_name='delivered_date',
-            new_name='delivered_date_fb'
+            model_name="push", old_name="delivered_date", new_name="delivered_date_fb"
         ),
         migrations.AlterField(
-            model_name='push',
-            name='delivered_date_fb',
-            field=models.DateTimeField(null=True, verbose_name='Versand-Datum Facebook'),
+            model_name="push",
+            name="delivered_date_fb",
+            field=models.DateTimeField(
+                null=True, verbose_name="Versand-Datum Facebook"
+            ),
         ),
         migrations.AddField(
-            model_name='push',
-            name='delivered_fb',
-            field=models.CharField(choices=[('not_sent', 'nicht gesendet'), ('sending', 'wird gesendet'), ('sent', 'gesendet')], default='not_sent', max_length=20, verbose_name='Facebook'),
+            model_name="push",
+            name="delivered_fb",
+            field=models.CharField(
+                choices=[
+                    ("not_sent", "nicht gesendet"),
+                    ("sending", "wird gesendet"),
+                    ("sent", "gesendet"),
+                ],
+                default="not_sent",
+                max_length=20,
+                verbose_name="Facebook",
+            ),
         ),
         migrations.RunPython(migrate_push_delivered),
         migrations.RemoveField(
-            model_name='push',
-            name='delivered',
+            model_name="push",
+            name="delivered",
         ),
         migrations.AddField(
-            model_name='report',
-            name='delivered_fb',
-            field=models.CharField(choices=[('not_sent', 'nicht gesendet'), ('sending', 'wird gesendet'), ('sent', 'gesendet')], default='not_sent', max_length=20, verbose_name='Breaking: Facebook'),
+            model_name="report",
+            name="delivered_fb",
+            field=models.CharField(
+                choices=[
+                    ("not_sent", "nicht gesendet"),
+                    ("sending", "wird gesendet"),
+                    ("sent", "gesendet"),
+                ],
+                default="not_sent",
+                max_length=20,
+                verbose_name="Breaking: Facebook",
+            ),
         ),
         migrations.RunPython(migrate_report_delivered),
         migrations.RemoveField(
-            model_name='report',
-            name='delivered',
+            model_name="report",
+            name="delivered",
         ),
     ]

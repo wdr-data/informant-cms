@@ -7,17 +7,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0008_auto_20180123_1851'),
+        ("cms", "0008_auto_20180123_1851"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='report',
-            options={'ordering': ['-created'], 'verbose_name': 'Meldung', 'verbose_name_plural': 'Meldungen'},
+            name="report",
+            options={
+                "ordering": ["-created"],
+                "verbose_name": "Meldung",
+                "verbose_name_plural": "Meldungen",
+            },
         ),
         migrations.AlterField(
-            model_name='report',
-            name='topic',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reports', to='cms.Topic', verbose_name='Thema'),
+            model_name="report",
+            name="topic",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="reports",
+                to="cms.Topic",
+                verbose_name="Thema",
+            ),
         ),
     ]

@@ -7,7 +7,7 @@ from ..references.dialogflow import add_entity, delete_entity, EntityType
 
 
 class GenreAdmin(admin.ModelAdmin):
-    actions = ['delete_model']
+    actions = ["delete_model"]
 
     class Meta:
         model = Genre
@@ -15,8 +15,8 @@ class GenreAdmin(admin.ModelAdmin):
 
     def get_actions(self, request):
         actions = super().get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
+        if "delete_selected" in actions:
+            del actions["delete_selected"]
         return actions
 
     def save_model(self, request, obj, form, change):
@@ -25,7 +25,7 @@ class GenreAdmin(admin.ModelAdmin):
         try:
             add_entity(obj.name, EntityType.GENRES)
         except Exception as e:
-                logging.error(e)
+            logging.error(e)
 
     def delete_model(self, request, obj):
         try:
@@ -45,6 +45,7 @@ class GenreAdmin(admin.ModelAdmin):
                 logging.error(e)
 
     delete_model.short_description = "Ausgewählte Genres löschen"
+
 
 # Register your model here
 admin.site.register(Genre, GenreAdmin)

@@ -9,25 +9,43 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('cms', '0045_auto_20190924_1605'),
+        ("cms", "0045_auto_20190924_1605"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='report',
-            name='published',
-            field=models.BooleanField(default=False, help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. Dieser Haken in Kombination mit dem Meldungstyp "Breaking" schickt die Meldung beim speichern an alle Breaking-Abbonenten ab.', verbose_name='Freigegeben'),
+            model_name="report",
+            name="published",
+            field=models.BooleanField(
+                default=False,
+                help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. Dieser Haken in Kombination mit dem Meldungstyp "Breaking" schickt die Meldung beim speichern an alle Breaking-Abbonenten ab.',
+                verbose_name="Freigegeben",
+            ),
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('psid', models.CharField(blank=True, max_length=256, null=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("psid", models.CharField(blank=True, max_length=256, null=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Profil',
-                'verbose_name_plural': 'Profile',
+                "verbose_name": "Profil",
+                "verbose_name_plural": "Profile",
             },
         ),
     ]

@@ -8,26 +8,62 @@ import sortedm2m.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0001_initial'),
+        ("cms", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Push',
+            name="Push",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('headline', models.CharField(max_length=200, verbose_name='Titel')),
-                ('intro', models.CharField(max_length=640, verbose_name='Intro-Text')),
-                ('outro', models.CharField(max_length=640, verbose_name='Outro-Text')),
-                ('pub_date', models.DateTimeField(default=datetime.now(), verbose_name='Versenden am')),
-                ('follow_up_date', models.DateTimeField(default=datetime.now(), verbose_name='Wiedervorlage am')),
-                ('published', models.BooleanField(default=False, help_text='Solange dieser Haken nicht gesetzt ist, wird dieser Push nicht versendet, auch wenn der konfigurierte Zeitpunkt erreicht wird.', verbose_name='Freigegeben')),
-                ('delivered', models.BooleanField(default=False, verbose_name='Versendet')),
-                ('reports', sortedm2m.fields.SortedManyToManyField(help_text=None, related_name='pushes', to='cms.Report', verbose_name='Meldungen')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("headline", models.CharField(max_length=200, verbose_name="Titel")),
+                ("intro", models.CharField(max_length=640, verbose_name="Intro-Text")),
+                ("outro", models.CharField(max_length=640, verbose_name="Outro-Text")),
+                (
+                    "pub_date",
+                    models.DateTimeField(
+                        default=datetime.now(), verbose_name="Versenden am"
+                    ),
+                ),
+                (
+                    "follow_up_date",
+                    models.DateTimeField(
+                        default=datetime.now(), verbose_name="Wiedervorlage am"
+                    ),
+                ),
+                (
+                    "published",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Solange dieser Haken nicht gesetzt ist, wird dieser Push nicht versendet, auch wenn der konfigurierte Zeitpunkt erreicht wird.",
+                        verbose_name="Freigegeben",
+                    ),
+                ),
+                (
+                    "delivered",
+                    models.BooleanField(default=False, verbose_name="Versendet"),
+                ),
+                (
+                    "reports",
+                    sortedm2m.fields.SortedManyToManyField(
+                        help_text=None,
+                        related_name="pushes",
+                        to="cms.Report",
+                        verbose_name="Meldungen",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Push',
-                'verbose_name_plural': 'Pushes',
+                "verbose_name": "Push",
+                "verbose_name_plural": "Pushes",
             },
         ),
     ]

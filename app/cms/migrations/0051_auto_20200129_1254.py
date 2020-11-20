@@ -7,48 +7,88 @@ import s3direct.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0050_auto_20191001_0834'),
+        ("cms", "0050_auto_20191001_0834"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='faq',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="faq",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='faqfragment',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="faqfragment",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='push',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="push",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="report",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='reportfragment',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="reportfragment",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='reportquiz',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="reportquiz",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='wiki',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="wiki",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
         migrations.AlterField(
-            model_name='wikifragment',
-            name='media_original',
-            field=s3direct.fields.S3DirectField(blank=True, help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4', null=True, verbose_name='Medien-Anhang'),
+            model_name="wikifragment",
+            name="media_original",
+            field=s3direct.fields.S3DirectField(
+                blank=True,
+                help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4",
+                null=True,
+                verbose_name="Medien-Anhang",
+            ),
         ),
     ]

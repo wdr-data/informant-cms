@@ -6,24 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0052_auto_20200201_1131'),
+        ("cms", "0052_auto_20200201_1131"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='tg_text',
-            field=models.CharField(default='Diese Nachricht ist bereits depubliziert', help_text='Dieser Text wird bei Telegram als Meldungstext zusammen mit der Überschrift ausgespielt.', max_length=900, verbose_name='Telegram-Text'),
+            model_name="report",
+            name="tg_text",
+            field=models.CharField(
+                default="Diese Nachricht ist bereits depubliziert",
+                help_text="Dieser Text wird bei Telegram als Meldungstext zusammen mit der Überschrift ausgespielt.",
+                max_length=900,
+                verbose_name="Telegram-Text",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='report',
-            name='link',
-            field=models.URLField(blank=True, default=None, help_text='Der Link wird am Ende einer Meldung angehangen und liefert dem Nutzer mehr Infos zur Meldung. Der Button-Text lautet "MEHR 🌍".', max_length=500, null=True, verbose_name='DeepLink'),
+            model_name="report",
+            name="link",
+            field=models.URLField(
+                blank=True,
+                default=None,
+                help_text='Der Link wird am Ende einer Meldung angehangen und liefert dem Nutzer mehr Infos zur Meldung. Der Button-Text lautet "MEHR 🌍".',
+                max_length=500,
+                null=True,
+                verbose_name="DeepLink",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='short_headline',
-            field=models.CharField(help_text='Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text, der auf dem Auswahl-Button für diese Nachricht angezeigt in FB angezeigt wird.', max_length=17, verbose_name='Schlagwort-Button'),
+            model_name="report",
+            name="short_headline",
+            field=models.CharField(
+                help_text="Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text, der auf dem Auswahl-Button für diese Nachricht angezeigt in FB angezeigt wird.",
+                max_length=17,
+                verbose_name="Schlagwort-Button",
+            ),
         ),
     ]

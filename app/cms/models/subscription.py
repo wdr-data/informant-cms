@@ -8,10 +8,10 @@ class Subscription(models.Model):
     """
 
     class Meta:
-        verbose_name = 'Anmeldung'
-        verbose_name_plural = 'Anmeldungen'
+        verbose_name = "Anmeldung"
+        verbose_name_plural = "Anmeldungen"
 
-    psid = models.CharField('PSID', max_length=200, null=False)
+    psid = models.CharField("PSID", max_length=200, null=False)
 
-    morning = models.BooleanField('Morgen-Push', null=False, default=False)
-    evening = models.BooleanField('Abend-Push', null=False, default=False)
+    morning = models.BooleanField("Morgen-Push", null=False, default=False)
+    evening = models.BooleanField("Abend-Push", null=False, default=False)

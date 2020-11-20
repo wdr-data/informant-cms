@@ -6,16 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0067_auto_20200917_1931'),
+        ("cms", "0067_auto_20200917_1931"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='push',
-            options={'verbose_name': 'Push', 'verbose_name_plural': 'Morgen-Pushes'},
+            name="push",
+            options={"verbose_name": "Push", "verbose_name_plural": "Morgen-Pushes"},
         ),
         migrations.AlterModelOptions(
-            name='report',
-            options={'ordering': ['-created'], 'verbose_name': 'Meldung', 'verbose_name_plural': 'Meldungen, Eilmeldungen und Abend-Content-Push'},
+            name="report",
+            options={
+                "ordering": ["-created"],
+                "verbose_name": "Meldung",
+                "verbose_name_plural": "Meldungen, Eilmeldungen und Abend-Content-Push",
+            },
         ),
     ]

@@ -6,33 +6,70 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0066_auto_20200527_0932'),
+        ("cms", "0066_auto_20200527_0932"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='report',
-            name='delivered_fb',
-            field=models.CharField(choices=[('not_sent', 'nicht gesendet'), ('sending', 'wird gesendet'), ('sent', 'gesendet')], default='not_sent', max_length=20, verbose_name='Breaking/Abend-Push: Facebook'),
+            model_name="report",
+            name="delivered_fb",
+            field=models.CharField(
+                choices=[
+                    ("not_sent", "nicht gesendet"),
+                    ("sending", "wird gesendet"),
+                    ("sent", "gesendet"),
+                ],
+                default="not_sent",
+                max_length=20,
+                verbose_name="Breaking/Abend-Push: Facebook",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='delivered_tg',
-            field=models.CharField(choices=[('not_sent', 'nicht gesendet'), ('sending', 'wird gesendet'), ('sent', 'gesendet')], default='not_sent', max_length=20, verbose_name='Breaking/Abend-Push: Telegram'),
+            model_name="report",
+            name="delivered_tg",
+            field=models.CharField(
+                choices=[
+                    ("not_sent", "nicht gesendet"),
+                    ("sending", "wird gesendet"),
+                    ("sent", "gesendet"),
+                ],
+                default="not_sent",
+                max_length=20,
+                verbose_name="Breaking/Abend-Push: Telegram",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='published',
-            field=models.BooleanField(default=False, help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking" oder "Abend-Push" senden zu können.', verbose_name='Freigegeben'),
+            model_name="report",
+            name="published",
+            field=models.BooleanField(
+                default=False,
+                help_text='Solange dieser Haken nicht gesetzt ist, wird diese Meldung nicht angezeigt. Dieser Haken ist auch nötig, um eine Meldung mit dem Meldungstyp "Breaking" oder "Abend-Push" senden zu können.',
+                verbose_name="Freigegeben",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='short_headline',
-            field=models.CharField(help_text='Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text, der auf dem Auswahl-Button für diese Nachricht in FB angezeigt wird.', max_length=17, verbose_name='Link-/Button-Text'),
+            model_name="report",
+            name="short_headline",
+            field=models.CharField(
+                help_text="Hinter diesem Schlagwort wird in TG der Deeplink gesetzt. Außerdem ist dies der Text, der auf dem Auswahl-Button für diese Nachricht in FB angezeigt wird.",
+                max_length=17,
+                verbose_name="Link-/Button-Text",
+            ),
         ),
         migrations.AlterField(
-            model_name='report',
-            name='type',
-            field=models.CharField(choices=[('regular', '📰 Reguläre Meldung'), ('last', '🎨 Letzte Meldung'), ('breaking', '🚨 Breaking'), ('evening', '🌙 Abend-Push')], default='regular', help_text='Wird dieser Wert auf "Breaking" oder "Abend-Push" gesetzt und die Meldung freigegeben, kann sie direkt versendet werden.', max_length=20, verbose_name='Meldungstyp'),
+            model_name="report",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("regular", "📰 Reguläre Meldung"),
+                    ("last", "🎨 Letzte Meldung"),
+                    ("breaking", "🚨 Breaking"),
+                    ("evening", "🌙 Abend-Push"),
+                ],
+                default="regular",
+                help_text='Wird dieser Wert auf "Breaking" oder "Abend-Push" gesetzt und die Meldung freigegeben, kann sie direkt versendet werden.',
+                max_length=20,
+                verbose_name="Meldungstyp",
+            ),
         ),
     ]

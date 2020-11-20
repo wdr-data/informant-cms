@@ -9,10 +9,10 @@ def set_default_subtype(apps, schema_editor):
     Report = apps.get_model("cms", "Report")
     Subtype = apps.get_model("cms", "Subtype")
 
-    default_subtype = Subtype(emoji='🙈', title='Und das noch')
+    default_subtype = Subtype(emoji="🙈", title="Und das noch")
     default_subtype.save()
 
-    for report in Report.objects.filter(type='last'):
+    for report in Report.objects.filter(type="last"):
         report.subtype = default_subtype
         report.save()
 
@@ -20,31 +20,57 @@ def set_default_subtype(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0060_auto_20200317_1428'),
+        ("cms", "0060_auto_20200317_1428"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Subtype',
+            name="Subtype",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('emoji', models.CharField(max_length=3, verbose_name='Emoji')),
-                ('title', models.CharField(max_length=17, verbose_name='Titel')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("emoji", models.CharField(max_length=3, verbose_name="Emoji")),
+                ("title", models.CharField(max_length=17, verbose_name="Titel")),
             ],
             options={
-                'verbose_name': 'Meldungs-Subtyp',
-                'verbose_name_plural': 'Meldungs-Subtypen',
+                "verbose_name": "Meldungs-Subtyp",
+                "verbose_name_plural": "Meldungs-Subtypen",
             },
         ),
         migrations.AlterField(
-            model_name='report',
-            name='type',
-            field=models.CharField(choices=[('regular', '📰 Reguläre Meldung'), ('last', '🎨 Letzte Meldung'), ('breaking', '🚨 Breaking')], default='regular', help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, kann sie als Breaking versendet werden.', max_length=20, verbose_name='Meldungstyp'),
+            model_name="report",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("regular", "📰 Reguläre Meldung"),
+                    ("last", "🎨 Letzte Meldung"),
+                    ("breaking", "🚨 Breaking"),
+                ],
+                default="regular",
+                help_text='Wird dieser Wert auf "Breaking" gesetzt und die Meldung freigegeben, kann sie als Breaking versendet werden.',
+                max_length=20,
+                verbose_name="Meldungstyp",
+            ),
         ),
         migrations.AddField(
-            model_name='report',
-            name='subtype',
-            field=models.ForeignKey(help_text='Derzeit nur relevant für Meldungen vom Typ "🎨 Letzte Meldung".', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='reports', related_query_name='report', to='cms.Subtype', verbose_name='Subtyp'),
+            model_name="report",
+            name="subtype",
+            field=models.ForeignKey(
+                help_text='Derzeit nur relevant für Meldungen vom Typ "🎨 Letzte Meldung".',
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="reports",
+                related_query_name="report",
+                to="cms.Subtype",
+                verbose_name="Subtyp",
+            ),
         ),
         migrations.RunPython(set_default_subtype),
     ]

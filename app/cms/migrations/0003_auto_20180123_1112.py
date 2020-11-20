@@ -6,28 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0002_auto_20180122_1954'),
+        ("cms", "0002_auto_20180122_1954"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, verbose_name='Name')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200, verbose_name="Name")),
             ],
             options={
-                'verbose_name': 'Genre',
-                'verbose_name_plural': 'Genres',
+                "verbose_name": "Genre",
+                "verbose_name_plural": "Genres",
             },
         ),
         migrations.RemoveField(
-            model_name='report',
-            name='genre',
+            model_name="report",
+            name="genre",
         ),
         migrations.AddField(
-            model_name='report',
-            name='genre',
-            field=models.ManyToManyField(related_name='reports', to='cms.Genre', verbose_name='Genre'),
+            model_name="report",
+            name="genre",
+            field=models.ManyToManyField(
+                related_name="reports", to="cms.Genre", verbose_name="Genre"
+            ),
         ),
     ]

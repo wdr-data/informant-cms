@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0051_auto_20200129_1254'),
+        ("cms", "0051_auto_20200129_1254"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='push',
-            name='timing',
-            field=models.CharField(choices=[('morning', '☕ Morgen'), ('evening', '🌙 Abend'), ('breaking', '🚨 Breaking'), ('testing', '⚗️ Test')], default='morning', max_length=20, verbose_name='Zeitpunkt'),
+            model_name="push",
+            name="timing",
+            field=models.CharField(
+                choices=[
+                    ("morning", "☕ Morgen"),
+                    ("evening", "🌙 Abend"),
+                    ("breaking", "🚨 Breaking"),
+                    ("testing", "⚗️ Test"),
+                ],
+                default="morning",
+                max_length=20,
+                verbose_name="Zeitpunkt",
+            ),
         ),
     ]

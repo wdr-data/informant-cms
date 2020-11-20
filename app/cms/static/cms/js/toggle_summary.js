@@ -5,7 +5,7 @@ const fieldsetSelectorFacebook = 'fieldset.facebook h2';
 const fieldsetSelectorAll = 'fieldset.all';
 
 const toggleSummary = (type) => {
-    if (type === 'evening' || type === 'breaking' || type === 'last') {
+    if (type === 'evening' || type === 'breaking' || type === 'last' || type === 'notification') {
         django.jQuery(summarySelector).hide();
         django.jQuery(textLabelSelector).html('Text:');
         django.jQuery(fieldsetSelectorTelegram).hide();

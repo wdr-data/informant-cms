@@ -15,30 +15,29 @@ from requests.exceptions import MissingSchema
 from PIL import Image, ImageFont, ImageDraw, ImageFilter
 from s3direct.fields import S3DirectField
 
-ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / 'assets'
+ASSETS_DIR = Path(dirname(dirname(abspath(__file__)))) / "assets"
 
 
 class Attachment(models.Model):
-
     class Meta:
         abstract = False
-        verbose_name = 'Medien-Anhang'
-        verbose_name_plural = 'Medien-Anhänge'
+        verbose_name = "Medien-Anhang"
+        verbose_name_plural = "Medien-Anhänge"
 
-    title = models.CharField('Titel', max_length=125, null=False, blank=False)
+    title = models.CharField("Titel", max_length=125, null=False, blank=False)
 
     original = S3DirectField(
-        'Medien-Anhang',
+        "Medien-Anhang",
         null=False,
         blank=False,
-        dest='default',
-        help_text='Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif',
+        dest="default",
+        help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif",
     )
-    credit = models.CharField('Credit', max_length=100, null=True, blank=True)
+    credit = models.CharField("Credit", max_length=100, null=True, blank=True)
 
-    processed = models.FileField('Verarbeitet', max_length=512, null=True, blank=True)
+    processed = models.FileField("Verarbeitet", max_length=512, null=True, blank=True)
 
-    upload_date = models.DateTimeField('Hochgeladen am', auto_now_add=True)
+    upload_date = models.DateTimeField("Hochgeladen am", auto_now_add=True)
 
     def __str__(self):
         extension = splitext(str(self.original))[-1]
@@ -52,9 +51,11 @@ class Attachment(models.Model):
         filename = original
         original_url = default_storage.url(original)
 
-        if not (filename.lower().endswith('.png')
-                or filename.lower().endswith('.jpg')
-                or filename.lower().endswith('.jpeg')):
+        if not (
+            filename.lower().endswith(".png")
+            or filename.lower().endswith(".jpg")
+            or filename.lower().endswith(".jpeg")
+        ):
             return filename, original_url
 
         file_content = requests.get(original_url).content
@@ -62,7 +63,7 @@ class Attachment(models.Model):
         try:
             img = Image.open(BytesIO(file_content))
         except:
-            logging.exception('Loading attachment for processing failed')
+            logging.exception("Loading attachment for processing failed")
             return filename, original_url
 
         image_changed = False
@@ -80,12 +81,12 @@ class Attachment(models.Model):
         # Draw credit onto image
         if credit:
             # Create initial image objects for text drawing
-            img = img.convert('RGBA')
-            alpha = Image.new('RGBA', img.size, (0, 0, 0, 0))
+            img = img.convert("RGBA")
+            alpha = Image.new("RGBA", img.size, (0, 0, 0, 0))
             draw = ImageDraw.Draw(alpha)
 
             # Configuration for text drawing
-            the_text = 'FOTO: ' + str(credit).upper()
+            the_text = "FOTO: " + str(credit).upper()
             fontsize = max((img.size[0] + img.size[1]) / 2 / 50, 10)
             shadow_radius = fontsize / 3
             shadow_mult = 0.75
@@ -94,16 +95,20 @@ class Attachment(models.Model):
             position = tuple(int(shadow_radius + p) for p in padding)
 
             fnt = ImageFont.truetype(
-                str(ASSETS_DIR / 'Open_Sans' / 'OpenSans-SemiBold.ttf'), int(fontsize))
+                str(ASSETS_DIR / "Open_Sans" / "OpenSans-SemiBold.ttf"), int(fontsize)
+            )
 
             # Calculate size of text
             text_size = draw.textsize(the_text, font=fnt)
 
             # Create new, smaller image to draw the text on
             txt = Image.new(
-                'RGBA',
-                tuple(ts + pad + pos for ts, pad, pos in zip(text_size, padding, position)),
-                (0, 0, 0, 0))
+                "RGBA",
+                tuple(
+                    ts + pad + pos for ts, pad, pos in zip(text_size, padding, position)
+                ),
+                (0, 0, 0, 0),
+            )
 
             # Do the drawing
             draw = ImageDraw.Draw(txt)
@@ -113,7 +118,12 @@ class Attachment(models.Model):
             txt = shadow.point(lambda px: min(int(px * shadow_mult), 255))
 
             draw = ImageDraw.Draw(txt)
-            draw.text(position, the_text, font=fnt, fill=(255, 255, 255, int(255 * text_alpha)))
+            draw.text(
+                position,
+                the_text,
+                font=fnt,
+                fill=(255, 255, 255, int(255 * text_alpha)),
+            )
 
             # Rotate and paste onto original image
             txt = txt.rotate(90, expand=1, resample=Image.LANCZOS)
@@ -132,20 +142,23 @@ class Attachment(models.Model):
         bio.seek(0)
 
         new_filename = default_storage.generate_filename(filename)
-        path = default_storage.save(new_filename, ContentFile(bio.read(), name=new_filename))
+        path = default_storage.save(
+            new_filename, ContentFile(bio.read(), name=new_filename)
+        )
         url = default_storage.url(path)
         return path, url
 
+
 class HasAttachment(models.Model):
-    class Meta():
+    class Meta:
         abstract = True
 
     attachment = models.ForeignKey(
         Attachment,
         on_delete=models.deletion.SET_NULL,
-        related_name='+',
-        related_query_name='+',
+        related_name="+",
+        related_query_name="+",
         null=True,
         blank=True,
-        verbose_name='Medien-Anhang',
+        verbose_name="Medien-Anhang",
     )

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0038_auto_20180907_1200'),
+        ("cms", "0038_auto_20180907_1200"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='link',
-            field=models.URLField(null=True, verbose_name='DeepLink'),
+            model_name="report",
+            name="link",
+            field=models.URLField(null=True, verbose_name="DeepLink"),
         ),
     ]

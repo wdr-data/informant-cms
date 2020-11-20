@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0034_reportquiz_correct_option'),
+        ("cms", "0034_reportquiz_correct_option"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reportquiz',
-            name='report',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz_options', related_query_name='quiz_options', to='cms.Report'),
+            model_name="reportquiz",
+            name="report",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="quiz_options",
+                related_query_name="quiz_options",
+                to="cms.Report",
+            ),
         ),
     ]

@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0046_auto_20190930_1030'),
+        ("cms", "0046_auto_20190930_1030"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='psid',
-            field=models.CharField(blank=True, help_text='Sende #psid an den Bot, und trage die Zahl hier ein, um Meldungen und Pushes testen zu können.', max_length=256, null=True, verbose_name='PSID'),
+            model_name="profile",
+            name="psid",
+            field=models.CharField(
+                blank=True,
+                help_text="Sende #psid an den Bot, und trage die Zahl hier ein, um Meldungen und Pushes testen zu können.",
+                max_length=256,
+                null=True,
+                verbose_name="PSID",
+            ),
         ),
     ]

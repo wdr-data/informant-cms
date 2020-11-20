@@ -9,10 +9,10 @@ class Genre(models.Model):
     """
 
     class Meta:
-        verbose_name = 'Genre'
-        verbose_name_plural = 'Genres'
+        verbose_name = "Genre"
+        verbose_name_plural = "Genres"
 
-    name = models.CharField('Name', max_length=200, null=False, blank=False)
+    name = models.CharField("Name", max_length=200, null=False, blank=False)
 
     def __str__(self):
         return self.name

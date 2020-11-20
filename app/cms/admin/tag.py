@@ -8,8 +8,8 @@ from ..references.dialogflow import delete_entity, EntityType
 
 class ReportTagAdmin(admin.ModelAdmin):
 
-    search_fields = ['name']
-    actions = ['delete_model']
+    search_fields = ["name"]
+    actions = ["delete_model"]
 
     class Meta:
         model = ReportTag
@@ -17,8 +17,8 @@ class ReportTagAdmin(admin.ModelAdmin):
 
     def get_actions(self, request):
         actions = super().get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
+        if "delete_selected" in actions:
+            del actions["delete_selected"]
         return actions
 
     def delete_model(self, request, obj):
@@ -37,6 +37,7 @@ class ReportTagAdmin(admin.ModelAdmin):
                 delete_entity(obj.name, EntityType.TAGS)
             except Exception as e:
                 logging.error(e)
+
 
 # Register your model here
 admin.site.register(ReportTag, ReportTagAdmin)

@@ -13,14 +13,14 @@ class WikiSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Wiki
-        fields = ('id', 'name', 'follow_up_at', 'genres',
-                  'tags', 'text', 'attachment')
+        fields = ("id", "name", "follow_up_at", "genres", "tags", "text", "attachment")
 
 
 class WikiViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Wiki.objects.all().order_by('id')
+
+    queryset = Wiki.objects.all().order_by("id")
     serializer_class = WikiSerializer
-    filter_fields = ('id', 'name', 'follow_up_at', 'genres', 'tags')
+    filter_fields = ("id", "name", "follow_up_at", "genres", "tags")

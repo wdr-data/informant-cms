@@ -9,11 +9,11 @@ class Subtype(models.Model):
     """
 
     class Meta:
-        verbose_name = 'Meldungs-Subtyp'
-        verbose_name_plural = 'Meldungs-Subtypen'
+        verbose_name = "Meldungs-Subtyp"
+        verbose_name_plural = "Meldungs-Subtypen"
 
-    emoji = models.CharField('Emoji', max_length=3, null=False, blank=False)
-    title = models.CharField('Titel', max_length=17, null=False, blank=False)
+    emoji = models.CharField("Emoji", max_length=3, null=False, blank=False)
+    title = models.CharField("Titel", max_length=17, null=False, blank=False)
 
     def __str__(self):
-        return f'{self.emoji} {self.title}'
+        return f"{self.emoji} {self.title}"

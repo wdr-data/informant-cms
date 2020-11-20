@@ -6,43 +6,57 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cms', '0029_auto_20180719_1248'),
+        ("cms", "0029_auto_20180719_1248"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='faq',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="faq",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
         migrations.AddField(
-            model_name='faqfragment',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="faqfragment",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
         migrations.AddField(
-            model_name='push',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="push",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
         migrations.AddField(
-            model_name='report',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="report",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
         migrations.AddField(
-            model_name='reportfragment',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="reportfragment",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
         migrations.AddField(
-            model_name='wiki',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="wiki",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
         migrations.AddField(
-            model_name='wikifragment',
-            name='media_alt',
-            field=models.CharField(blank=True, max_length=125, null=True, verbose_name='Alternativ-Text'),
+            model_name="wikifragment",
+            name="media_alt",
+            field=models.CharField(
+                blank=True, max_length=125, null=True, verbose_name="Alternativ-Text"
+            ),
         ),
     ]
