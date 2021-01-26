@@ -81,12 +81,14 @@ class TeaserModelForm(forms.ModelForm):
         label="Erste Zeile",
         widget=EmojiPickerTextInputAdmin,
         max_length=Teaser.headline.field.max_length,
+        help_text="Bei Telegram wird die erste Zeile gefettet. Bei Facebook ist die erste Zeile abgesetzt. In beiden Fällen wird automatisch ein ➡️ vorangestellt.",
     )
 
     summary = forms.CharField(
         label="Text",
         widget=EmojiPickerTextareaAdmin,
         max_length=Teaser.summary.field.max_length,
+        help_text="Die erste Zeile in Kombination mit dem Text sollen als Fließtext zu lesen sein.",
     )
 
 

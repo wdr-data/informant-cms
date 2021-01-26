@@ -55,7 +55,12 @@ class PushCompact(HasAttachment):
 
     intro = models.CharField("Intro-Text", max_length=250, null=False)
 
-    outro = models.CharField("Outro-Text", max_length=150, null=False)
+    outro = models.CharField(
+        "Outro-Text",
+        max_length=150,
+        null=False,
+        help_text="Der Outro-Text schließt den Push ab. Die 👋  wird automatisch hinzugefügt.",
+    )
 
     delivered_fb = models.CharField(
         "Facebook",
@@ -151,7 +156,7 @@ class Teaser(models.Model):
         "Telegram-Link-Text",
         max_length=30,
         null=False,
-        help_text="Hinter diesem Schlagwort wird in TG der Deeplink gesetzt.",
+        help_text="Hinter diesem Schlagwort wird in TG der Deeplink als Hyperlink gesetzt.",
     )
 
     link = models.URLField(
@@ -160,9 +165,8 @@ class Teaser(models.Model):
         null=True,
         max_length=100,
         default=None,
-        help_text="Der Link wird am Ende einer Meldung (FB-Messenger und Letzte Meldung) "
-        'mit dem Button-Text "MEHR 🌍" ausgespielt, '
-        "respektive als Hyperlink hinter dem Schlagwort-Text nach dem Telegram-Text.",
+        help_text="Der Kurz-Link wird nach dem Meldungstext ausgespielt."
+        "Bei Telegram als Hyperlink hin dem Telegram-Link-Text. Bei Facebook direkt als Kurz-Link.",
     )
 
     push = models.ForeignKey(
