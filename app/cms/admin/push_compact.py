@@ -1,12 +1,8 @@
-import os
 from posixpath import join as urljoin
 from datetime import date, time, datetime
-import re
 
 from django.contrib import admin, messages
 from django import forms
-from django.contrib.admin.options import InlineModelAdmin
-from django.utils.http import urlencode
 from emoji_picker.widgets import EmojiPickerTextareaAdmin, EmojiPickerTextInputAdmin
 import requests
 from django.core.exceptions import ValidationError
@@ -14,9 +10,7 @@ from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 import pytz
-from django_reverse_admin import ReverseModelAdmin
 
-from ..models.attachment import HasAttachment
 from ..models.push_compact import PushCompact, Promo, Teaser
 from .attachment import (
     HasAttachmentAdmin,
@@ -37,13 +31,13 @@ class PushCompactModelForm(HasAttachmentModelForm):
         exclude = ()
 
     intro = forms.CharField(
-        required=True,
+        required=(not PushCompact.intro.field.null),
         label="Text",
         widget=EmojiPickerTextareaAdmin,
         max_length=PushCompact.intro.field.max_length,
     )
     outro = forms.CharField(
-        required=True,
+        required=(not PushCompact.outro.field.null),
         label="Text",
         widget=EmojiPickerTextareaAdmin,
         max_length=PushCompact.outro.field.max_length,
@@ -62,6 +56,14 @@ class PromoModelForm(HasAttachmentModelForm):
         max_length=Promo.text.field.max_length,
     )
 
+    def clean(self):
+        if self.cleaned_data.get("link") and not self.cleaned_data.get("link_name"):
+            raise ValidationError(
+                {
+                    "link_name": "Wenn der Link gesetzt ist, muss auch ein Link-Text gesetzt sein."
+                }
+            )
+
 
 class PromoAdminInline(HasAttachmentAdminInline):
     model = Promo
@@ -69,7 +71,7 @@ class PromoAdminInline(HasAttachmentAdminInline):
     fields = ["attachment", "attachment_preview", "text", "link_name", "link"]
     extra = 0
     min_num = 0
-    max_num = 1
+    max_num = 2
 
 
 class TeaserModelForm(forms.ModelForm):
@@ -84,12 +86,20 @@ class TeaserModelForm(forms.ModelForm):
         help_text="Bei Telegram wird die erste Zeile gefettet. Bei Facebook ist die erste Zeile abgesetzt. In beiden Fällen wird automatisch ein ➡️ vorangestellt.",
     )
 
-    summary = forms.CharField(
+    text = forms.CharField(
         label="Text",
         widget=EmojiPickerTextareaAdmin,
-        max_length=Teaser.summary.field.max_length,
+        max_length=Teaser.text.field.max_length,
         help_text="Die erste Zeile in Kombination mit dem Text sollen als Fließtext zu lesen sein.",
     )
+
+    def clean(self):
+        if self.cleaned_data.get("link") and not self.cleaned_data.get("link_name"):
+            raise ValidationError(
+                {
+                    "link_name": "Wenn der Link gesetzt ist, muss auch ein Link-Text gesetzt sein."
+                }
+            )
 
 
 class TeaserAdminInline(admin.StackedInline):
@@ -144,22 +154,14 @@ class SendManualForm(AdminObjectActionForm):
             )
 
 
-class PushCompactAdmin(
-    ReverseModelAdmin,
-    ModelAdminObjectActionsMixin,
-    HasAttachmentAdmin,
-):
+class PushCompactAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     form = PushCompactModelForm
     change_form_template = "admin/cms/change_form_push_compact.html"
-    inline_type = "stacked"
-    inline_reverse = [
-        {
-            "field_name": "promo",
-            "admin_class": PromoAdminInline,
-            "extra": 0,
-        },
+
+    inlines = [
+        TeaserAdminInline,
+        PromoAdminInline,
     ]
-    inlines = [TeaserAdminInline]
     fieldsets = [
         (
             None,
@@ -359,4 +361,3 @@ class PushCompactAdmin(
 
 # Register your models here.
 admin.site.register(PushCompact, PushCompactAdmin)
-admin.site.register(Promo)

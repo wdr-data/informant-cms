@@ -10,8 +10,8 @@ class TeaserSerializer(serializers.ModelSerializer):
         model = Teaser
         fields = (
             "headline",
-            "summary",
-            "short_headline",
+            "text",
+            "link_name",
             "link",
         )
 
@@ -32,7 +32,7 @@ class PromoSerializer(serializers.ModelSerializer):
 class PushCompactSerializer(serializers.ModelSerializer):
     attachment = AttachmentSerializer(read_only=True)
     teasers = TeaserSerializer(many=True, read_only=True)
-    promo = PromoSerializer(read_only=True)
+    promos = PromoSerializer(many=True, read_only=True)
     timing = SerializerMethodField()
 
     def get_timing(self, obj):
@@ -53,7 +53,7 @@ class PushCompactSerializer(serializers.ModelSerializer):
             "intro",
             "teasers",
             "outro",
-            "promo",
+            "promos",
         )
 
 
