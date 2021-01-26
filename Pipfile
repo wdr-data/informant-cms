@@ -33,7 +33,6 @@ django-admin-object-actions = "*"
 django-crum = "*"
 httpx = "*"
 pyopenssl = "*"
-django-reverse-admin = "*"
 
 [dev-packages]
 ansible = "*"
