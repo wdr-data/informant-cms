@@ -24,7 +24,8 @@ import cms.views as cms_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    url(r"^$", RedirectView.as_view(url="/admin")),
+    url(r"^$", RedirectView.as_view(url="/admin/")),
+    url(r"^admin/cms/push/", RedirectView.as_view(url="/admin/cms/pushcompact/")),
     url(
         r"^tags_input/",
         include(("tags_input.urls", "tags_input"), namespace="tags_input"),
