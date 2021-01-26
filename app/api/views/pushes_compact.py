@@ -22,6 +22,7 @@ class PromoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promo
         fields = (
+            "short_headline",
             "attachment",
             "text",
             "link_name",

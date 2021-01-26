@@ -55,21 +55,21 @@ class PromoModelForm(HasAttachmentModelForm):
         label="Text",
         widget=EmojiPickerTextareaAdmin,
         max_length=Promo.text.field.max_length,
+        help_text=Promo.text.field.help_text,
     )
-
-    def clean(self):
-        if self.cleaned_data.get("link") and not self.cleaned_data.get("link_name"):
-            raise ValidationError(
-                {
-                    "link_name": "Wenn der Link gesetzt ist, muss auch ein Link-Text gesetzt sein."
-                }
-            )
 
 
 class PromoAdminInline(HasAttachmentAdminInline):
     model = Promo
     form = PromoModelForm
-    fields = ["attachment", "attachment_preview", "text", "link_name", "link"]
+    fields = [
+        "short_headline",
+        "attachment",
+        "attachment_preview",
+        "text",
+        "link_name",
+        "link",
+    ]
     extra = 0
     min_num = 0
     max_num = 2
@@ -197,7 +197,7 @@ class PushCompactAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
         "display_object_actions_list",
     )
     readonly_fields = ("display_object_actions_detail",)
-    list_display_links = ("pub_date","weekday")
+    list_display_links = ("pub_date", "weekday")
     ordering = ("-pub_date",)
 
     def display_object_actions_list(self, obj=None):

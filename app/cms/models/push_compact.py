@@ -138,6 +138,12 @@ class Promo(HasAttachment):
         verbose_name = "Promo"
         verbose_name_plural = "Promos"
 
+    short_headline = models.CharField(
+        "Button-Text",
+        max_length=17,
+        help_text="Titel des Buttons, der zu dieser Promo führt.",
+    )
+
     text = models.CharField(
         "Promo-Text",
         max_length=500,
@@ -148,6 +154,7 @@ class Promo(HasAttachment):
         "Link-Button-Text",
         max_length=17,
         blank=True,
+        help_text="Optional. Wenn kein Link-Button-Text gesetzt ist, wird der Button-Text automatisch gesetzt.",
     )
 
     link = models.URLField(
@@ -155,8 +162,7 @@ class Promo(HasAttachment):
         blank=True,
         max_length=500,
         default=None,
-        help_text="Der Link wird am Ende am Ende des Promo-Text als Button angehangen. "
-        'Der Button-Text lautet: "🔗 {Link-Button-Text}".',
+        help_text="Der Link wird am Ende am Ende des Promo-Text als Button angehangen.",
     )
 
     push = models.ForeignKey(
@@ -167,4 +173,4 @@ class Promo(HasAttachment):
     )
 
     def __str__(self):
-        return self.link_name or f"{self.text[:20]}..."
+        return self.short_headline
