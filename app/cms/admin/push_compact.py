@@ -15,7 +15,6 @@ from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 import pytz
 from django_reverse_admin import ReverseModelAdmin
-from fieldsets_with_inlines import FieldsetsInlineMixin
 
 from ..models.attachment import HasAttachment
 from ..models.push_compact import PushCompact, Promo, Teaser
