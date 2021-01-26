@@ -148,7 +148,7 @@ class PushCompactAdmin(
     HasAttachmentAdmin,
 ):
     form = PushCompactModelForm
-    change_form_template = "admin/cms/change_form_publish_direct.html"
+    change_form_template = "admin/cms/change_form_push_compact.html"
     inline_type = "stacked"
     inline_reverse = [
         {
