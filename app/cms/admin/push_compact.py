@@ -3,6 +3,7 @@ from datetime import date, time, datetime
 
 from django.contrib import admin, messages
 from django import forms
+from django.utils import dateformat
 from emoji_picker.widgets import EmojiPickerTextareaAdmin, EmojiPickerTextInputAdmin
 import requests
 from django.core.exceptions import ValidationError
@@ -190,12 +191,13 @@ class PushCompactAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
     list_filter = ["published"]
     list_display = (
         "published",
+        "weekday",
         "pub_date",
         "send_status",
         "display_object_actions_list",
     )
     readonly_fields = ("display_object_actions_detail",)
-    list_display_links = ("pub_date",)
+    list_display_links = ("pub_date","weekday")
     ordering = ("-pub_date",)
 
     def display_object_actions_list(self, obj=None):
@@ -224,6 +226,12 @@ class PushCompactAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
             "permission": "send_manual",
         },
     ]
+
+    def weekday(self, obj):
+        display = dateformat.format(obj.pub_date, "l")
+        return display
+
+    weekday.short_description = "Wochentag"
 
     def send_status(self, obj):
 
