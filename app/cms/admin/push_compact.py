@@ -11,7 +11,7 @@ from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 import pytz
-from adminsortable2.admin import SortableInlineAdminMixin
+from adminsortable2.admin import CustomInlineFormSet, SortableInlineAdminMixin
 
 from ..models.push_compact import PushCompact, Promo, Teaser
 from .attachment import (
@@ -25,6 +25,10 @@ from ..env import (
     BOT_SERVICE_ENDPOINT_TG,
     MANUAL_PUSH_GROUP,
 )
+
+
+MIN_TEASERS = 3
+MAX_TEASERS = 3
 
 
 class PushCompactModelForm(HasAttachmentModelForm):
@@ -104,13 +108,28 @@ class TeaserModelForm(forms.ModelForm):
             )
 
 
+class TeaserFormSet(CustomInlineFormSet):
+    def clean(self) -> None:
+        published = self.instance.published or "_publish-save" in self.data
+        total_forms = (
+            len(self.initial_forms) + len(self.extra_forms) - len(self.deleted_forms)
+        )
+
+        if published and total_forms < MIN_TEASERS:
+            raise ValidationError(
+                f"Ein freigegebener Push muss mindestens {MIN_TEASERS} Meldungen haben."
+            )
+
+        return super().clean()
+
+
 class TeaserAdminInline(SortableInlineAdminMixin, admin.StackedInline):
     model = Teaser
     form = TeaserModelForm
-    exclude = ()
+    formset = TeaserFormSet
     extra = 0
-    min_num = 3
-    max_num = 3
+    min_num = 0
+    max_num = MAX_TEASERS
 
 
 class SendManualForm(AdminObjectActionForm):
