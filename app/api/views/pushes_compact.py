@@ -9,6 +9,7 @@ class TeaserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teaser
         fields = (
+            "id",
             "headline",
             "text",
             "link_name",
@@ -22,6 +23,7 @@ class PromoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promo
         fields = (
+            "id",
             "short_headline",
             "attachment",
             "text",
