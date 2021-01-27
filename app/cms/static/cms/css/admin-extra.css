@@ -45,7 +45,7 @@ div.inline-group.ui-sortable div.inline-related.has_original h3 {
     position: relative;
     padding-left: 14em;
 }
-div.inline-group.ui-sortable h3::before {
+div.inline-group.ui-sortable div.inline-related.has_original h3::before {
     content: " ";
     display: block;
     position: absolute;
@@ -64,7 +64,7 @@ div.inline-group.ui-sortable h3::before {
     div.inline-group.ui-sortable div.inline-related.has_original h3 {
         padding-left: 6em;
     }
-    div.inline-group.ui-sortable h3::before {
+    div.inline-group.ui-sortable div.inline-related.has_original h3::before {
         width: 5.5em;
     }
 
