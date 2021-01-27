@@ -1,5 +1,6 @@
-from django.db import models
 from datetime import date
+
+from django.db import models
 
 from .attachment import HasAttachment
 
@@ -91,6 +92,7 @@ class Teaser(models.Model):
     class Meta:
         verbose_name = "Meldung"
         verbose_name_plural = "Meldungen"
+        ordering = ["ordering"]
 
     headline = models.CharField(
         "Erste Zeile",
@@ -129,6 +131,11 @@ class Teaser(models.Model):
         related_query_name="teaser",
     )
 
+    ordering = models.PositiveSmallIntegerField(
+        "Sortierung",
+        default=0,
+    )
+
     def __str__(self):
         return self.headline
 
@@ -137,6 +144,7 @@ class Promo(HasAttachment):
     class Meta:
         verbose_name = "Promo"
         verbose_name_plural = "Promos"
+        ordering = ["ordering"]
 
     short_headline = models.CharField(
         "Button-Text",
@@ -170,6 +178,11 @@ class Promo(HasAttachment):
         on_delete=models.CASCADE,
         related_name="promos",
         related_query_name="promo",
+    )
+
+    ordering = models.PositiveSmallIntegerField(
+        "Sortierung",
+        default=0,
     )
 
     def __str__(self):

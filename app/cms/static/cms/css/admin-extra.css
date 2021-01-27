@@ -38,3 +38,37 @@ body.model-report .field-subtype label
     font-weight: bold;
     color: #333;
 }
+
+/* styles for stacked inlines */
+div.inline-group.ui-sortable div.inline-related.has_original h3 {
+    background: #f8f8f8 !important;
+    position: relative;
+    padding-left: 14em;
+}
+div.inline-group.ui-sortable h3::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 13.5em;
+    background: url(../../adminsortable2/icons/drag.png) repeat;
+}
+
+.module {
+    position: relative;
+}
+
+@media (max-width: 767px) {
+    div.inline-group.ui-sortable div.inline-related.has_original h3 {
+        padding-left: 6em;
+    }
+    div.inline-group.ui-sortable h3::before {
+        width: 5.5em;
+    }
+
+    form .aligned p.help, form .aligned div.help {
+        margin-left: 0;
+    }
+}

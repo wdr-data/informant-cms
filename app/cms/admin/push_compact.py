@@ -11,6 +11,7 @@ from admin_object_actions.admin import ModelAdminObjectActionsMixin
 from admin_object_actions.forms import AdminObjectActionForm
 from crum import get_current_request
 import pytz
+from adminsortable2.admin import SortableInlineAdminMixin
 
 from ..models.push_compact import PushCompact, Promo, Teaser
 from .attachment import (
@@ -59,7 +60,7 @@ class PromoModelForm(HasAttachmentModelForm):
     )
 
 
-class PromoAdminInline(HasAttachmentAdminInline):
+class PromoAdminInline(SortableInlineAdminMixin, HasAttachmentAdminInline):
     model = Promo
     form = PromoModelForm
     fields = [
@@ -103,7 +104,7 @@ class TeaserModelForm(forms.ModelForm):
             )
 
 
-class TeaserAdminInline(admin.StackedInline):
+class TeaserAdminInline(SortableInlineAdminMixin, admin.StackedInline):
     model = Teaser
     form = TeaserModelForm
     exclude = ()

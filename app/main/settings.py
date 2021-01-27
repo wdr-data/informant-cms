@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "emoji_picker",
     "s3direct",
     "admin_object_actions",
+    "adminsortable2",
 ]
 
 MIDDLEWARE = [
