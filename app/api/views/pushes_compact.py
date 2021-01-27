@@ -63,6 +63,10 @@ class PushCompactViewSet(viewsets.ModelViewSet):
     serializer_class = PushCompactSerializer
 
     def get_queryset(self):
+        # There are only morning pushes
+        if self.request.GET.get("timing", "morning") != "morning":
+            return PushCompact.objects.none()
+
         if self.request.user and self.request.user.is_authenticated:
             return PushCompact.objects.order_by("-pub_date", "-delivered_date_fb")
         else:
