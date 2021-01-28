@@ -31,17 +31,35 @@ class FAQModelForm(HasAttachmentModelForm):
         disabled=True,
         required=False,
     )
+    description = forms.CharField(
+        required=False,
+        label="Beschreibung",
+        max_length=400,
+        widget=EmojiPickerTextareaAdmin,
+        help_text="Wo wird der Text im Bot eingesetzt? Wie kann ich die Antwort triggern?",
+    )
 
     class Meta:
         model = FAQ
-        fields = ["name", "slug", "attachment", "attachment_preview", "text"]
+        fields = [
+            "name",
+            "slug",
+            "description",
+            "attachment",
+            "attachment_preview",
+            "text",
+        ]
 
 
 class FAQAdmin(HasAttachmentAdmin):
     form = FAQModelForm
     ordering = ("name",)
-    search_fields = ["name", "slug"]
-    list_display = ("name", "slug")
+    search_fields = ["name", "slug", "description"]
+    fieldsets = [
+        (None, {"fields": (("name", "slug"), "description")}),
+        ("FAQ-Antwort", {"fields": ("attachment", "attachment_preview", "text")}),
+    ]
+    list_display = ("name", "slug", "description")
     inlines = (FAQFragmentAdminInline,)
 
 
