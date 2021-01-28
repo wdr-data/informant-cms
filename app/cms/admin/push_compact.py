@@ -31,25 +31,6 @@ MIN_TEASERS = 3
 MAX_TEASERS = 3
 
 
-class PushCompactModelForm(HasAttachmentModelForm):
-    class Meta:
-        model = PushCompact
-        exclude = ()
-
-    intro = forms.CharField(
-        required=(not PushCompact.intro.field.null),
-        label="Text",
-        widget=EmojiPickerTextareaAdmin,
-        max_length=PushCompact.intro.field.max_length,
-    )
-    outro = forms.CharField(
-        required=(not PushCompact.outro.field.null),
-        label="Text",
-        widget=EmojiPickerTextareaAdmin,
-        max_length=PushCompact.outro.field.max_length,
-    )
-
-
 class PromoModelForm(HasAttachmentModelForm):
     class Meta:
         model = Promo
@@ -173,6 +154,25 @@ class SendManualForm(AdminObjectActionForm):
             raise Exception(
                 f'Manuelles Senden für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
             )
+
+
+class PushCompactModelForm(HasAttachmentModelForm):
+    class Meta:
+        model = PushCompact
+        exclude = ()
+
+    intro = forms.CharField(
+        required=(not PushCompact.intro.field.null),
+        label="Text",
+        widget=EmojiPickerTextareaAdmin,
+        max_length=PushCompact.intro.field.max_length,
+    )
+    outro = forms.CharField(
+        required=(not PushCompact.outro.field.null),
+        label="Text",
+        widget=EmojiPickerTextareaAdmin,
+        max_length=PushCompact.outro.field.max_length,
+    )
 
 
 class PushCompactAdmin(ModelAdminObjectActionsMixin, HasAttachmentAdmin):
