@@ -101,6 +101,28 @@ class TeaserFormSet(CustomInlineFormSet):
                 f"Ein freigegebener Push muss mindestens {MIN_TEASERS} Meldungen haben."
             )
 
+        # Ensure maximum text length of 2000
+        max_total_chars = 2000
+        total_chars = 0
+
+        total_chars += len(self.instance.intro) + 5
+        total_chars += len(self.instance.outro) + 5
+
+        for teaser in [*self.initial_forms, *self.extra_forms]:
+            print(dir(teaser))
+            total_chars += len(teaser.cleaned_data["headline"]) + 5
+            total_chars += len(teaser.cleaned_data["text"]) + 5
+            total_chars += len(teaser.cleaned_data.get("link", "")) + 5
+
+        print(total_chars)
+        if total_chars > max_total_chars:
+            raise ValidationError(
+                "Die Summe aller Texte im Push übersteigt das Limit "
+                f"um ca. {total_chars - max_total_chars} Zeichen. "
+                "Bitte kürze die Meldungen, Intro oder Outro und teste den Push "
+                "besonders im Facebook Messenger, da dort das Zeichenlimit niedriger ist."
+            )
+
         return super().clean()
 
 
