@@ -91,6 +91,8 @@ class TeaserModelForm(forms.ModelForm):
 
 class TeaserFormSet(CustomInlineFormSet):
     def clean(self) -> None:
+        super().clean()
+
         published = self.instance.published or "_publish-save" in self.data
         total_forms = (
             len(self.initial_forms) + len(self.extra_forms) - len(self.deleted_forms)
@@ -109,12 +111,10 @@ class TeaserFormSet(CustomInlineFormSet):
         total_chars += len(self.instance.outro) + 5
 
         for teaser in [*self.initial_forms, *self.extra_forms]:
-            print(dir(teaser))
-            total_chars += len(teaser.cleaned_data["headline"]) + 5
-            total_chars += len(teaser.cleaned_data["text"]) + 5
+            total_chars += len(teaser.cleaned_data.get("headline", "")) + 5
+            total_chars += len(teaser.cleaned_data.get("text", "")) + 5
             total_chars += len(teaser.cleaned_data.get("link", "")) + 5
 
-        print(total_chars)
         if total_chars > max_total_chars:
             raise ValidationError(
                 "Die Summe aller Texte im Push übersteigt das Limit "
@@ -122,8 +122,6 @@ class TeaserFormSet(CustomInlineFormSet):
                 "Bitte kürze die Meldungen, Intro oder Outro und teste den Push "
                 "besonders im Facebook Messenger, da dort das Zeichenlimit niedriger ist."
             )
-
-        return super().clean()
 
 
 class TeaserAdminInline(SortableInlineAdminMixin, admin.StackedInline):
