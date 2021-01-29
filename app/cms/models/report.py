@@ -18,7 +18,7 @@ class Report(NewsBaseModel):
 
     class Meta:
         verbose_name = "Meldung"
-        verbose_name_plural = "Meldungen und Push-Meldungen"
+        verbose_name_plural = "Push-Meldungen und Benachrichtigungen"
         ordering = ["-created"]
 
     class Type(models.TextChoices):
@@ -34,14 +34,13 @@ class Report(NewsBaseModel):
         SENT = "sent", "gesendet"
 
     type = models.CharField(
-        "Meldungstyp",
         null=False,
         blank=False,
         max_length=20,
         choices=Type.choices,
         help_text='Wird dieser Wert auf "Breaking", "Abend-Push" oder "Benachrichtigung" '
         "gesetzt und die Meldung freigegeben, kann sie direkt versendet werden.",
-        default=Type.REGULAR.value,
+        default=Type.EVENING.value,
     )
 
     subtype = models.ForeignKey(

@@ -95,17 +95,17 @@ class Teaser(models.Model):
         ordering = ["ordering"]
 
     headline = models.CharField(
-        "Erste Zeile",
+        "Leadsatz",
         max_length=100,
         null=False,
-        help_text="Die erste Zeile wird bei Telegram gefettet.",
+        help_text="Bei Telegram wird die erste Zeile gefettet. Bei Facebook ist die erste Zeile abgesetzt. In beiden Fällen wird automatisch ein ➡️ vorangestellt.",
     )
 
     text = models.CharField(
         "Text",
         max_length=400,
         blank=True,
-        help_text="Dieser Text wird ergänzen gespielt.",
+        help_text="Der Leadsatz in Kombination mit dem Text sollen als Fließtext zu lesen sein.",
     )
 
     link_name = models.CharField(

@@ -67,17 +67,17 @@ class TeaserModelForm(forms.ModelForm):
         exclude = ()
 
     headline = forms.CharField(
-        label="Erste Zeile",
+        label=Teaser.headline.field.verbose_name,
         widget=EmojiPickerTextInputAdmin,
         max_length=Teaser.headline.field.max_length,
-        help_text="Bei Telegram wird die erste Zeile gefettet. Bei Facebook ist die erste Zeile abgesetzt. In beiden Fällen wird automatisch ein ➡️ vorangestellt.",
+        help_text=Teaser.headline.field.help_text,
     )
 
     text = forms.CharField(
-        label="Text",
+        label=Teaser.text.field.verbose_name,
         widget=EmojiPickerTextareaAdmin,
         max_length=Teaser.text.field.max_length,
-        help_text="Die erste Zeile in Kombination mit dem Text sollen als Fließtext zu lesen sein.",
+        help_text=Teaser.text.field.help_text,
     )
 
     def clean(self):
