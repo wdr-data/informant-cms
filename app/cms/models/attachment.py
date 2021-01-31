@@ -31,7 +31,7 @@ class Attachment(models.Model):
         null=False,
         blank=False,
         dest="default",
-        help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.mp3, *.mp4, *.gif",
+        help_text="Zulässige Dateiformate: *.jpg, *.jpeg, *.png, *.gif",
     )
     credit = models.CharField("Credit", max_length=100, null=True, blank=True)
 

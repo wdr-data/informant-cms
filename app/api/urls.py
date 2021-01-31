@@ -4,6 +4,7 @@ from .views import (
     tags,
     faqs,
     pushes,
+    pushes_compact,
     fragments,
     wikis,
     subscriptions,
@@ -22,7 +23,8 @@ router.register(r"genres", genres.GenreViewSet)
 router.register(r"tags", tags.TagViewSet)
 router.register(r"faqs/fragments", fragments.FAQFragmentViewSet)
 router.register(r"faqs", faqs.FAQViewSet)
-router.register(r"pushes", pushes.PushViewSet, basename="pushes")
+router.register(r"pushes", pushes_compact.PushCompactViewSet, basename="pushes")
 router.register(r"wikis/fragments", fragments.WikiFragmentViewSet)
 router.register(r"wikis", wikis.WikiViewSet)
 router.register(r"subscriptions", subscriptions.SubscriptionViewSet)
+router.register(r"pushes_deprecated", pushes.PushViewSet, basename="pushes_deprecated")

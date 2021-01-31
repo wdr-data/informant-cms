@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "emoji_picker",
     "s3direct",
     "admin_object_actions",
+    "adminsortable2",
 ]
 
 MIDDLEWARE = [
@@ -252,5 +253,11 @@ S3DIRECT_DESTINATIONS = {
         "content_disposition": "attachment",  # Default no content disposition
         "content_length_range": (0, 25000000),  # Default allow any size
         "allow_existence_optimization": True,  # Don't re-upload files that exist on S3 already
+        "allowed": [
+            "image/jpg",
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+        ],  # Allowed mime types
     },
 }

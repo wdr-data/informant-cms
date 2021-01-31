@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .report import *
-from .push import *
+from .push_compact import *
 from .genre import *
 from .attachment import *
 from .faq import *
