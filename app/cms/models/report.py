@@ -24,7 +24,7 @@ class Report(NewsBaseModel):
     class Type(models.TextChoices):
         REGULAR = "regular", "📰 Reguläre Meldung"
         LAST = "last", "🎨 Letzte Meldung"
-        BREAKING = "breaking", "🚨 Breaking"
+        BREAKING = "breaking", "🚨 Breaking-Content"
         EVENING = "evening", "🌙 Abend-Push"
         NOTIFICATION = "notification", "📨 Benachrichtigung"
 
@@ -38,7 +38,7 @@ class Report(NewsBaseModel):
         blank=False,
         max_length=20,
         choices=Type.choices,
-        help_text='Wird dieser Wert auf "Breaking", "Abend-Push" oder "Benachrichtigung" '
+        help_text='Wird dieser Wert auf "Breaking-Content", "Abend-Push" oder "Benachrichtigung" '
         "gesetzt und die Meldung freigegeben, kann sie direkt versendet werden.",
         default=Type.EVENING.value,
     )
@@ -92,7 +92,7 @@ class Report(NewsBaseModel):
     )
 
     delivered_fb = models.CharField(
-        "Breaking/Abend-Push: Facebook",
+        "Breaking-Content/Abend-Push: Facebook",
         null=False,
         blank=False,
         max_length=20,
@@ -101,7 +101,7 @@ class Report(NewsBaseModel):
     )
 
     delivered_tg = models.CharField(
-        "Breaking/Abend-Push: Telegram",
+        "Breaking-Content/Abend-Push: Telegram",
         null=False,
         blank=False,
         max_length=20,
@@ -164,7 +164,7 @@ class NotificationSent(models.Model):
 
     morning = models.BooleanField("☕ Morgen")
     evening = models.BooleanField("🌙 Abend")
-    breaking = models.BooleanField("🚨 Breaking")
+    breaking = models.BooleanField("🚨 Breaking-Content")
 
     def __str__(self):
         timings = {"☕": self.morning, "🌙": self.evening, "🚨": self.breaking}

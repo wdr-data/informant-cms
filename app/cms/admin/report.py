@@ -314,8 +314,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         },
         {
             "slug": "breaking-report",
-            "verbose_name": "🚨 Jetzt als Breaking senden",
-            "verbose_name_past": "als Breaking gesendet",
+            "verbose_name": "🚨 Jetzt als Breaking-Content-Push senden",
+            "verbose_name_past": "als Breaking-Content-Push gesendet",
             "form_method": "GET",
             "function": "send_breaking",
             "permission": "send_breaking",
@@ -430,7 +430,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if failed:
             raise Exception(
-                f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+                f'Breaking-Content für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
             )
 
     def has_send_evening_push_permission(self, request, obj=None):
@@ -461,7 +461,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if failed:
             raise Exception(
-                f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+                f'Breaking-Content für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
             )
 
     def has_send_notification_permission(self, request, obj=None):

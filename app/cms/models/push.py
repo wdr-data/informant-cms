@@ -18,7 +18,7 @@ class Push(HasAttachment):
     class Timing(models.TextChoices):
         MORNING = "morning", "☕ Morgen"
         EVENING = "evening", "🌙 Abend"
-        BREAKING = "breaking", "🚨 Breaking"
+        BREAKING = "breaking", "🚨 Breaking-Content"
         TESTING = "testing", "⚗️ Test"
 
     class DeliveryStatus(models.TextChoices):
