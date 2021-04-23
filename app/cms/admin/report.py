@@ -142,6 +142,14 @@ class ReportModelForm(NewsBaseModelForm):
             )
         elif self.cleaned_data["type"] != "regular":
             self.cleaned_data["summary"] = None
+        
+        if self.cleaned_data["published"] and self.cleaned_data["type"] == "breaking" and self.cleaned_data["attachment"] is None:
+            raise ValidationError(
+                {
+                    "attachment": 'Wenn der Meldungstyp auf "🚨 Breaking-Content" gesetzt ist, '
+                    "muss ein Medien-Anhang angegeben werden.",
+                }
+            )
 
         return self.cleaned_data
 
@@ -314,8 +322,8 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
         },
         {
             "slug": "breaking-report",
-            "verbose_name": "🚨 Jetzt als Breaking senden",
-            "verbose_name_past": "als Breaking gesendet",
+            "verbose_name": "🚨 Breaking-Content-Push jetzt senden",
+            "verbose_name_past": "als Breaking-Content-Push gesendet",
             "form_method": "GET",
             "function": "send_breaking",
             "permission": "send_breaking",
@@ -430,7 +438,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if failed:
             raise Exception(
-                f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+                f'Breaking-Content für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
             )
 
     def has_send_evening_push_permission(self, request, obj=None):
@@ -461,7 +469,7 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
 
         if failed:
             raise Exception(
-                f'Breaking für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
+                f'Breaking-Content für mindestens einen Bot ist fehlgeschlagen ({", ".join(failed)})'
             )
 
     def has_send_notification_permission(self, request, obj=None):
@@ -595,6 +603,12 @@ class ReportAdmin(ModelAdminObjectActionsMixin, NewsBaseAdmin):
                     )
 
                     obj.audio = None
+
+        if not obj.published and obj.type == "breaking" and obj.attachment is None:
+            messages.warning(
+                request,
+                "Der Breaking-Content-Push hat noch keinen Medien-Anhang.",
+            )
 
         super().save_model(request, obj, form, change)
 
